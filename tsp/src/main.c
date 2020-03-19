@@ -23,8 +23,14 @@ void free_instance(instance *inst)
     free(inst->ycoord);
 }
 
-int main(int argc, char **argv) {
+float f(float x) {
+    return(sin(x)*15 + x*x);
+}
 
+void print_vertices(instance *inst);
+
+int main(int argc, char **argv) {
+    
     if ( argc < 2 ) { printf("Usage: %s -help for help\n", argv[0]); exit(1); }
     if ( VERBOSE >= 2 ) { for (int a = 0; a < argc; a++) printf("%s ", argv[a]); printf("\n"); }
     
@@ -32,9 +38,29 @@ int main(int argc, char **argv) {
     
     parse_command_line(argc, argv, &inst);
     read_input(&inst);
-    
+    print_vertices(&inst);
     free_instance(&inst);
+    
     return 0;
+}
+
+void print_vertices(instance *inst) {
+    
+    FILE *file;
+    file = fopen("vertices.txt", "wt");
+    for(int i=0; i< inst->nnodes; i++) fprintf(file, "%f %f %i\n", inst->xcoord[i], inst->ycoord[i], i+1);
+    fclose(file);
+    
+    file = fopen("command.txt", "wt");
+    
+    fprintf(file, "set xrange [-1000:9000] \n set yrange [-1000:6500]\n ");
+    fprintf(file, "set title 'TSP'\n set xlabel 'x'\n set ylabel 'y' \n set style line 5 lt rgb \"#009ad1\" lw 2 pt 6 ps 1 \n");
+    fprintf(file, "plot \"vertices.txt\" with  linespoint ls 5, '' using 1:2:3 with labels tc default font \"arial,12\" offset 0, 1 \n");
+    fprintf(file, "pause -1\n");
+    fclose(file);
+    
+    system("gnuplot command.txt");
+    
 }
 
 // simplified Parser
@@ -176,3 +202,4 @@ void parse_command_line(int argc, char** argv, instance *inst)
     if ( help ) exit(1);
     
 }
+
