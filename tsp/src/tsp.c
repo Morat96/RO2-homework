@@ -194,7 +194,7 @@ int TSPopt(instance *inst, double t1) {
         }
     
         // show the solution found
-        //print_solution(inst, succ);
+        print_solution(inst, succ);
         
         free(xstar);
         free(succ);
@@ -256,7 +256,7 @@ int TSPopt(instance *inst, double t1) {
     // show the complete solution found (lines + nodes + index node)
     //print_solution(inst, succ);
     // show the solution found (only lines)
-    //print_solution_light(inst, succ);
+    print_solution_light(inst, succ);
     
     free(xstar);
     free(succ);

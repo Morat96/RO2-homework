@@ -62,7 +62,6 @@ void read_input(instance *inst) {
             token1 = strtok(NULL, " :");
             inst->nnodes = atoi(token1);
             if ( do_print ) printf(" ... nnodes %d\n", inst->nnodes);
-            inst->demand = (double *) calloc(inst->nnodes, sizeof(double));
             inst->xcoord = (double *) calloc(inst->nnodes, sizeof(double));
             inst->ycoord = (double *) calloc(inst->nnodes, sizeof(double));
             active_section = 0;
@@ -75,7 +74,7 @@ void read_input(instance *inst) {
             if ( strncmp(token1, "EUC_2D", 6) == 0 ) inst -> euc_2d = 1;
             else if ( strncmp(token1, "ATT", 3) == 0 ) inst -> att = 1;
             else if ( strncmp(token1, "GEO", 3) == 0 ) inst -> geo = 1;
-            else print_error(" format error:  only EDGE_WEIGHT_TYPE == EUC_2D implemented so far!!!!!!");
+            else print_error(" format error:  only EDGE_WEIGHT_TYPE == EUC_2D/ATT/GEO implemented so far!!!!!!");
             active_section = 0;
             continue;
         }
