@@ -15,7 +15,7 @@ Ci dividiamo le run per tipo di algoritmo (es. compacts, heuristics ecc.).
 ```
 $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,1} -callback {0,1} -hardfixing {0,1} -localbranching {0,1}
 ```
-- model_type:
+- model_type
   - 0 -> standard model
   - 1 -> MTZ
   - 2 -> Flow 1
