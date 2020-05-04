@@ -123,23 +123,23 @@ void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
         }
         
         // randomize seed
-        srand(time(NULL));
-       
-        // compute the number of variables to be fixed
-        int cnt = (inst -> nnodes) * percentage;
+        srand((unsigned int)time(NULL));
+        
         printf("Current percentage of fixed variables: %.0f%%\n\n", percentage * 100);
         
-        int r = 0;
-        
-        // fix variables applying lower bound equal to 1.0
-        for (int j = 0; j < cnt; j++) {
-            r = rand() % (inst -> nnodes);
-            ind[j] = index_sol[r];
-            lu[j] = 'L';
-            db[j] = 1.0;
+        // compute the number of variables to be fixed
+        float rv = 0.0;
+        int count = 0;
+        for (int k = 0; k < inst -> nnodes; k++) {
+            rv = ((float)rand()/(float)(RAND_MAX));
+            if (rv <= percentage) {
+                ind[count] = index_sol[k];
+                lu[count] = 'L';
+                db[count++] = 1.0;
+            }
         }
         
-        CPXchgbds(env, lp, cnt, ind, lu, db);
+        CPXchgbds(env, lp, count, ind, lu, db);
         
         free(ind);
         free(lu);
@@ -272,7 +272,7 @@ void hardfixing_2nd_vers(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 }
                 
                 // randomize seed
-                srand(time(NULL));
+                srand((unsigned int)time(NULL));
                 
                 // set the percentage of variables to be fixed
                 float perc = 0.8;

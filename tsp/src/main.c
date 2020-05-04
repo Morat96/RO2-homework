@@ -11,6 +11,8 @@ double second(void);
 void read_input(instance *inst);
 void parse_command_line(int argc, char** argv, instance *inst);
 int TSPopt(instance *inst, double t1);
+void NearNeigh(instance *inst);
+void grasp(instance *inst);
 
 void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
 
@@ -31,7 +33,9 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
     read_input(&inst);
     
-    if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
+    NearNeigh(&inst);
+    grasp(&inst);
+    //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
     double t2 = second();
     
     if ( VERBOSE >= 1 ) printf("\n... TSP problem solved in %lf sec\n", t2 - t1);

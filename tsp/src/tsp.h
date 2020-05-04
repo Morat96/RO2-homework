@@ -19,7 +19,7 @@
 #include <time.h>
 
 #define VERBOSE 1 // printing level  (= 10 only incumbent, = 20 little output, = 50-60 good, = 70 verbose, >= 100 cplex log)
-#define debug 0   // debug checkings
+#define debug 1   // debug checkings
 
 // Data structures
 typedef struct {

@@ -27,9 +27,10 @@ void build_model_6(instance *inst, CPXENVptr env, CPXLPptr lp);
 // compact model: T3
 void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp);
 
-// loop method
+// **************** LOOP METHOD **************** //
 void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int *comp, int ncomp, int n);
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
+// ********************************************** //
 
 // **************** LAZY CALLBACK *************** //
 // lazy callback: integer LP
@@ -254,9 +255,9 @@ int TSPopt(instance *inst, double t1) {
     build_sol(xstar, inst, succ, comp, &ncomp);
     
     // show the complete solution found (lines + nodes + index node)
-    //print_solution(inst, succ);
+    print_solution(inst, succ);
     // show the solution found (only lines)
-    print_solution_light(inst, succ);
+    //print_solution_light(inst, succ);
     
     free(xstar);
     free(succ);
