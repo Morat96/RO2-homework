@@ -18,5 +18,6 @@ void parse_command_line(int argc, char** argv, instance *inst);
 
 // print TSP solution
 void print_solution(instance *inst, int *succ);
+void print_solution_light(instance *inst, int *succ);
 
 #endif /* utilities_h */

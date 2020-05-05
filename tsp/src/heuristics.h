@@ -12,8 +12,15 @@
 #include <stdio.h>
 #include "tsp.h"
 
+typedef struct tPoint {
+    double x, y;
+} Point;
+
+Point* convexHull(Point points[], int n);
+
 void NearNeigh(instance *inst);
 void grasp(instance *inst);
 void insertion(instance *inst);
+void insertion_ch(instance *inst);
 
 #endif /* heuristics_h */

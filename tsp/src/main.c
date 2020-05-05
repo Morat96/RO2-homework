@@ -14,6 +14,7 @@ int TSPopt(instance *inst, double t1);
 void NearNeigh(instance *inst);
 void grasp(instance *inst);
 void insertion(instance *inst);
+void insertion_ch(instance *inst);
 
 void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
 
@@ -37,6 +38,7 @@ int main(int argc, char **argv) {
     NearNeigh(&inst);
     grasp(&inst);
     insertion(&inst);
+    insertion_ch(&inst);
     
     //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
     double t2 = second();

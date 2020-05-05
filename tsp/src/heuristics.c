@@ -89,6 +89,149 @@ int three_min(double *array, int arr_size, int *ind) {
     return 0;
 }
 
+// Insertion heuristic with Convex Hull
+void insertion_ch(instance *inst) {
+    
+    printf("Resolve instance \"%s\" with Insertion with Convex Hull\n\n", inst -> input_file);
+    
+    // number of nodes
+    int n = inst -> nnodes;
+    
+    int *indices = (int *) calloc(n - 1, sizeof(int));
+    
+    // solution nodes
+    int *sol = (int *) calloc(n, sizeof(int));
+    
+    // number of nodes in solution
+    int n_nodes_sol = 0;
+    
+    // save all nodes in an array of Point
+    Point *points = (Point *) calloc(n, sizeof(Point));
+    for (int i = 0; i < n; i++) {
+        points[i].x = inst -> xcoord[i];
+        points[i].y = inst -> ycoord[i];
+    }
+    
+    // compute the convex hull of the points
+    // O(nLogn) complexity
+    Point *ch = (Point *) calloc(n, sizeof(Point));
+    ch = convexHull(points, n);
+    // size of the convex hull
+    int size = ch[0].x;
+    
+    // save the current solution
+    int nnodes = 0;
+    for (int j = 1; j < size + 1; j++) {
+        for (int i = 0; i < n; i++) {
+            if (inst -> xcoord[i] == ch[j].x && inst -> ycoord[i] == ch[j].y) sol[nnodes++] = i;
+        }
+    }
+    
+    // indices of all other nodes
+    int counter = 0;
+    int n_ind = 0;
+    for (int i = 0; i < n; i++) {
+        counter = 0;
+        for (int j = 1; j < size + 1; j++) {
+            if (inst -> xcoord[i] == ch[j].x && inst -> ycoord[i] == ch[j].y) counter ++;
+        }
+        if (!counter) indices[n_ind++] = i;
+    }
+    
+    int start = 0;
+    n_nodes_sol = size;
+    
+    // End first part
+    // Second part
+    // insert nodes on the solution until all edges belong to C
+    
+    int cnt = size;
+    double objval = 0.0;
+    
+    // cycle until all edges belong to C
+    while (n_nodes_sol != n) {
+        
+        // variables for computing the best edge
+        double best_cost = INT_MAX;
+        int best_h = 0;
+        int best_pos = 0;
+        int best_h_index = 0;
+        
+        // for each edge in C
+        for (int c = 0; c < n_nodes_sol - 1; c++) {
+            // for each remaining node
+            for (int i = 0; i < n - cnt; i++) {
+                // compute the cost function
+                // c_ah + c_hb - c_ab
+                double cost_h = dist(sol[c], indices[i], inst) + dist(indices[i], sol[c + 1], inst) - dist(sol[c], sol[c + 1], inst);
+                
+                // updating the best cost value
+                if (cost_h < best_cost) {
+                    best_h = indices[i];
+                    best_h_index = i;
+                    best_pos = c;
+                    best_cost = cost_h;
+                }
+            }
+        }
+        
+        // last edge (the one that closes the cycle)
+        for (int i = 0; i < n - cnt; i++) {
+            
+            double cost_h = dist(sol[n_nodes_sol - 1], indices[i], inst) + dist(indices[i], sol[start], inst) - dist(sol[n_nodes_sol - 1], sol[start], inst);
+            
+            // updating the best cost value
+            if (cost_h < best_cost) {
+                best_h = indices[i];
+                best_h_index = i;
+                best_pos = n_nodes_sol - 1;
+                best_cost = cost_h;
+            }
+        }
+        
+        // update the solution with the best edge
+        for (int c = n; c > best_pos; c--) sol[c] = sol[c - 1];
+        sol[best_pos + 1] = best_h;
+        
+        // remove the previous node
+        for (int c = best_h_index; c < n - cnt; c++) indices[c] = indices[c + 1];
+        
+        cnt ++;
+        n_nodes_sol ++;
+    }
+    
+    // number of variables
+    int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
+    double *xstar = (double *) calloc(ncols, sizeof(double));
+    
+    // build the xstar and the objective function value
+    for (int i = 0; i < n - 1; i++) {
+        objval += dist(sol[i], sol[i+1], inst);
+        xstar[xpos(sol[i], sol[i+1], inst)] = 1.0;
+    }
+    
+    xstar[xpos(sol[n - 1], sol[start], inst)] = 1.0;
+    objval += dist(sol[n - 1], sol[start], inst);
+    
+    printf("Objective function value: %lf\n\n", objval);
+    //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
+    
+    // build and print the solution
+    int *succ = (int *) calloc(inst->nnodes, sizeof(int));
+    int *comp = (int *) calloc(inst->nnodes, sizeof(int));
+    int ncomp = 0;
+    
+    build_sol(xstar, inst, succ, comp, &ncomp);
+    print_solution_light(inst, succ);
+    
+    free(sol);
+    free(indices);
+    
+    free(xstar);
+    free(comp);
+    free(succ);
+}
+
 // Insertion heuristic
 void insertion(instance *inst) {
     
@@ -127,7 +270,7 @@ void insertion(instance *inst) {
     
     // End first part
     // Second part
-    // insert nodes on the solution until all edges are belong to C
+    // insert nodes on the solution until all edges belong to C
     
     int cnt = 2;
     double objval = 0.0;
@@ -206,7 +349,7 @@ void insertion(instance *inst) {
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    print_solution_light(inst, succ);
+    //print_solution_light(inst, succ);
     
     free(sol);
     free(indices);
