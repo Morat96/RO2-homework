@@ -14,6 +14,7 @@ void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *n
 void print_solution(instance *inst, int *succ);
 void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err);
+double second(void);
 
 // compute minimum of an array and return the corresponding index
 int min(double *array, int arr_size) {
@@ -93,6 +94,7 @@ int three_min(double *array, int arr_size, int *ind) {
 void insertion_ch(instance *inst) {
     
     printf("Resolve instance \"%s\" with Insertion with Convex Hull\n\n", inst -> input_file);
+    double t1 = second();
     
     // number of nodes
     int n = inst -> nnodes;
@@ -137,6 +139,9 @@ void insertion_ch(instance *inst) {
         }
         if (!counter) indices[n_ind++] = i;
     }
+    
+    double t_ch = second();
+    printf("Convex Hull build time: %lf\n", t_ch - t1);
     
     int start = 0;
     n_nodes_sol = size;
@@ -213,7 +218,7 @@ void insertion_ch(instance *inst) {
     xstar[xpos(sol[n - 1], sol[start], inst)] = 1.0;
     objval += dist(sol[n - 1], sol[start], inst);
     
-    printf("Objective function value: %lf\n\n", objval);
+    printf("Objective function value: %lf\n", objval);
     //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
     
     // build and print the solution
@@ -224,8 +229,12 @@ void insertion_ch(instance *inst) {
     build_sol(xstar, inst, succ, comp, &ncomp);
     print_solution_light(inst, succ);
     
+    double t2 = second();
+    printf("Insertion CH time: %lf\n\n", t2 - t1);
+    
     free(sol);
     free(indices);
+    free(ch);
     
     free(xstar);
     free(comp);
@@ -236,6 +245,7 @@ void insertion_ch(instance *inst) {
 void insertion(instance *inst) {
     
     printf("Resolve instance \"%s\" with Insertion\n\n", inst -> input_file);
+    double t1 = second();
     
     // number of nodes
     int n = inst -> nnodes;
@@ -340,7 +350,7 @@ void insertion(instance *inst) {
     xstar[xpos(sol[n - 1], sol[start], inst)] = 1.0;
     objval += dist(sol[n - 1], sol[start], inst);
     
-    printf("Objective function value: %lf\n\n", objval);
+    printf("Objective function value: %lf\n", objval);
     //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
     
     // build and print the solution
@@ -350,6 +360,9 @@ void insertion(instance *inst) {
     
     build_sol(xstar, inst, succ, comp, &ncomp);
     //print_solution_light(inst, succ);
+    
+    double t2 = second();
+    printf("Insertion time: %lf\n\n", t2 - t1);
     
     free(sol);
     free(indices);
@@ -364,6 +377,7 @@ void insertion(instance *inst) {
 void NearNeigh(instance *inst) {
     
     printf("Resolve instance \"%s\" with Nearest Neighborhood\n\n", inst -> input_file);
+    double t1 = second();
     
     // number of variables
     int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
@@ -423,7 +437,7 @@ void NearNeigh(instance *inst) {
     xstar[xpos(current_node, start_node, inst)] = 1.0;
     objval += dist(current_node, start_node, inst);
     
-    printf("Objective function value: %lf\n\n", objval);
+    printf("Objective function value: %lf\n", objval);
     //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
     
     free(distances);
@@ -437,6 +451,9 @@ void NearNeigh(instance *inst) {
     build_sol(xstar, inst, succ, comp, &ncomp);
     //print_solution(inst, succ);
     
+    double t2 = second();
+    printf("Nearest Neighborhood time: %lf\n\n", t2 - t1);
+    
     free(xstar);
     free(comp);
     free(succ);
@@ -445,7 +462,8 @@ void NearNeigh(instance *inst) {
 // Grasp (randomization)
 void grasp(instance *inst) {
     
-    printf("Resolve instance \"%s\" with GRASP\n\n", inst -> input_file);
+    printf("Resolve instance \"%s\" with Grasp\n\n", inst -> input_file);
+    double t1 = second();
     
     // number of variables
     int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
@@ -551,7 +569,7 @@ void grasp(instance *inst) {
     xstar[xpos(current_node, start_node, inst)] = 1.0;
     objval += dist(current_node, start_node, inst);
     
-    printf("Objective function value: %lf\n\n", objval);
+    printf("Objective function value: %lf\n", objval);
     //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
     
     free(ind);
@@ -566,6 +584,9 @@ void grasp(instance *inst) {
     build_sol(xstar, inst, succ, comp, &ncomp);
     //print_solution(inst, succ);
     
+    double t2 = second();
+    printf("Grasp time: %lf\n\n", t2 - t1);
+    
     free(xstar);
     free(comp);
     free(succ);
@@ -575,7 +596,7 @@ void grasp(instance *inst) {
 // Grasp cycled (not a good idea for me)
 void grasp_cycled(instance *inst) {
     
-    printf("Resolve instance \"%s\" with GRASP\n\n", inst -> input_file);
+    printf("Resolve instance \"%s\" with Grasp\n\n", inst -> input_file);
     
     // number of variables
     int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;

@@ -17,6 +17,8 @@
 #include <stack>
 #include <stdlib.h>
 
+void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
+
 using namespace std;
 
 struct Point
@@ -134,7 +136,7 @@ Point* convexHull(Point points[], int n)
     
     // If modified array of points has less than 3 points,
     // convex hull is not possible
-    if (m < 3) cout << "Convex hull with less than 2 points!";
+    if (m < 3) print_error("Convex Hull with less than 2 points!");
     
     // Create an empty stack and push first three points
     // to it.
