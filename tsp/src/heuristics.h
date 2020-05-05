@@ -14,5 +14,6 @@
 
 void NearNeigh(instance *inst);
 void grasp(instance *inst);
+void insertion(instance *inst);
 
 #endif /* heuristics_h */

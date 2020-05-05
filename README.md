@@ -49,6 +49,11 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
 
 - Local Branching (setting parameters)
 
+- Heuristics
+  - nearest neighbourhood (greedy)
+  - Grasp (randomization)
+  - Insertion
+
 
 
 
