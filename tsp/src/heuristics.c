@@ -197,7 +197,7 @@ void insertion_ch(instance *inst) {
         }
         
         // update the solution with the best edge
-        for (int c = n; c > best_pos; c--) sol[c] = sol[c - 1];
+        for (int c = n - 1; c > best_pos; c--) sol[c] = sol[c - 1];
         sol[best_pos + 1] = best_h;
         
         // remove the previous node
@@ -333,7 +333,7 @@ void insertion(instance *inst) {
         }
         
         // update the solution with the best edge
-        for (int c = n; c > best_pos; c--) sol[c] = sol[c - 1];
+        for (int c = n - 1; c > best_pos; c--) sol[c] = sol[c - 1];
         sol[best_pos + 1] = best_h;
         
         // remove the previous node
@@ -414,7 +414,7 @@ void NearNeigh(instance *inst) {
     
     // in each cycle find the minimum edge
     while (cnt < inst -> nnodes) {
-    
+        
         // compute distances
         for (int i = 0; i < n - cnt; i++) distances[i] = dist(current_node, indices[i], inst);
         
@@ -449,7 +449,7 @@ void NearNeigh(instance *inst) {
     
     free(distances);
     free(indices);
-
+    
     // build and print the solution
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));
     int *comp = (int *) calloc(inst->nnodes, sizeof(int));
@@ -515,8 +515,8 @@ void grasp(instance *inst) {
         if (three_min(distances, n - cnt, ind)) print_error("Error in function three_min");
         
         /* choose the next node with weighted probability.
-           The node corresponding to the smaller edge has 50% probability to be chosen.
-           The other two nodes have 25% probability to be chosen. */
+         The node corresponding to the smaller edge has 50% probability to be chosen.
+         The other two nodes have 25% probability to be chosen. */
         
         // generate a random value from [0,1]
         float rv = ((float)rand()/(float)(RAND_MAX));

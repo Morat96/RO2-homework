@@ -25,6 +25,9 @@ set(SRC
     src/chrono.c
     src/callback.h
     src/callback.c
+    src/convexhull.cpp
+    src/heuristics.h
+    src/heuristics.c
     src/hardfixing.h
     src/hardfixing.c
     src/localbranching.h
