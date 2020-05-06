@@ -26,7 +26,7 @@ struct Point
     double x, y;
 };
 
-extern "C" Point* convexHull(Point points[], int n);
+extern "C" int convexHull(Point points[], int n, Point* ch, int* size);
 
 // A global point needed for  sorting points with reference
 // to  the first point Used in compare function of qsort()
@@ -90,7 +90,7 @@ int compare(const void *vp1, const void *vp2)
 }
 
 // Prints convex hull of a set of n points.
-Point* convexHull(Point points[], int n)
+int convexHull(Point points[], int n, Point* ch, int* size)
 {
     // Find the bottommost point
     int ymin = points[0].y, min = 0;
@@ -100,9 +100,10 @@ Point* convexHull(Point points[], int n)
         
         // Pick the bottom-most or chose the left
         // most point in case of tie
-        if ((y < ymin) || (ymin == y &&
-                           points[i].x < points[min].x))
-            ymin = points[i].y, min = i;
+        if ((y < ymin) || (ymin == y && points[i].x < points[min].x)) {
+            ymin = points[i].y;
+            min = i;
+        }
     }
     
     // Place the bottom-most point at first position
@@ -136,7 +137,7 @@ Point* convexHull(Point points[], int n)
     
     // If modified array of points has less than 3 points,
     // convex hull is not possible
-    if (m < 3) print_error("Convex Hull with less than 2 points!");
+    if (m < 3) return 1;
     
     // Create an empty stack and push first three points
     // to it.
@@ -157,16 +158,16 @@ Point* convexHull(Point points[], int n)
     }
     
     int i = 0;
-    Point* sol = (Point *) calloc(n, sizeof(Point));
-    sol[i++].x = (int) S.size();
-    // Now stack has the output points, print contents of stack
+    // size of the Convex Hull
+    (*size) = (int) S.size();
+    // Now stack has the output points, save contents of stack
     while (!S.empty())
     {
         Point p = S.top();
         //cout << "(" << p.x << ", " << p.y <<")" << endl;
-        sol[i].x = p.x;
-        sol[i++].y = p.y;
+        ch[i].x = p.x;
+        ch[i++].y = p.y;
         S.pop();
     }
-    return sol;
+    return 0;
 }

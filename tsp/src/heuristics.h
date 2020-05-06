@@ -16,7 +16,7 @@ typedef struct tPoint {
     double x, y;
 } Point;
 
-Point* convexHull(Point points[], int n);
+Point* convexHull(Point points[], int n, Point* ch, int* size);
 
 void NearNeigh(instance *inst);
 void grasp(instance *inst);

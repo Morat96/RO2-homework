@@ -114,16 +114,18 @@ void insertion_ch(instance *inst) {
         points[i].y = inst -> ycoord[i];
     }
     
+    Point *ch = (Point *) calloc(n, sizeof(Point));
+    
+    // size of the convex hull
+    int size = 0;
+    
     // compute the convex hull of the points
     // O(nLogn) complexity
-    Point *ch = (Point *) calloc(n, sizeof(Point));
-    ch = convexHull(points, n);
-    // size of the convex hull
-    int size = ch[0].x;
+    if (convexHull(points, n, ch, &size)) print_error("error in build the Convex Hull");
     
     // save the current solution
     int nnodes = 0;
-    for (int j = 1; j < size + 1; j++) {
+    for (int j = 0; j < size; j++) {
         for (int i = 0; i < n; i++) {
             if (inst -> xcoord[i] == ch[j].x && inst -> ycoord[i] == ch[j].y) sol[nnodes++] = i;
         }
@@ -134,7 +136,7 @@ void insertion_ch(instance *inst) {
     int n_ind = 0;
     for (int i = 0; i < n; i++) {
         counter = 0;
-        for (int j = 1; j < size + 1; j++) {
+        for (int j = 0; j < size; j++) {
             if (inst -> xcoord[i] == ch[j].x && inst -> ycoord[i] == ch[j].y) counter ++;
         }
         if (!counter) indices[n_ind++] = i;
@@ -227,10 +229,11 @@ void insertion_ch(instance *inst) {
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    print_solution_light(inst, succ);
     
     double t2 = second();
     printf("Insertion CH time: %lf\n\n", t2 - t1);
+    
+    print_solution_light(inst, succ);
     
     free(sol);
     free(indices);
@@ -260,13 +263,16 @@ void insertion(instance *inst) {
     int n_nodes_sol = 0;
     
     // start node
+    int start_node = 0;
+    
+    // index of first node
     int start = 0;
     
-    sol[n_nodes_sol++] = start;
+    sol[n_nodes_sol++] = start_node;
     
     // compute distances between start node and all the other nodes
     int nind = 0;
-    for (int i = 1; i < n; i++) indices[nind++] = i;
+    for (int i = 0; i < n; i++) if (i != start_node) indices[nind++] = i;
     for (int i = 0; i < n - 1; i++) distances[i] = dist(start, indices[i], inst);
     
     // search the farthest node w.r.t. start node
@@ -359,10 +365,11 @@ void insertion(instance *inst) {
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    //print_solution_light(inst, succ);
     
     double t2 = second();
     printf("Insertion time: %lf\n\n", t2 - t1);
+    
+    //print_solution_light(inst, succ);
     
     free(sol);
     free(indices);
@@ -449,10 +456,12 @@ void NearNeigh(instance *inst) {
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    //print_solution(inst, succ);
     
     double t2 = second();
     printf("Nearest Neighborhood time: %lf\n\n", t2 - t1);
+    
+    //print_solution(inst, succ);
+    
     
     free(xstar);
     free(comp);
@@ -582,10 +591,11 @@ void grasp(instance *inst) {
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    //print_solution(inst, succ);
     
     double t2 = second();
     printf("Grasp time: %lf\n\n", t2 - t1);
+    
+    //print_solution(inst, succ);
     
     free(xstar);
     free(comp);
