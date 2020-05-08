@@ -50,6 +50,10 @@ typedef struct {
     int ustart;                              // number of y(*,*) variables
     int zstart;                              // number of u(*,*) variables
     
+    //
+    int flag[4];
+    int **sol_thread;
+    
 } instance;
 
 // struct for Concorde mincut
@@ -117,6 +121,8 @@ void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp);
 
 // ***************** HEURISTICS **************** //
 void NearNeigh(instance *inst, double *xstar);
+void grasp(instance *inst, double *xstar);
+void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
 // ********************************************* //
 

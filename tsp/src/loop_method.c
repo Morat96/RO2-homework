@@ -8,12 +8,6 @@
 
 #include "loop_method.h"
 
-double second(void);
-void print_error(const char *err);
-void print_solution(instance *inst, int *succ);
-void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
-int xpos(int i, int j, instance *inst);
-
 // ********************************************************************** //
 // ***************************** LOOP METHOD **************************** //
 // ********************************************************************** //

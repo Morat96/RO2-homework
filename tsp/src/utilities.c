@@ -8,8 +8,6 @@
 
 #include "utilities.h"
 
-void print_error(const char *err);
-
 // simplified Parser
 void read_input(instance *inst) {
     
@@ -64,6 +62,12 @@ void read_input(instance *inst) {
             if ( do_print ) printf(" ... nnodes %d\n", inst->nnodes);
             inst->xcoord = (double *) calloc(inst->nnodes, sizeof(double));
             inst->ycoord = (double *) calloc(inst->nnodes, sizeof(double));
+            inst -> sol_thread = (int **) calloc(4, sizeof(int*));
+            inst -> sol_thread[0] = (int *) calloc(inst -> nnodes, sizeof(int));
+            inst -> sol_thread[1] = (int *) calloc(inst -> nnodes, sizeof(int));
+            inst -> sol_thread[2] = (int *) calloc(inst -> nnodes, sizeof(int));
+            inst -> sol_thread[3] = (int *) calloc(inst -> nnodes, sizeof(int));
+            for (int t = 0; t < 4; t++) inst -> flag[t] = 0;
             active_section = 0;
             continue;
         }

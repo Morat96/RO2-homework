@@ -81,7 +81,7 @@ int TSPopt(instance *inst, double t1) {
     
     //*** CPLEX'S PARAMETERS ***
     CPXsetintparam(env, CPX_PARAM_MIPDISPLAY, 4);
-    CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
+    //CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
     // set random seed
     CPXsetintparam(env, CPXPARAM_RandomSeed, inst -> randomseed);
     
@@ -151,17 +151,19 @@ int TSPopt(instance *inst, double t1) {
     if (inst -> model_type == 0 && inst -> loop == 1) loop_method(inst, env, lp, t1);
     
     // CALLBACK METHOD: callback.c
-    if(inst -> model_type == 0 && inst -> callback == 1) {
+    else if(inst -> model_type == 0 && inst -> callback == 1) {
         
         // lazyconstraint callback
         CPXsetintparam(env, CPX_PARAM_MIPCBREDLP, CPX_OFF);
         
         // First version: pre-generic callbacks
-        //CPXsetlazyconstraintcallbackfunc(env, mylazycallback, inst);
-        //CPXsetusercutcallbackfunc(env, UserCutCallback, inst);
+        //if (CPXsetlazyconstraintcallbackfunc(env, mylazycallback, inst)) print_error("Error in lazy constraints callback");
+        //if (CPXsetusercutcallbackfunc(env, UserCutCallback, inst)) print_error("Error in user callback");
+        // heuristic callback
+        //if (CPXsetheuristiccallbackfunc (env, myheuristic, inst)) print_error("Error in heuristic callback");
         
         // Second Version: generic callback
-        CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION, my_generic_callback, inst);
+        if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION, my_generic_callback, inst)) print_error("Error in generic callback");
         
         int ncores = 1; CPXgetnumcores(env, &ncores);
         CPXsetintparam(env, CPX_PARAM_THREADS, ncores);
@@ -178,6 +180,7 @@ int TSPopt(instance *inst, double t1) {
         int *varindices = malloc(sizeof(int) * nzcnt);
         double *xstar = (double *) calloc(nzcnt, sizeof(double));
         
+        // heuristics
         //NearNeigh(inst, xstar);
         insertion_ch(inst, xstar);
         
@@ -186,13 +189,21 @@ int TSPopt(instance *inst, double t1) {
         if (CPXaddmipstarts(env, lp, mcnt, nzcnt, beg, varindices, xstar, effort, NULL)) print_error("Error in set a mip start");
         
         if (CPXmipopt(env,lp)) print_error("Error in find a solution");
+        
+        free(xstar);
+        free(varindices);
     }
     
     // HARD FIXING
-    if(inst -> model_type == 0 && inst -> hardfixing == 1) hardfixing(inst, env, lp);
+    else if(inst -> model_type == 0 && inst -> hardfixing == 1) hardfixing(inst, env, lp);
     
     // LOCAL BRANCHING
-    if(inst -> model_type == 0 && inst -> localbranching == 1) localbranching(inst, env, lp);
+    else if(inst -> model_type == 0 && inst -> localbranching == 1) localbranching(inst, env, lp);
+    
+    else {
+        // Find solution
+        if (CPXmipopt(env,lp)) print_error("Error in find a solution");
+    }
     
     // *********** Compute and show the final solution *********** //
     
@@ -215,9 +226,9 @@ int TSPopt(instance *inst, double t1) {
     build_sol(xstar, inst, succ, comp, &ncomp);
     
     // show the complete solution found (lines + nodes + index node)
-    print_solution(inst, succ);
+    //print_solution(inst, succ);
     // show the solution found (only lines)
-    //print_solution_light(inst, succ);
+    print_solution_light(inst, succ);
     
     free(xstar);
     free(succ);

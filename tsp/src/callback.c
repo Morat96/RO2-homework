@@ -8,11 +8,6 @@
 
 #include "callback.h"
 
-void print_error(const char *err);
-// position
-int xpos(int i, int j, instance *inst);
-void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
-
 // ****************************** MODELS DEFINITION ****************************** //
 //
 // Lazy callback
@@ -20,9 +15,11 @@ void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *n
 // User cut callback
 // Add SEC constraints calling the CPEX callback in relaxation
 // both are used in order to cut in efficient way the branching tree
+// Heuristic callback
+// build and provide to CPLEX a TSP solution from an integer one
 //
 // Generic callback
-// It substitute the two previous callbacks with a single one (the callback does not deactivate the dinamic search algorithm)
+// It substitute the three previous callbacks with a single one (the callback does not deactivate the dinamic search algorithm)
 //
 // In both versions in the relaxation callbacks the Concorde's algorithms are used
 // First check is the graph is connected, is affermative obtain all the cuts usign an efficient Flow algorithm.
@@ -34,7 +31,11 @@ void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *n
 // ********************************* LAZY CALLBACK ******************************* //
 
 // lazy callback: integer LP
-int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
+int CPXPUBLIC mylazycallback(CPXCENVptr env,
+                             void *cbdata,
+                             int wherefrom,
+                             void *cbhandle,
+                             int *useraction_p) {
     
     *useraction_p = CPX_CALLBACK_DEFAULT;
     instance* inst = (instance *) cbhandle;             // casting of cbhandle
@@ -111,6 +112,13 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
         free(cname[0]);
         free(cname);
         
+        // save the complete graph from components found by CPLEX
+        // each thread has a specific solution
+        // flag[i] = 1 -> thread i has a solution available
+        int mythread = -1; if (CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread)) print_error("USER_separation: get info thread error");
+        complete_cycle(inst, succ, comp, &ncomp);
+        for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
+        inst -> flag[mythread] = 1;
     }
     
     free(comp);
@@ -120,7 +128,11 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
 }
 
 // User callback
-int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
+int CPXPUBLIC UserCutCallback(CPXCENVptr env,
+                              void *cbdata,
+                              int wherefrom,
+                              void *cbhandle,
+                              int *useraction_p) {
     
     *useraction_p = CPX_CALLBACK_DEFAULT;
     instance* inst = (instance *) cbhandle;                                                  // casting of cbhandle
@@ -184,6 +196,44 @@ int doit_fn_concorde(double cutval, int cutcount, int *cut , void *inParam) {
     return 0;
 }
 
+// heuristic callback
+// compute a heuristic solution from an integer solution of CPLEX
+int CPXPUBLIC myheuristic (CPXCENVptr env,
+                           void       *cbdata,
+                           int        wherefrom,
+                           void       *cbhandle,
+                           double     *objval_p,
+                           double     *x,
+                           int        *checkfeas_p,
+                           int        *useraction_p)
+{
+    
+    int mythread = -1; CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread);
+    instance* inst = (instance *) cbhandle;
+    *useraction_p = CPX_CALLBACK_DEFAULT;
+    
+    if (inst -> flag[mythread]) {
+        
+        double objval = 0;
+        
+        for (int i = 0; i < inst -> ncols; i++) x[i] = 0.0;
+        
+        for (int i = 0; i < inst -> nnodes; i++) {
+            int pos = xpos(i, inst -> sol_thread[mythread][i], inst);
+            x[pos] = 1.0;
+            objval += dist(i, inst -> sol_thread[mythread][i], inst);
+        }
+        
+        printf("Obj value: %lf, Thread: %d\n", objval, mythread);
+        inst -> flag[mythread] = 0;
+        *objval_p = objval;
+        *checkfeas_p = 1;
+        *useraction_p = CPX_CALLBACK_SET;
+    }
+    
+    return 0;
+}
+
 // ********************************************************************************* //
 
 // ******************************** GENERIC CALLBACK ******************************* //
@@ -208,8 +258,34 @@ int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *
             int ncuts;
             ncuts = my_separation(inst, xstar, context);
             //printf("ncuts: %d\n\n", ncuts);
-            break;
             
+            // compute a heuristic solution from an integer solution of CPLEX
+            int mythread = -1; CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread);
+            
+            if (inst -> flag[mythread]) {
+                
+                double objval = 0;
+                double* x = (double*) calloc(inst -> ncols, sizeof(double));
+                int* ind = (int*) calloc(inst -> ncols, sizeof(int));
+                for (int i = 0; i < inst -> ncols; i++) {
+                    x[i] = 0.0;
+                    ind[i] = i;
+                }
+                
+                for (int i = 0; i < inst -> nnodes; i++) {
+                    int pos = xpos(i, inst -> sol_thread[mythread][i], inst);
+                    x[pos] = 1.0;
+                    objval += dist(i, inst -> sol_thread[mythread][i], inst);
+                }
+                
+                printf("Obj value: %lf, Thread: %d\n", objval, mythread);
+                if (CPXcallbackpostheursoln(context, inst -> ncols, ind, x, objval, CPXCALLBACKSOLUTION_CHECKFEAS)) print_error("Error in generic callback: Heuristic");
+                
+                inst -> flag[mythread] = 0;
+                free(x);
+                free(ind);
+            }
+            break;
         }
         case CPX_CALLBACKCONTEXT_RELAXATION: {
             
@@ -293,7 +369,7 @@ int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context) 
                 }
             }
             rhs = rhs - 1.0;
-            if (CPXcallbackrejectcandidate(context, 1, nnz, &rhs, &sense, start_indexes, index, value)) print_error("USER_separation: CPXcutcallbackadd error");
+            if (CPXcallbackrejectcandidate(context, 1, nnz, &rhs, &sense, start_indexes, index, value)) print_error("Generic callback - separation: CPXcutcallbackadd error");
         }
         
         free(start_indexes);
@@ -303,6 +379,13 @@ int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context) 
         free(cname[0]);
         free(cname);
         
+        // save the complete graph from components found by CPLEX
+        // each thread has a specific solution
+        // flag[i] = 1 -> thread i has a solution available
+        int mythread = -1; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread)) print_error("Generic callback - separation: get info thread error");
+        complete_cycle(inst, succ, comp, &ncomp);
+        for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
+        inst -> flag[mythread] = 1;
     }
     
     free(succ);
@@ -339,7 +422,100 @@ int doit_fn_concorde_gen(double cutval, int cutcount, int *cut , void *inParam) 
 
 // ********************************************************************************* //
 
+// ****************************** MERGE COMP ALGORITHM ***************************** //
 
+// build a cycle from the distinct components found by CPLEX
+// merge components based on distances between nodes of different components
+// until the solution has one component -> feasible solution
+void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp) {
+    
+    int first = 0;
+    int second = 0;
+    int succ_first = 0;
+    int succ_second = 0;
+    int comp_f = 0;
+    int comp_s = 0;
+    int* inv = (int *) calloc(inst -> nnodes, sizeof(int));
+    int* index = (int *) calloc(inst -> nnodes, sizeof(int));
+    
+    while((*ncomp) != 1) {
+        
+        double min_function = INT_MAX;
+        double curr_min_function = INT_MAX;
+        int flag = 0;
+        
+        for (int i = 0; i < inst -> nnodes; i++) {
+            for (int j = 0; j < inst -> nnodes; j++) {
+                if (comp[i] != comp[j]) {
+                    // Δ(a,b)
+                    curr_min_function = dist(i, succ[j], inst) + dist(j, succ[i], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                    
+                    if (curr_min_function < min_function) {
+                        comp_f = comp[i];
+                        comp_s = comp[j];
+                        first = i;                          // a
+                        second = j;                         // b
+                        succ_first = succ[i];               // a'
+                        succ_second = succ[j];              // b'
+                        min_function = curr_min_function;
+                        flag = 0;
+                    }
+                    // Δ'(a,b)
+                    curr_min_function = dist(i, j, inst) + dist(succ[j], succ[i], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                    
+                    if (curr_min_function < min_function) {
+                        comp_f = comp[i];
+                        comp_s = comp[j];
+                        first = i;                          // a
+                        second = j;                         // b
+                        succ_first = succ[i];               // a'
+                        succ_second = succ[j];              // b'
+                        min_function = curr_min_function;
+                        flag = 1;
+                    }
+                }
+            }
+        }
+        
+        if (flag) {
+            
+            // reverse the order of edges of the second component
+            int cnt = 0;
+            for (int i = 0; i < inst -> nnodes; i++)
+                if (comp[i] == comp_s) cnt++;
+            
+            int cnt2 = 0;
+            for (int i = 0; i < inst -> nnodes; i++) {
+                if (comp[i] == comp_s) {
+                    int val = succ[i];
+                    for (int j = 0; j < cnt - 2; j++) val = succ[val];
+                    
+                    inv[cnt2] = val;
+                    index[cnt2++] = i;
+                }
+            }
+            
+            for (int i = 0; i < cnt; i++) succ[index[i]] = inv[i];
+            
+            // update
+            succ[first] = second;                               // (a,a') -> (a,b)
+            succ[succ_second] = succ_first;                     // (b,b') -> (b',a')
+            
+        }
+        else {
+            // update
+            succ[first] = succ_second;                          // (a,a') -> (a,b')
+            succ[second] = succ_first;                          // (b,b') -> (b,a')
+        }
+        
+        // update components
+        for (int i = 0; i < inst -> nnodes; i++) if (comp[i] == comp_s) comp[i] = comp_f;
+        (*ncomp) --;
+    }
+    
+    free(inv);
+    free(index);
+}
 
 
 

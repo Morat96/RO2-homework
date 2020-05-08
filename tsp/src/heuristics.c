@@ -8,13 +8,14 @@
 
 #include "heuristics.h"
 
-double dist(int i, int j, instance *inst);
-int xpos(int i, int j, instance *inst);
-void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
-void print_solution(instance *inst, int *succ);
-void print_solution_light(instance *inst, int *succ);
-void print_error(const char *err);
-double second(void);
+// ************************** MODELS DEFINITION ************************* //
+//
+// - Nearest Neighbourhood (greedy)
+// - Grasp (randomization)
+// - Insertion
+// - Insertion with Convex Hull
+//
+// ********************************************************************** //
 
 // compute minimum of an array and return the corresponding index
 int min(double *array, int arr_size) {
@@ -236,7 +237,6 @@ void insertion_ch(instance *inst, double *xstar) {
     free(ch);
     free(points);
     
-    free(xstar);
     free(comp);
     free(succ);
 }
@@ -368,7 +368,6 @@ void insertion(instance *inst, double *xstar) {
     free(indices);
     free(distances);
     
-    free(xstar);
     free(comp);
     free(succ);
 }
@@ -455,7 +454,6 @@ void NearNeigh(instance *inst, double *xstar) {
     
     //print_solution(inst, succ);
     
-    //free(xstar);
     free(comp);
     free(succ);
 }
@@ -584,7 +582,6 @@ void grasp(instance *inst, double *xstar) {
     
     //print_solution(inst, succ);
     
-    free(xstar);
     free(comp);
     free(succ);
     

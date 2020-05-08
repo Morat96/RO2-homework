@@ -18,6 +18,8 @@ void free_instance(instance *inst)
 {
     free(inst->xcoord);
     free(inst->ycoord);
+    for (int i = 0; i < 4; i++) free(inst -> sol_thread[i]);
+    free(inst->sol_thread);
 }
 
 int main(int argc, char **argv) {

@@ -23,4 +23,13 @@ void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
 
+// utils
+double dist(int i, int j, instance *inst);
+int xpos(int i, int j, instance *inst);
+void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
+void print_solution(instance *inst, int *succ);
+void print_solution_light(instance *inst, int *succ);
+void print_error(const char *err);
+double second(void);
+
 #endif /* heuristics_h */

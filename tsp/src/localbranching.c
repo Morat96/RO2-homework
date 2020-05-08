@@ -8,10 +8,6 @@
 
 #include "localbranching.h"
 
-double second(void);
-void print_error(const char *err);
-int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
-
 // ********************************************************************** //
 // *************************** LOCAL BRANCHING ************************** //
 // ********************************************************************** //

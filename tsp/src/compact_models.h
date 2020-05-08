@@ -32,4 +32,19 @@ void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp);
 // BUILD COMPACT MODELS SOLUTION
 void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
 
+// utils
+void print_error(const char *err);
+void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
+
+// variable position
+int xpos_compact(int i, int j, instance *inst) { return i * inst->nnodes + j; }
+int ypos(int i, int j, instance *inst) { return inst-> ystart + i * inst->nnodes + j; }
+int y2pos(int i, int j, int k, instance *inst) { return inst-> ystart + i * inst->nnodes + j + (k-1) * (inst -> nnodes) * (inst -> nnodes); }
+int y3pos(int i, int j, int k, instance *inst) { return inst-> ystart + i * inst->nnodes + j + (k) * (inst -> nnodes) * (inst -> nnodes); }
+int zpos(int i, int j, instance *inst) { return inst-> zstart + i * inst->nnodes + j; }
+int upos(int i, instance *inst) { return inst -> ustart + i; }
+
+// distance between two nodes
+double dist(int i, int j, instance *inst);
+
 #endif /* compact_models_h */

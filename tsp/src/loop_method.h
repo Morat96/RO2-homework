@@ -16,4 +16,11 @@
 void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int *comp, int ncomp, int n);
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
 
+// utils
+double second(void);
+void print_error(const char *err);
+void print_solution(instance *inst, int *succ);
+void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
+int xpos(int i, int j, instance *inst);
+
 #endif /* loop_method_h */

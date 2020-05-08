@@ -20,4 +20,7 @@ void parse_command_line(int argc, char** argv, instance *inst);
 void print_solution(instance *inst, int *succ);
 void print_solution_light(instance *inst, int *succ);
 
+// utils
+void print_error(const char *err);
+
 #endif /* utilities_h */
