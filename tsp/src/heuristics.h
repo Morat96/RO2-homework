@@ -16,11 +16,11 @@ typedef struct tPoint {
     double x, y;
 } Point;
 
-Point* convexHull(Point points[], int n, Point* ch, int* size);
+int convexHull(Point points[], int n, Point* ch, int* size);
 
-void NearNeigh(instance *inst);
-void grasp(instance *inst);
-void insertion(instance *inst);
-void insertion_ch(instance *inst);
+void NearNeigh(instance *inst, double *xstar);
+void grasp(instance *inst, double *xstar);
+void insertion(instance *inst, double *xstar);
+void insertion_ch(instance *inst, double *xstar);
 
 #endif /* heuristics_h */

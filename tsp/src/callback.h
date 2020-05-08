@@ -15,11 +15,11 @@
 
 // **************** LAZY CALLBACK *************** //
 // lazy callback: integer LP
-static int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
+int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
 // add SEC in integer solutions
 int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, int wherefrom);
 // user callback: relaxation
-static int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
+int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
 // add SEC in continuous relaxation solutions
 int doit_fn_concorde(double cutval , int cutcount , int *cut , void *inParam);
 // ********************************************** //

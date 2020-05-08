@@ -91,7 +91,7 @@ int three_min(double *array, int arr_size, int *ind) {
 }
 
 // Insertion heuristic with Convex Hull
-void insertion_ch(instance *inst) {
+void insertion_ch(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Insertion with Convex Hull\n\n", inst -> input_file);
     double t1 = second();
@@ -207,10 +207,6 @@ void insertion_ch(instance *inst) {
         n_nodes_sol ++;
     }
     
-    // number of variables
-    int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
-    double *xstar = (double *) calloc(ncols, sizeof(double));
-    
     // build the xstar and the objective function value
     for (int i = 0; i < n - 1; i++) {
         objval += dist(sol[i], sol[i+1], inst);
@@ -233,11 +229,12 @@ void insertion_ch(instance *inst) {
     double t2 = second();
     printf("Insertion CH time: %lf\n\n", t2 - t1);
     
-    print_solution_light(inst, succ);
+    //print_solution_light(inst, succ);
     
     free(sol);
     free(indices);
     free(ch);
+    free(points);
     
     free(xstar);
     free(comp);
@@ -245,7 +242,7 @@ void insertion_ch(instance *inst) {
 }
 
 // Insertion heuristic
-void insertion(instance *inst) {
+void insertion(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Insertion\n\n", inst -> input_file);
     double t1 = second();
@@ -343,10 +340,6 @@ void insertion(instance *inst) {
         n_nodes_sol ++;
     }
     
-    // number of variables
-    int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
-    double *xstar = (double *) calloc(ncols, sizeof(double));
-    
     // build the xstar and the objective function value
     for (int i = 0; i < n - 1; i++) {
         objval += dist(sol[i], sol[i+1], inst);
@@ -381,18 +374,18 @@ void insertion(instance *inst) {
 }
 
 // Nearest Neighborhood (greedy)
-void NearNeigh(instance *inst) {
+void NearNeigh(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Nearest Neighborhood\n\n", inst -> input_file);
     double t1 = second();
     
     // number of variables
-    int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
+    
     // number of nodes of the instance
     int n = inst -> nnodes;
     
     // solution
-    double *xstar = (double *) calloc(ncols, sizeof(double));
+    //double *xstar = (double *) calloc(ncols, sizeof(double));
     
     // counter of resolved nodes
     int cnt = 1;
@@ -462,25 +455,19 @@ void NearNeigh(instance *inst) {
     
     //print_solution(inst, succ);
     
-    
-    free(xstar);
+    //free(xstar);
     free(comp);
     free(succ);
 }
 
 // Grasp (randomization)
-void grasp(instance *inst) {
+void grasp(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Grasp\n\n", inst -> input_file);
     double t1 = second();
     
-    // number of variables
-    int ncols = ((inst -> nnodes)*(inst -> nnodes - 1)) / 2;
     // number of nodes of the instance
     int n = inst -> nnodes;
-    
-    // solution
-    double *xstar = (double *) calloc(ncols, sizeof(double));
     
     // counter of resolved nodes
     int cnt = 1;

@@ -10,63 +10,6 @@
 
 #define EPS 1e-5
 
-// branch and cut
-void build_model_0(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: MTZ
-void build_model_1(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: FLOW1
-void build_model_2(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: FLOW2
-void build_model_3(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: FLOW3
-void build_model_4(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: T1
-void build_model_5(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: T2
-void build_model_6(instance *inst, CPXENVptr env, CPXLPptr lp);
-// compact model: T3
-void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp);
-
-// **************** LOOP METHOD **************** //
-void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int *comp, int ncomp, int n);
-void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
-// ********************************************** //
-
-// **************** LAZY CALLBACK *************** //
-// lazy callback: integer LP
-static int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
-// add SEC in integer solutions
-int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, int wherefrom);
-// user callback: relaxation
-static int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
-// add SEC in continuous relaxation solutions
-int doit_fn_concorde(double cutval , int cutcount , int *cut , void *inParam);
-// ********************************************** //
-
-// ************** GENERIC CALLBACK ************** //
-// either integer and relaxation callback
-int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
-// add SEC in integer solutions
-int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context);
-// add SEC in continuous relaxation solutions
-int doit_fn_concorde_gen(double cutval, int cutcount, int *cut , void *inParam);
-// ********************************************** //
-
-// **************** HARD FIXING **************** //
-void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp);
-// ********************************************* //
-
-// ************** LOCAL BRANCHING ************** //
-void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp);
-// ********************************************* //
-
-double second(void);
-void print_error(const char *err);
-void print_solution(instance *inst, int *succ);
-void print_solution_light(instance *inst, int *succ);
-void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
-void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
-
 // position
 int xpos(int i, int j, instance *inst)
 {
@@ -138,7 +81,7 @@ int TSPopt(instance *inst, double t1) {
     
     //*** CPLEX'S PARAMETERS ***
     CPXsetintparam(env, CPX_PARAM_MIPDISPLAY, 4);
-    //CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
+    CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
     // set random seed
     CPXsetintparam(env, CPXPARAM_RandomSeed, inst -> randomseed);
     
@@ -224,6 +167,23 @@ int TSPopt(instance *inst, double t1) {
         CPXsetintparam(env, CPX_PARAM_THREADS, ncores);
         
         inst -> ncols = CPXgetnumcols(env,lp);
+        
+        // add a starting TSP solution to MIP
+        int mcnt = 1;
+        int nzcnt = inst -> ncols;
+        int beg[1];
+        int effort[1];
+        beg[0] = 0;
+        effort[0] = 4;
+        int *varindices = malloc(sizeof(int) * nzcnt);
+        double *xstar = (double *) calloc(nzcnt, sizeof(double));
+        
+        //NearNeigh(inst, xstar);
+        insertion_ch(inst, xstar);
+        
+        for (int i = 0; i < nzcnt; i++) varindices[i] = i;
+        
+        if (CPXaddmipstarts(env, lp, mcnt, nzcnt, beg, varindices, xstar, effort, NULL)) print_error("Error in set a mip start");
         
         if (CPXmipopt(env,lp)) print_error("Error in find a solution");
     }

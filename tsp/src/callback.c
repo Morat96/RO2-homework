@@ -34,7 +34,7 @@ void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *n
 // ********************************* LAZY CALLBACK ******************************* //
 
 // lazy callback: integer LP
-static int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
+int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
     
     *useraction_p = CPX_CALLBACK_DEFAULT;
     instance* inst = (instance *) cbhandle;             // casting of cbhandle
@@ -48,11 +48,11 @@ static int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom,
     int mythread = -1; CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread);
     double zbest; CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_BEST_INTEGER, &zbest);
     
-    printf("Objval: %lf \nThread: %d \n", objval, mythread);
+    //printf("Objval: %lf \nThread: %d \n", objval, mythread);
     
     //apply cut separator and possibly add violated cuts
     int ncuts = myseparation(inst, xstar, env, cbdata, wherefrom);
-    printf("ncuts: %d\n\n", ncuts);
+    //printf("ncuts: %d\n\n", ncuts);
     
     free(xstar);
     
@@ -120,7 +120,7 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
 }
 
 // User callback
-static int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
+int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p) {
     
     *useraction_p = CPX_CALLBACK_DEFAULT;
     instance* inst = (instance *) cbhandle;                                                  // casting of cbhandle
@@ -168,7 +168,7 @@ static int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom
 
 // add SEC in continuous relaxation solutions
 int doit_fn_concorde(double cutval, int cutcount, int *cut , void *inParam) {
-    printf("cutval: %lf \ncutcount: %d \n", cutval, cutcount);
+    //printf("cutval: %lf \ncutcount: %d \n", cutval, cutcount);
     input* inputVal = (input *) inParam;
     int *index = (int *) calloc(cutcount, sizeof(int));
     double *value = (double *) calloc(cutcount, sizeof(double));
