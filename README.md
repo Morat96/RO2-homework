@@ -40,10 +40,10 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
   - II version (two steps)
 
 - Lazy callback
-  - alone or with userCutCallback (Concorde)
+  - alone or with userCutCallback (Concorde) + heuristic callback + start MIP
 
 - Generic callback
-  - alone or with relaxation (Concorde)
+  - alone or with relaxation (Concorde) + heuristic callback + start MIP
 
 - Hard Fixing (setting parameters)
 
