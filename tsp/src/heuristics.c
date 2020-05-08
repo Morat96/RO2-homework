@@ -88,6 +88,7 @@ int three_min(double *array, int arr_size, int *ind) {
             ind[2] = i;
         }
     }
+    free(global_min);
     return 0;
 }
 
