@@ -93,11 +93,19 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
 
 // **************** LAZY CALLBACK *************** //
 // lazy callback: integer LP
-int CPXPUBLIC mylazycallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
+int CPXPUBLIC mylazycallback(CPXCENVptr env,
+                             void *cbdata,
+                             int wherefrom,
+                             void *cbhandle,
+                             int *useraction_p);
 // add SEC in integer solutions
 int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, int wherefrom);
 // user callback: relaxation
-int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
+int CPXPUBLIC UserCutCallback(CPXCENVptr env,
+                              void *cbdata,
+                              int wherefrom,
+                              void *cbhandle,
+                              int *useraction_p);
 // add SEC in continuous relaxation solutions
 int doit_fn_concorde(double cutval , int cutcount , int *cut , void *inParam);
 // add a tsp solution from CPLEX's integer solution
@@ -113,7 +121,9 @@ int CPXPUBLIC myheuristic (CPXCENVptr env,
 
 // ************** GENERIC CALLBACK ************** //
 // either integer and relaxation callback
-int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
+int my_generic_callback(CPXCALLBACKCONTEXTptr context,
+                        CPXLONG contextid,
+                        void *user);
 // add SEC in integer solutions
 int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context);
 // add SEC in continuous relaxation solutions

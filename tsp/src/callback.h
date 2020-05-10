@@ -52,7 +52,9 @@ int CPXPUBLIC myheuristic (CPXCENVptr env,
 
 // ************** GENERIC CALLBACK ************** //
 // either integer and relaxation callback
-int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
+int my_generic_callback(CPXCALLBACKCONTEXTptr context,
+                        CPXLONG contextid,
+                        void *user);
 // add SEC in integer solutions
 int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context);
 // add SEC in continuous relaxation solutions
