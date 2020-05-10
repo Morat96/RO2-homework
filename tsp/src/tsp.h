@@ -50,9 +50,9 @@ typedef struct {
     int ustart;                              // number of y(*,*) variables
     int zstart;                              // number of u(*,*) variables
     
-    //
-    int flag[4];
-    int **sol_thread;
+    // heuristic solutions (one for each thread)
+    int flag[4];                             // if the solution at thread "index" is updated {0,1}
+    int **sol_thread;                        // heuristic solutions
     
 } instance;
 
@@ -100,6 +100,15 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
 int CPXPUBLIC UserCutCallback(CPXCENVptr env, void *cbdata, int wherefrom, void *cbhandle, int *useraction_p);
 // add SEC in continuous relaxation solutions
 int doit_fn_concorde(double cutval , int cutcount , int *cut , void *inParam);
+// add a tsp solution from CPLEX's integer solution
+int CPXPUBLIC myheuristic (CPXCENVptr env,
+                           void       *cbdata,
+                           int        wherefrom,
+                           void       *cbhandle,
+                           double     *objval_p,
+                           double     *x,
+                           int        *checkfeas_p,
+                           int        *useraction_p);
 // ********************************************** //
 
 // ************** GENERIC CALLBACK ************** //

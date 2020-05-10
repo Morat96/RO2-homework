@@ -112,13 +112,21 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
         free(cname[0]);
         free(cname);
         
-        // save the complete graph from components found by CPLEX
-        // each thread has a specific solution
-        // flag[i] = 1 -> thread i has a solution available
-        int mythread = -1; if (CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread)) print_error("USER_separation: get info thread error");
-        complete_cycle(inst, succ, comp, &ncomp);
-        for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
-        inst -> flag[mythread] = 1;
+        // total number of nodes solved
+        CPXINT node_count = 0; if (CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_NODE_COUNT, &node_count)) print_error("USER_separation: get info node count error");
+        
+        // provide to MIP a TSP integer solution only in nodes within depth nine of the branching tree
+        // or every 10 nodes
+        if (node_count < 512 || (node_count % 10 == 0)) {
+            
+            // save the complete graph from components found by CPLEX
+            // each thread has a specific solution
+            // flag[i] = 1 -> thread i has a solution available
+            int mythread = -1; if (CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread)) print_error("USER_separation: get info thread error");
+            complete_cycle(inst, succ, comp, &ncomp);
+            for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
+            inst -> flag[mythread] = 1;
+        }
     }
     
     free(comp);
@@ -210,6 +218,7 @@ int CPXPUBLIC myheuristic (CPXCENVptr env,
     
     int mythread = -1; CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_MY_THREAD_NUM, &mythread);
     instance* inst = (instance *) cbhandle;
+    CPXINT node_count = 0; if (CPXgetcallbackinfo(env, cbdata, wherefrom, CPX_CALLBACK_INFO_NODE_COUNT, &node_count)) print_error("USER_separation: get info node count error");
     *useraction_p = CPX_CALLBACK_DEFAULT;
     
     if (inst -> flag[mythread]) {
@@ -224,7 +233,7 @@ int CPXPUBLIC myheuristic (CPXCENVptr env,
             objval += dist(i, inst -> sol_thread[mythread][i], inst);
         }
         
-        printf("Obj value: %lf, Thread: %d\n", objval, mythread);
+        printf("Obj value: %lf, Thread: %d, Node: %d\n", objval, mythread, node_count);
         inst -> flag[mythread] = 0;
         *objval_p = objval;
         *checkfeas_p = 1;
@@ -260,7 +269,8 @@ int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *
             //printf("ncuts: %d\n\n", ncuts);
             
             // compute a heuristic solution from an integer solution of CPLEX
-            int mythread = -1; CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread);
+            int mythread = -1; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread)) print_error("Error in generic callback: get info thread id error");
+            CPXINT node_count = 0; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_NODECOUNT, &node_count)) print_error("Error in generic callback: get info node count error");
             
             if (inst -> flag[mythread]) {
                 
@@ -278,7 +288,7 @@ int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *
                     objval += dist(i, inst -> sol_thread[mythread][i], inst);
                 }
                 
-                printf("Obj value: %lf, Thread: %d\n", objval, mythread);
+                printf("Obj value: %lf, Thread: %d, Node: %d\n", objval, mythread, node_count);
                 if (CPXcallbackpostheursoln(context, inst -> ncols, ind, x, objval, CPXCALLBACKSOLUTION_CHECKFEAS)) print_error("Error in generic callback: Heuristic");
                 
                 inst -> flag[mythread] = 0;
@@ -379,13 +389,21 @@ int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context) 
         free(cname[0]);
         free(cname);
         
-        // save the complete graph from components found by CPLEX
-        // each thread has a specific solution
-        // flag[i] = 1 -> thread i has a solution available
-        int mythread = -1; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread)) print_error("Generic callback - separation: get info thread error");
-        complete_cycle(inst, succ, comp, &ncomp);
-        for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
-        inst -> flag[mythread] = 1;
+        // total number of nodes solved
+        CPXINT node_count = 0; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_NODECOUNT, &node_count)) print_error("Generic callback - separation: get info node count error");
+        
+        // provide to MIP a TSP integer solution only in nodes within depth nine of the branching tree
+        // or every 10 nodes
+        if (node_count < 512 || (node_count % 10 == 0)) {
+            
+            // save the complete graph from components found by CPLEX
+            // each thread has a specific solution
+            // flag[i] = 1 -> thread i has a solution available
+            int mythread = -1; if (CPXcallbackgetinfoint(context, CPXCALLBACKINFO_THREADID, &mythread)) print_error("Generic callback - separation: get info thread error");
+            complete_cycle(inst, succ, comp, &ncomp);
+            for (int i = 0; i < inst -> nnodes; i++) inst -> sol_thread[mythread][i] = succ[i];
+            inst -> flag[mythread] = 1;
+        }
     }
     
     free(succ);
