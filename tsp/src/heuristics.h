@@ -22,6 +22,7 @@ void NearNeigh(instance *inst, double *xstar);
 void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
+void twOpt(instance* inst, double* xstar);
 
 // utils
 double dist(int i, int j, instance *inst);

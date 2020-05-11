@@ -92,6 +92,90 @@ int three_min(double *array, int arr_size, int *ind) {
     return 0;
 }
 
+// Refining algorithm
+// 2-OPT move
+void twOpt(instance* inst, double* xstar) {
+    
+    printf("Refining Algorithm: 2-OPT move\n");
+    double t1 = second();
+    
+    int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
+    int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
+    int ncomp = 0;
+    
+    build_sol(xstar, inst, succ, comp, &ncomp);
+    
+    int *index = (int *) calloc(inst -> nnodes, sizeof(int));
+    
+    while(1) {
+        
+        // first edge
+        int nFirst = 0;
+        int succ_f = 0;
+        // second edge
+        int nSecond = 0;
+        int succ_s = 0;
+        // objective function
+        int delta = INT_MAX;
+        int min_delta = INT_MAX;
+        
+        // for each couple of edges, compute obj function value and pick the minimim one
+        // store indices of edges with the lowest obj func value
+        for (int i = 0; i < inst -> nnodes; i++) {
+            for (int j = i + 1; j < inst -> nnodes; j++) {
+                delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                if (delta < min_delta) {
+                    nFirst = i;
+                    succ_f = succ[i];
+                    nSecond = j;
+                    succ_s = succ[j];
+                    min_delta = delta;
+                }
+            }
+        }
+        
+        // if no improvement, exit
+        if (min_delta >= 0) break;
+        
+        // change link of edges and their orientations w.r.t. optimal obj. func. value
+        int ind = succ[succ_f];
+        int cnt = 0;
+        while (ind != nSecond) {
+            index[cnt++] = ind;
+            ind = succ[ind];
+        }
+        if (cnt == 0) {
+            succ[ind] = succ_s;
+            succ[nSecond] = succ_f;
+        }
+        else {
+            succ[index[0]] = succ_f;
+            for (int i = 1; i < cnt ; i++) {
+                succ[index[i]] = index[i - 1];
+            }
+            succ[nSecond] = index[cnt - 1];
+        }
+        // crossing of straight lines
+        // (a,a'), (b,b') -> (a,b), (a',b')
+        // where (a,a') is the first edge and (b,b') is the second one.
+        succ[nFirst] = nSecond;
+        succ[succ_f] = succ_s;
+    }
+    
+    double t2 = second();
+    
+    double objval = 0.0;
+    for (int i = 0; i < inst -> nnodes; i ++) objval += dist(i, succ[i], inst);
+    printf("Objective function value: %lf\n", objval);
+    printf("2-OPT move time: %lf\n\n", t2 - t1);
+    print_solution_light(inst, succ);
+    
+    free(index);
+    free(xstar);
+    free(succ);
+    free(comp);
+}
+
 // Insertion heuristic with Convex Hull
 void insertion_ch(instance *inst, double *xstar) {
     

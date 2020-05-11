@@ -9,7 +9,7 @@
 #include <cut.h>
 
 #define EPS 1e-5
-
+void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
 // position
 int xpos(int i, int j, instance *inst)
 {
@@ -81,7 +81,7 @@ int TSPopt(instance *inst, double t1) {
     
     //*** CPLEX'S PARAMETERS ***
     CPXsetintparam(env, CPX_PARAM_MIPDISPLAY, 4);
-    //CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
+    CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
     // set random seed
     CPXsetintparam(env, CPXPARAM_RandomSeed, inst -> randomseed);
     
@@ -143,6 +143,10 @@ int TSPopt(instance *inst, double t1) {
         free(xstar);
         free(succ);
         free(comp);
+        
+        // free and close cplex model
+        CPXfreeprob(env, &lp);
+        CPXcloseCPLEX(&env);
         
         return 0;
     }
