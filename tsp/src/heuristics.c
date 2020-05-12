@@ -92,6 +92,250 @@ int three_min(double *array, int arr_size, int *ind) {
     return 0;
 }
 
+// reverse the direction of a part of the tour
+void reverse_segment(instance* inst, int start, int end, int* succ) {
+    
+    int* index = (int*) calloc(inst -> nnodes, sizeof(int));
+    int ind = succ[start];
+    int cnt = 0;
+    while (ind != end) {
+        index[cnt++] = ind;
+        ind = succ[ind];
+    }
+    if (cnt == 0) {
+        succ[end] = start;
+    }
+    else {
+        succ[index[0]] = start;
+        for (int i = 1; i < cnt ; i++) {
+            succ[index[i]] = index[i - 1];
+        }
+        succ[end] = index[cnt - 1];
+    }
+    free(index);
+}
+
+// order indices w.r.t. tour direction
+void reorder(instance* inst, int f, int* s, int* t, int* succ) {
+    
+    int ind = f;
+    for (int i = 0; i < inst -> nnodes; i++) {
+        if (ind == *s) return;
+        if (ind == *t) {
+            *t = *s;
+            *s = ind;
+            return;
+        }
+        ind = succ[ind];
+    }
+}
+
+// Refining algorithm
+// 3-OPT move
+void threeOpt(instance* inst, double* xstar) {
+    
+    printf("Refining Algorithm: 3-OPT move\n");
+    double t1 = second();
+    
+    int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
+    int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
+    int ncomp = 0;
+    
+    build_sol(xstar, inst, succ, comp, &ncomp);
+    
+    while(1) {
+        
+        // first edge
+        int nFirst = 0;
+        int succFirst = 0;
+        // second edge
+        int nSecond = 0;
+        int succSecond = 0;
+        // third edge
+        int nThird = 0;
+        int succThird = 0;
+        // case
+        int move_case = 0;
+        // objective function
+        int delta = INT_MAX;
+        int min_delta = INT_MAX;
+        
+        // Divide the tour in three segments deleting three different edges
+        // and obtain a new tour combining the three segments
+        // 7 ways to merge segments:
+        // Case 1-2-3: merge a combination of only 2 segments (equivalent to two subsequent 2-opt moves)
+        // Case 4-5-6: merge a combination of 3 segments (equivalent to three subsequent 2-opt moves)
+        // Case 7: reverse the original tour merging all segments
+        for (int i = 0; i < inst -> nnodes; i++) {
+            for (int j = i + 1; j < inst -> nnodes; j++) {
+                for (int z = j + 1; z < inst -> nnodes; z++) {
+                    if (i != j && i != z && j != z) {
+                        // reorder pairs of indices w.r.t. direction of the graph
+                        reorder(inst, i, &j, &z, succ);
+                        // A -> first tour segment , B -> second tour segment, C -> third tour segment
+                        // First case: A'BC
+                        delta = dist(z, i, inst) + dist(succ[z], succ[i], inst) - dist(i, succ[i], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 1;
+                            min_delta = delta;
+                        }
+                        // Second case: ABC'
+                        delta = dist(j, z, inst) + dist(succ[j], succ[z], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 2;
+                            min_delta = delta;
+                        }
+                        // Third case: AB'C
+                        delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 3;
+                            min_delta = delta;
+                        }
+                        // Forth case: AB'C'
+                        delta = dist(i, j, inst) + dist(succ[i], z, inst) + dist(succ[j], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 4;
+                            min_delta = delta;
+                        }
+                        // Fifth case: A'B'C
+                        delta = dist(i, z, inst) + dist(succ[z], j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 5;
+                            min_delta = delta;
+                        }
+                        // Sixth case: A'BC'
+                        delta = dist(j, z, inst) + dist(succ[j], i, inst) + dist(succ[i], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 6;
+                            min_delta = delta;
+                        }
+                        // Seventh case: A'B'C'
+                        delta = dist(i, succ[j], inst) + dist(succ[i], z, inst) + dist(j, succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        if (delta < min_delta) {
+                            nFirst = i;
+                            succFirst = succ[i];
+                            nSecond = j;
+                            succSecond = succ[j];
+                            nThird = z;
+                            succThird = succ[z];
+                            move_case = 7;
+                            min_delta = delta;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (min_delta >= 0) break;
+        
+        // 3-OPT move based on best obj value
+        switch (move_case) {
+            case 1:
+                // First case: A'BC
+                reverse_segment(inst, succThird, nFirst, succ);
+                succ[nThird] = nFirst;
+                succ[succThird] = succFirst;
+                break;
+                
+            case 2:
+                // Second case: ABC'
+                reverse_segment(inst, succSecond, nThird, succ);
+                succ[nSecond] = nThird;
+                succ[succSecond] = succThird;
+                break;
+                
+            case 3:
+                // Third case: AB'C
+                reverse_segment(inst, succFirst, nSecond, succ);
+                succ[nFirst] = nSecond;
+                succ[succFirst] = succSecond;
+                break;
+            case 4:
+                // Forth case: AB'C'
+                reverse_segment(inst, succFirst, nSecond, succ);
+                reverse_segment(inst, succSecond, nThird, succ);
+                succ[nFirst] = nSecond;
+                succ[succFirst] = nThird;
+                succ[succSecond] = succThird;
+                break;
+            case 5:
+                // Fifth case: A'B'C
+                reverse_segment(inst, succThird, nFirst, succ);
+                reverse_segment(inst, succFirst, nSecond, succ);
+                succ[nThird] = nFirst;
+                succ[succThird] = nSecond;
+                succ[succFirst] = succSecond;
+                break;
+            case 6:
+                // Sixth case: A'BC'
+                reverse_segment(inst, succThird, nFirst, succ);
+                reverse_segment(inst, succSecond, nThird, succ);
+                succ[nSecond] = nThird;
+                succ[succSecond] = nFirst;
+                succ[succThird] = succFirst;
+                break;
+            case 7:
+                // Seventh case: A'B'C'
+                reverse_segment(inst, succThird, nFirst, succ);
+                reverse_segment(inst, succFirst, nSecond, succ);
+                reverse_segment(inst, succSecond, nThird, succ);
+                succ[succSecond] = nFirst;
+                succ[succThird] = nSecond;
+                succ[succFirst] = nThird;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    double t2 = second();
+    
+    double objval = 0.0;
+    for (int i = 0; i < inst -> nnodes; i ++) objval += dist(i, succ[i], inst);
+    printf("Objective function value: %lf\n", objval);
+    printf("3-OPT move time: %lf\n\n", t2 - t1);
+    //print_solution_light(inst, succ);
+    
+    free(comp);
+    free(succ);
+}
+
 // Refining algorithm
 // 2-OPT move
 void twOpt(instance* inst, double* xstar) {
@@ -168,10 +412,9 @@ void twOpt(instance* inst, double* xstar) {
     for (int i = 0; i < inst -> nnodes; i ++) objval += dist(i, succ[i], inst);
     printf("Objective function value: %lf\n", objval);
     printf("2-OPT move time: %lf\n\n", t2 - t1);
-    print_solution_light(inst, succ);
+    //print_solution_light(inst, succ);
     
     free(index);
-    free(xstar);
     free(succ);
     free(comp);
 }

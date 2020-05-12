@@ -23,8 +23,11 @@ void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
 void twOpt(instance* inst, double* xstar);
+void threeOpt(instance* inst, double* xstar);
 
 // utils
+void reverse_segment(instance* inst, int start, int end, int* succ);
+void reorder(instance* inst, int f, int* s, int* t, int* succ);
 double dist(int i, int j, instance *inst);
 int xpos(int i, int j, instance *inst);
 void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
