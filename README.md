@@ -57,6 +57,7 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
 
 - Refining Algorithms
   - 2-OPT move
+  - 3-OPT move
 
 
 
