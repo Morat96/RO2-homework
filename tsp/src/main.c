@@ -21,6 +21,7 @@ void threeOpt(instance* inst, double* xstar);
 void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
 int xpos(int i, int j, instance *inst);
+double dist(int i, int j, instance *inst);
 
 void free_instance(instance *inst)
 {
@@ -50,7 +51,6 @@ int main(int argc, char **argv) {
     //insertion_ch(&inst, xstar);
     random_solution(&inst, xstar);
     twOpt(&inst, xstar);
-    
     threeOpt(&inst, xstar);
     
     //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
@@ -66,6 +66,8 @@ int main(int argc, char **argv) {
 
 // build a TSP random solution
 void random_solution(instance* inst, double* xstar) {
+    
+    printf("Resolve instance \"%s\" with Random\n\n", inst -> input_file);
     
     int* sol = (int*) calloc(inst -> nnodes, sizeof(int));
     int* index = (int*) calloc(inst -> nnodes, sizeof(int));
@@ -89,10 +91,16 @@ void random_solution(instance* inst, double* xstar) {
         cnt --;
     }
 
+    double objval = 0.0;
+    
     for (int i = 0; i < inst -> nnodes - 1; i++) {
         xstar[xpos(sol[i], sol[i + 1], inst)] = 1.0;
+        objval += dist(sol[i], sol[i + 1], inst);
     }
     xstar[xpos(sol[inst -> nnodes - 1], sol[0], inst)] = 1.0;
+    objval += dist(sol[inst -> nnodes - 1], sol[0], inst);
+    
+    printf("Objective function value: %lf\n\n", objval);
     
     free(sol);
     free(index);

@@ -166,8 +166,8 @@ void threeOpt(instance* inst, double* xstar) {
         // Case 1-2-3: merge a combination of only 2 segments (equivalent to two subsequent 2-opt moves)
         // Case 4-5-6: merge a combination of 3 segments (equivalent to three subsequent 2-opt moves)
         // Case 7: reverse the original tour merging all segments
-        for (int i = 0; i < inst -> nnodes; i++) {
-            for (int j = i + 1; j < inst -> nnodes; j++) {
+        for (int i = 0; i < inst -> nnodes - 2; i++) {
+            for (int j = i + 1; j < inst -> nnodes - 1; j++) {
                 for (int z = j + 1; z < inst -> nnodes; z++) {
                     if (i != j && i != z && j != z) {
                         // reorder pairs of indices w.r.t. direction of the graph
@@ -365,7 +365,7 @@ void twOpt(instance* inst, double* xstar) {
         
         // for each couple of edges, compute obj function value and pick the minimim one
         // store indices of edges with the lowest obj func value
-        for (int i = 0; i < inst -> nnodes; i++) {
+        for (int i = 0; i < inst -> nnodes - 1; i++) {
             for (int j = i + 1; j < inst -> nnodes; j++) {
                 delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
                 if (delta < min_delta) {
