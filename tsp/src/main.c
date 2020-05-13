@@ -45,11 +45,11 @@ int main(int argc, char **argv) {
     int ncols = ((inst.nnodes) * (inst.nnodes - 1)) / 2;
     double *xstar = (double *) calloc(ncols, sizeof(double));
     
-    //NearNeigh(&inst, xstar);
+    NearNeigh(&inst, xstar);
     //grasp(&inst, xstar);
     //insertion(&inst, xstar);
     //insertion_ch(&inst, xstar);
-    random_solution(&inst, xstar);
+    //random_solution(&inst, xstar);
     twOpt(&inst, xstar);
     threeOpt(&inst, xstar);
     

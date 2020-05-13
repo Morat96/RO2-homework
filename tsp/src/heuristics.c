@@ -137,6 +137,22 @@ void threeOpt(instance* inst, double* xstar) {
     printf("Refining Algorithm: 3-OPT move\n");
     double t1 = second();
     
+    double **dis = (double **) calloc(inst -> nnodes, sizeof(double*));
+    for(int i = 0; i < inst -> nnodes; i++) {
+        dis[i] = calloc(inst -> nnodes, sizeof(double));
+    }
+    
+    // fill distance matrix
+    double curr_dist = 0.0;
+    for (int i = 0; i < inst -> nnodes; i++) dis[i][i] = 0.0;
+    for (int i = 0; i < inst -> nnodes - 1; i++) {
+        for (int j = i + 1; j < inst -> nnodes; j++) {
+            curr_dist = dist(i, j, inst);
+            dis[i][j] = curr_dist;
+            dis[j][i] = curr_dist;
+        }
+    }
+
     int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
     int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
     int ncomp = 0;
@@ -174,7 +190,8 @@ void threeOpt(instance* inst, double* xstar) {
                         reorder(inst, i, &j, &z, succ);
                         // A -> first tour segment , B -> second tour segment, C -> third tour segment
                         // First case: A'BC
-                        delta = dist(z, i, inst) + dist(succ[z], succ[i], inst) - dist(i, succ[i], inst) - dist(z, succ[z], inst);
+                        //delta = dist(z, i, inst) + dist(succ[z], succ[i], inst) - dist(i, succ[i], inst) - dist(z, succ[z], inst);
+                        delta = dis[z][i] + dis[succ[z]][succ[i]] - dis[i][succ[i]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -186,7 +203,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Second case: ABC'
-                        delta = dist(j, z, inst) + dist(succ[j], succ[z], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        //delta = dist(j, z, inst) + dist(succ[j], succ[z], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        delta = dis[j][z] + dis[succ[j]][succ[z]] - dis[j][succ[j]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -198,7 +216,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Third case: AB'C
-                        delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                        //delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                        delta = dis[i][j] + dis[succ[i]][succ[j]] - dis[i][succ[i]] - dis[j][succ[j]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -210,7 +229,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Forth case: AB'C'
-                        delta = dist(i, j, inst) + dist(succ[i], z, inst) + dist(succ[j], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        //delta = dist(i, j, inst) + dist(succ[i], z, inst) + dist(succ[j], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        delta = dis[i][j] + dis[succ[i]][z] + dis[succ[j]][succ[z]] - dis[i][succ[i]] - dis[j][succ[j]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -222,7 +242,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Fifth case: A'B'C
-                        delta = dist(i, z, inst) + dist(succ[z], j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        //delta = dist(i, z, inst) + dist(succ[z], j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        delta = dis[i][z] + dis[succ[z]][j] + dis[succ[i]][succ[j]] - dis[i][succ[i]] - dis[j][succ[j]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -234,7 +255,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Sixth case: A'BC'
-                        delta = dist(j, z, inst) + dist(succ[j], i, inst) + dist(succ[i], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        //delta = dist(j, z, inst) + dist(succ[j], i, inst) + dist(succ[i], succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        delta = dis[j][z] + dis[succ[j]][i] + dis[succ[i]][succ[z]] - dis[i][succ[i]] - dis[j][succ[j]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -246,7 +268,8 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                         // Seventh case: A'B'C'
-                        delta = dist(i, succ[j], inst) + dist(succ[i], z, inst) + dist(j, succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        //delta = dist(i, succ[j], inst) + dist(succ[i], z, inst) + dist(j, succ[z], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst) - dist(z, succ[z], inst);
+                        delta = dis[i][succ[j]] + dis[succ[i]][z] + dis[j][succ[z]] - dis[i][succ[i]] - dis[j][succ[j]] - dis[z][succ[z]];
                         if (delta < min_delta) {
                             nFirst = i;
                             succFirst = succ[i];
@@ -327,11 +350,13 @@ void threeOpt(instance* inst, double* xstar) {
     double t2 = second();
     
     double objval = 0.0;
-    for (int i = 0; i < inst -> nnodes; i ++) objval += dist(i, succ[i], inst);
+    for (int i = 0; i < inst -> nnodes; i ++) objval += dis[i][succ[i]];
     printf("Objective function value: %lf\n", objval);
     printf("3-OPT move time: %lf\n\n", t2 - t1);
     //print_solution_light(inst, succ);
     
+    for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
+    free(dis);
     free(comp);
     free(succ);
 }
@@ -342,6 +367,22 @@ void twOpt(instance* inst, double* xstar) {
     
     printf("Refining Algorithm: 2-OPT move\n");
     double t1 = second();
+    
+    double **dis = (double **) calloc(inst -> nnodes, sizeof(double*));
+    for(int i = 0; i < inst -> nnodes; i++) {
+        dis[i] = calloc(inst -> nnodes, sizeof(double));
+    }
+    
+    // fill distance matrix
+    double curr_dist = 0.0;
+    for (int i = 0; i < inst -> nnodes; i++) dis[i][i] = 0.0;
+    for (int i = 0; i < inst -> nnodes - 1; i++) {
+        for (int j = i + 1; j < inst -> nnodes; j++) {
+            curr_dist = dist(i, j, inst);
+            dis[i][j] = curr_dist;
+            dis[j][i] = curr_dist;
+        }
+    }
     
     int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
     int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
@@ -367,7 +408,8 @@ void twOpt(instance* inst, double* xstar) {
         // store indices of edges with the lowest obj func value
         for (int i = 0; i < inst -> nnodes - 1; i++) {
             for (int j = i + 1; j < inst -> nnodes; j++) {
-                delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                //delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                delta = dis[i][j] + dis[succ[i]][succ[j]] - dis[i][succ[i]] - dis[j][succ[j]];
                 if (delta < min_delta) {
                     nFirst = i;
                     succ_f = succ[i];
@@ -409,11 +451,13 @@ void twOpt(instance* inst, double* xstar) {
     double t2 = second();
     
     double objval = 0.0;
-    for (int i = 0; i < inst -> nnodes; i ++) objval += dist(i, succ[i], inst);
+    for (int i = 0; i < inst -> nnodes; i ++) objval += dis[i][succ[i]];
     printf("Objective function value: %lf\n", objval);
     printf("2-OPT move time: %lf\n\n", t2 - t1);
     //print_solution_light(inst, succ);
     
+    for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
+    free(dis);
     free(index);
     free(succ);
     free(comp);
