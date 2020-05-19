@@ -175,6 +175,7 @@ void threeOpt(instance* inst, double* xstar) {
         // objective function
         int delta = INT_MAX;
         int min_delta = INT_MAX;
+        int a,b,c;
         
         // Divide the tour in three segments deleting three different edges
         // and obtain a new tour combining the three segments
@@ -182,12 +183,9 @@ void threeOpt(instance* inst, double* xstar) {
         // Case 1-2-3: merge a combination of only 2 segments (equivalent to two subsequent 2-opt moves)
         // Case 4-5-6: merge a combination of 3 segments (equivalent to three subsequent 2-opt moves)
         // Case 7: reverse the original tour merging all segments
-        for (int i = 0; i < inst -> nnodes - 2; i++) {
-            for (int j = i + 1; j < inst -> nnodes - 1; j++) {
-                for (int z = j + 1; z < inst -> nnodes; z++) {
-                    if (i != j && i != z && j != z) {
-                        // reorder pairs of indices w.r.t. direction of the graph
-                        reorder(inst, i, &j, &z, succ);
+        for (int i = 0, a = 0; a < inst -> nnodes - 2; a++, i = succ[i]) {
+            for (int j = succ[i], b = a + 1; b < inst -> nnodes - 1; b++, j = succ[j]) {
+                for (int z = succ[j], c = b + 1; c < inst -> nnodes; c++, z = succ[z]) {
                         // A -> first tour segment , B -> second tour segment, C -> third tour segment
                         // First case: A'BC
                         //delta = dist(z, i, inst) + dist(succ[z], succ[i], inst) - dist(i, succ[i], inst) - dist(z, succ[z], inst);
@@ -281,7 +279,7 @@ void threeOpt(instance* inst, double* xstar) {
                             min_delta = delta;
                         }
                     }
-                }
+                //}
             }
         }
         
@@ -392,6 +390,15 @@ void twOpt(instance* inst, double* xstar) {
     
     int *index = (int *) calloc(inst -> nnodes, sizeof(int));
     
+    int cnt = 1;
+    int** distances = (int**) calloc(inst -> nnodes - 1, sizeof(int*));
+    for (int i = 0; i < inst -> nnodes - 1; i++ ) {
+        distances[i] = calloc(inst -> nnodes - cnt, sizeof(int));
+        cnt ++;
+    }
+    
+    smallerKnodes(inst, distances);
+    
     while(1) {
         
         // first edge
@@ -403,11 +410,12 @@ void twOpt(instance* inst, double* xstar) {
         // objective function
         int delta = INT_MAX;
         int min_delta = INT_MAX;
+        int a,b;
         
         // for each couple of edges, compute obj function value and pick the minimim one
         // store indices of edges with the lowest obj func value
-        for (int i = 0; i < inst -> nnodes - 1; i++) {
-            for (int j = i + 1; j < inst -> nnodes; j++) {
+        for (int i = 0, a = 0; a < inst -> nnodes - 1; a++, i = succ[i]) {
+            for (int j = succ[i], b = a + 1; b < inst -> nnodes; b++, j = succ[j]) {
                 //delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
                 delta = dis[i][j] + dis[succ[i]][succ[j]] - dis[i][succ[i]] - dis[j][succ[j]];
                 if (delta < min_delta) {
@@ -456,6 +464,8 @@ void twOpt(instance* inst, double* xstar) {
     printf("2-OPT move time: %lf\n\n", t2 - t1);
     //print_solution_light(inst, succ);
     
+    for (int i = 0; i < inst -> nnodes - 1; i++ ) free(distances[i]);
+    free(distances);
     for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
     free(dis);
     free(index);

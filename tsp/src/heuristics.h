@@ -35,5 +35,5 @@ void print_solution(instance *inst, int *succ);
 void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err);
 double second(void);
-
+void smallerKnodes(instance* inst, int** distances);
 #endif /* heuristics_h */

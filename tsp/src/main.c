@@ -22,6 +22,10 @@ void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
 int xpos(int i, int j, instance *inst);
 double dist(int i, int j, instance *inst);
+void smallerKnodes(instance* inst, int** distances);
+void sort(double* array, int* ind, int begin, int end);
+void swap(double* first, double* second);
+void swap_int(int* first, int* second);
 
 void free_instance(instance *inst)
 {
@@ -52,6 +56,7 @@ int main(int argc, char **argv) {
     //random_solution(&inst, xstar);
     twOpt(&inst, xstar);
     threeOpt(&inst, xstar);
+    //smallerKnodes(&inst);
     
     //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
     double t2 = second();
@@ -106,3 +111,56 @@ void random_solution(instance* inst, double* xstar) {
     free(index);
 }
 
+void smallerKnodes(instance* inst, int** distances) {
+    
+    int cnt = 1;
+
+    cnt = 1;
+    double* dis = (double*) calloc(inst -> nnodes - 1, sizeof(double));
+    
+    for (int i = 0; i < inst -> nnodes - 1; i++) {
+        int c = 0;
+        for (int j = i + 1; j < inst -> nnodes; j++) {
+            dis[i] = dist(i, j, inst);
+            distances[i][c++] = j;
+        }
+        sort(dis, distances[i], 0, inst -> nnodes - cnt - 1);
+        cnt ++;
+    }
+    free(dis);
+}
+
+// Quicksort
+void sort(double* array, int* ind, int begin, int end) {
+    int pivot, l, r;
+    if (end > begin) {
+        pivot = array[begin];
+        l = begin + 1;
+        r = end+1;
+        while(l < r)
+            if (array[l] < pivot)
+                l++;
+            else {
+                r--;
+                swap(&array[l], &array[r]);
+                swap_int(&ind[l], &ind[r]);
+            }
+        l--;
+        swap(&array[begin], &array[l]);
+        swap_int(&ind[begin], &ind[l]);
+        sort(array, ind, begin, l);
+        sort(array, ind, r, end);
+    }
+}
+
+void swap(double* first, double* second) {
+    double temp = *first;
+    *first = *second;
+    *second = temp;
+}
+
+void swap_int(int* first, int* second) {
+    int temp = *first;
+    *first = *second;
+    *second = temp;
+}

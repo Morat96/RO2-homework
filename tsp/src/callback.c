@@ -462,7 +462,7 @@ void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp) {
         double curr_min_function = INT_MAX;
         int flag = 0;
         
-        for (int i = 0; i < inst -> nnodes; i++) {
+        for (int i = 0; i < inst -> nnodes - 1; i++) {
             for (int j = i + 1; j < inst -> nnodes; j++) {
                 if (comp[i] != comp[j]) {
                     // Δ(a,b)
