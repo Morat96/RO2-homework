@@ -7,6 +7,7 @@
 //
 #include "tsp.h"
 
+void vns(instance* inst, int iter, int k);
 double second(void);
 void read_input(instance *inst);
 void parse_command_line(int argc, char** argv, instance *inst);
@@ -26,6 +27,9 @@ void smallerKnodes(instance* inst, int** distances);
 void sort(double* array, int* ind, int begin, int end);
 void swap(double* first, double* second);
 void swap_int(int* first, int* second);
+void tabu_search(instance* inst, int iter, int list_size);
+void simulated_annealing(instance* inst, int iter);
+void genetic_algorithm(instance* inst, int generations, int population_size, int crossover_size);
 
 void free_instance(instance *inst)
 {
@@ -49,16 +53,23 @@ int main(int argc, char **argv) {
     int ncols = ((inst.nnodes) * (inst.nnodes - 1)) / 2;
     double *xstar = (double *) calloc(ncols, sizeof(double));
     
-    NearNeigh(&inst, xstar);
+    //NearNeigh(&inst, xstar);
     //grasp(&inst, xstar);
     //insertion(&inst, xstar);
     //insertion_ch(&inst, xstar);
     //random_solution(&inst, xstar);
-    twOpt(&inst, xstar);
-    threeOpt(&inst, xstar);
+    //twOpt(&inst, xstar);
+    //threeOpt(&inst, xstar);
     //smallerKnodes(&inst);
     
-    //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
+    if (inst.vns) vns(&inst, 100, 5);
+    else if (inst.tabu_search) tabu_search(&inst, 5000, 100);
+    else if (inst.sim_annealing) simulated_annealing(&inst, 500);
+    else if (inst.genetic) genetic_algorithm(&inst, 2, 100, 20);
+    else {
+        if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
+    }
+    
     double t2 = second();
     
     if ( VERBOSE >= 1 ) printf("\n... TSP problem solved in %lf sec\n", t2 - t1);
@@ -69,48 +80,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// build a TSP random solution
-void random_solution(instance* inst, double* xstar) {
-    
-    printf("Resolve instance \"%s\" with Random\n\n", inst -> input_file);
-    
-    int* sol = (int*) calloc(inst -> nnodes, sizeof(int));
-    int* index = (int*) calloc(inst -> nnodes, sizeof(int));
-    
-    for (int i = 0; i < inst -> nnodes; i++) index[i] = i;
-    int cnt = inst -> nnodes;
-    int cnt2 = 0;
-    
-    while (cnt > 0) {
-        
-        int rv = rand() % cnt;
-
-        sol[cnt2] = index[rv];
-        
-        // remove the previous node
-        for (int c = rv; c < inst -> nnodes - cnt2; c++) {
-            index[c] = index[c+1];
-        }
-        
-        cnt2++;
-        cnt --;
-    }
-
-    double objval = 0.0;
-    
-    for (int i = 0; i < inst -> nnodes - 1; i++) {
-        xstar[xpos(sol[i], sol[i + 1], inst)] = 1.0;
-        objval += dist(sol[i], sol[i + 1], inst);
-    }
-    xstar[xpos(sol[inst -> nnodes - 1], sol[0], inst)] = 1.0;
-    objval += dist(sol[inst -> nnodes - 1], sol[0], inst);
-    
-    printf("Objective function value: %lf\n\n", objval);
-    
-    free(sol);
-    free(index);
-}
-
+// Others
 void smallerKnodes(instance* inst, int** distances) {
     
     int cnt = 1;

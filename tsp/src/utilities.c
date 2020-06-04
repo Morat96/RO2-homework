@@ -150,6 +150,10 @@ void parse_command_line(int argc, char** argv, instance *inst)
     inst -> callback = 0;
     inst -> hardfixing = 0;
     inst -> localbranching = 0;
+    inst -> vns = 0;
+    inst -> tabu_search = 0;
+    inst -> sim_annealing = 0;
+    inst -> genetic = 0;
     
     int help = 0; if ( argc < 1 ) help = 1;
     for ( int i = 1; i < argc; i++ )
@@ -162,6 +166,10 @@ void parse_command_line(int argc, char** argv, instance *inst)
         if ( strcmp(argv[i],"-callback") == 0 ) { inst -> callback = atoi(argv[++i]); continue; }             // callback method
         if ( strcmp(argv[i],"-hardfixing") == 0 ) { inst -> hardfixing = atoi(argv[++i]); continue; }         // hard fixing method
         if ( strcmp(argv[i],"-localbranching") == 0 ) { inst -> localbranching = atoi(argv[++i]); continue; } // local branching method
+        if ( strcmp(argv[i],"-vns") == 0 ) { inst -> vns = atoi(argv[++i]); continue; }                       // VNS
+        if ( strcmp(argv[i],"-ts") == 0 ) { inst -> tabu_search = atoi(argv[++i]); continue; }                // Tabù Search
+        if ( strcmp(argv[i],"-sa") == 0 ) { inst -> sim_annealing = atoi(argv[++i]); continue; }              // Simulated Annealing
+        if ( strcmp(argv[i],"-ga") == 0 ) { inst -> genetic = atoi(argv[++i]); continue; }                    // Genetic algorithm
         help = 1;
     }
     

@@ -17,6 +17,14 @@
 //
 // ********************************************************************** //
 
+// remove element from an array by sliding it
+int remove_index(int* index, int from, int to) {
+    for (int c = from; c < to; c++) {
+        index[c] = index[c+1];
+    }
+    return 0;
+}
+
 // compute minimum of an array and return the corresponding index
 int min(double *array, int arr_size) {
     
@@ -175,7 +183,7 @@ void threeOpt(instance* inst, double* xstar) {
         // objective function
         int delta = INT_MAX;
         int min_delta = INT_MAX;
-        int a,b,c;
+        int a, b, c;
         
         // Divide the tour in three segments deleting three different edges
         // and obtain a new tour combining the three segments
@@ -278,8 +286,7 @@ void threeOpt(instance* inst, double* xstar) {
                             move_case = 7;
                             min_delta = delta;
                         }
-                    }
-                //}
+                }
             }
         }
         
@@ -332,13 +339,16 @@ void threeOpt(instance* inst, double* xstar) {
                 succ[succThird] = succFirst;
                 break;
             case 7:
-                // Seventh case: A'B'C'
+                // Seventh case: A'B'C' = ACB
                 reverse_segment(inst, succThird, nFirst, succ);
                 reverse_segment(inst, succFirst, nSecond, succ);
                 reverse_segment(inst, succSecond, nThird, succ);
                 succ[succSecond] = nFirst;
                 succ[succThird] = nSecond;
                 succ[succFirst] = nThird;
+                //succ[nFirst] = succSecond;
+                //succ[nSecond] = succThird;
+                //succ[nThird] = succFirst;
                 break;
             default:
                 break;
@@ -351,7 +361,7 @@ void threeOpt(instance* inst, double* xstar) {
     for (int i = 0; i < inst -> nnodes; i ++) objval += dis[i][succ[i]];
     printf("Objective function value: %lf\n", objval);
     printf("3-OPT move time: %lf\n\n", t2 - t1);
-    //print_solution_light(inst, succ);
+    print_solution_light(inst, succ);
     
     for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
     free(dis);
@@ -361,8 +371,9 @@ void threeOpt(instance* inst, double* xstar) {
 
 // Refining algorithm
 // 2-OPT move
-void twOpt(instance* inst, double* xstar) {
+void twOpt(instance* inst, int *succ, double* objval) {
     
+    (*objval) = 0.0;
     printf("Refining Algorithm: 2-OPT move\n");
     double t1 = second();
     
@@ -381,15 +392,15 @@ void twOpt(instance* inst, double* xstar) {
             dis[j][i] = curr_dist;
         }
     }
-    
+    /*
     int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
     int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
     int ncomp = 0;
     
     build_sol(xstar, inst, succ, comp, &ncomp);
-    
+    */
     int *index = (int *) calloc(inst -> nnodes, sizeof(int));
-    
+    /*
     int cnt = 1;
     int** distances = (int**) calloc(inst -> nnodes - 1, sizeof(int*));
     for (int i = 0; i < inst -> nnodes - 1; i++ ) {
@@ -398,7 +409,7 @@ void twOpt(instance* inst, double* xstar) {
     }
     
     smallerKnodes(inst, distances);
-    
+    */
     while(1) {
         
         // first edge
@@ -410,7 +421,7 @@ void twOpt(instance* inst, double* xstar) {
         // objective function
         int delta = INT_MAX;
         int min_delta = INT_MAX;
-        int a,b;
+        //int a,b;
         
         // for each couple of edges, compute obj function value and pick the minimim one
         // store indices of edges with the lowest obj func value
@@ -458,19 +469,19 @@ void twOpt(instance* inst, double* xstar) {
     
     double t2 = second();
     
-    double objval = 0.0;
-    for (int i = 0; i < inst -> nnodes; i ++) objval += dis[i][succ[i]];
-    printf("Objective function value: %lf\n", objval);
+    //double objval = 0.0;
+    for (int i = 0; i < inst -> nnodes; i ++) (*objval) += dis[i][succ[i]];
+    printf("Objective function value: %lf\n", (*objval));
     printf("2-OPT move time: %lf\n\n", t2 - t1);
     //print_solution_light(inst, succ);
     
-    for (int i = 0; i < inst -> nnodes - 1; i++ ) free(distances[i]);
-    free(distances);
+    //for (int i = 0; i < inst -> nnodes - 1; i++ ) free(distances[i]);
+    //free(distances);
     for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
     free(dis);
     free(index);
-    free(succ);
-    free(comp);
+    //free(succ);
+    //free(comp);
 }
 
 // Insertion heuristic with Convex Hull
@@ -889,8 +900,8 @@ void grasp(instance *inst, double *xstar) {
         float rv = ((float)rand()/(float)(RAND_MAX));
         
         // set the new edge based on probabilities
-        if (rv <= 0.8) minim = ind[0];
-        else if (rv <= 0.9) minim = ind[1];
+        if (rv <= 0.34) minim = ind[0];
+        else if (rv <= 0.67) minim = ind[1];
         else minim = ind[2];
         
         // update objective function value
@@ -1104,4 +1115,46 @@ void grasp_cycled(instance *inst) {
     free(comp);
     free(succ);
     
+}
+
+// build a TSP random solution
+void random_solution(instance* inst, double* xstar) {
+    
+    printf("Resolve instance \"%s\" with Random\n\n", inst -> input_file);
+    
+    int* sol = (int*) calloc(inst -> nnodes, sizeof(int));
+    int* index = (int*) calloc(inst -> nnodes, sizeof(int));
+    
+    for (int i = 0; i < inst -> nnodes; i++) index[i] = i;
+    int cnt = inst -> nnodes;
+    int cnt2 = 0;
+    
+    while (cnt > 0) {
+        
+        int rv = rand() % cnt;
+        
+        sol[cnt2] = index[rv];
+        
+        // remove the previous node
+        for (int c = rv; c < inst -> nnodes - cnt2; c++) {
+            index[c] = index[c+1];
+        }
+        
+        cnt2++;
+        cnt --;
+    }
+    
+    double objval = 0.0;
+    
+    for (int i = 0; i < inst -> nnodes - 1; i++) {
+        xstar[xpos(sol[i], sol[i + 1], inst)] = 1.0;
+        objval += dist(sol[i], sol[i + 1], inst);
+    }
+    xstar[xpos(sol[inst -> nnodes - 1], sol[0], inst)] = 1.0;
+    objval += dist(sol[inst -> nnodes - 1], sol[0], inst);
+    
+    printf("Objective function value: %lf\n\n", objval);
+    
+    free(sol);
+    free(index);
 }

@@ -22,10 +22,13 @@ void NearNeigh(instance *inst, double *xstar);
 void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
-void twOpt(instance* inst, double* xstar);
+void twOpt(instance* inst, int *succ, double* objval);
 void threeOpt(instance* inst, double* xstar);
+void random_solution(instance* inst, double* xstar);
 
 // utils
+int min(double *array, int arr_size);
+int three_min(double *array, int arr_size, int *ind);
 void reverse_segment(instance* inst, int start, int end, int* succ);
 void reorder(instance* inst, int f, int* s, int* t, int* succ);
 double dist(int i, int j, instance *inst);
@@ -36,4 +39,5 @@ void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err);
 double second(void);
 void smallerKnodes(instance* inst, int** distances);
+
 #endif /* heuristics_h */

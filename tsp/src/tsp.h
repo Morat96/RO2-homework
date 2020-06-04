@@ -38,6 +38,10 @@ typedef struct {
     int callback;                            // resolve instance using CPLEX callbacks {0,1}
     int hardfixing;                          // resolve instance using Hard Fixing method {0,1}
     int localbranching;                      // resolve instance using Local Branching method {0,1}
+    int vns;                                 // resolve instance using VNS heuristic method {0,1}
+    int tabu_search;                         // resolve instance using Tabù Search heuristic method {0,1}
+    int sim_annealing;                       // resolve instance using Simulated Annealing heuristic method {0,1}
+    int genetic;                             // resolve instance using Genetic algorithm heuristic method {0,1}
     
     // distance type
     int euc_2d;                              // Euclidean 2D distance as metric distance

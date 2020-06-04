@@ -9,7 +9,7 @@
 #include <cut.h>
 
 #define EPS 1e-5
-
+void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
 // position
 int xpos(int i, int j, instance *inst)
 {
