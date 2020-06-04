@@ -13,7 +13,7 @@ Ci dividiamo le run per tipo di algoritmo (es. compacts, heuristics ecc.).
 
 ## Parameters
 ```
-$ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,1} -callback {0,1} -hardfixing {0,1} -localbranching {0,1}
+$ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,1} -callback {0,1} -hardfixing {0,1} -localbranching {0,1} -vns {0,1} -ts {0,1} -sa {0,1} -ga {0,1}
 ```
 - model_type
   - 0 -> standard model
@@ -58,6 +58,13 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
 - Refining Algorithms
   - 2-OPT move
   - 3-OPT move
+  
+- Metaheuristics
+  - VNS
+  - Tabù Search
+  - Simulated Annealing
+  - Genetic Algorithm
+  
 
 
 
