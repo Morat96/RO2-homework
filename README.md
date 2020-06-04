@@ -64,6 +64,7 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
   - Tabù Search
   - Simulated Annealing
   - Genetic Algorithm
+  - Multi-start
   
 
 
