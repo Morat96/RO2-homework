@@ -7,36 +7,42 @@
 //
 #include "tsp.h"
 
-void vns(instance* inst, int iter, int k);
 double second(void);
 void read_input(instance *inst);
 void parse_command_line(int argc, char** argv, instance *inst);
 int TSPopt(instance *inst, double t1);
-void NearNeigh(instance *inst, double *xstar);
+void print_solution_light(instance *inst, int *succ);
+void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
+int xpos(int i, int j, instance *inst);
+double dist(int i, int j, instance *inst);
+
+// others
+void smallerKnodes(instance* inst, int** distances);
+void sort(double* array, int* ind, int begin, int end);
+void swap(double* first, double* second);
+void swap_int(int* first, int* second);
+
+// metaheuristics
+void vns(instance* inst, int iter, int k);
+void tabu_search(instance* inst, int iter, int list_size);
+void simulated_annealing(instance* inst, int iter, int size);
+void genetic_algorithm(instance* inst, int generations, int population_size, int crossover_size);
+void multi_start(instance* inst, int iter);
+
+/*void NearNeigh(instance *inst, double *xstar);
 void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
 void random_solution(instance* inst, double* xstar);
 void twOpt(instance* inst, double* xstar);
-void threeOpt(instance* inst, double* xstar);
-void print_solution_light(instance *inst, int *succ);
-void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
-int xpos(int i, int j, instance *inst);
-double dist(int i, int j, instance *inst);
-void smallerKnodes(instance* inst, int** distances);
-void sort(double* array, int* ind, int begin, int end);
-void swap(double* first, double* second);
-void swap_int(int* first, int* second);
-void tabu_search(instance* inst, int iter, int list_size);
-void simulated_annealing(instance* inst, int iter);
-void genetic_algorithm(instance* inst, int generations, int population_size, int crossover_size);
+void threeOpt(instance* inst, double* xstar);*/
 
 void free_instance(instance *inst)
 {
-    free(inst->xcoord);
-    free(inst->ycoord);
+    free(inst -> xcoord);
+    free(inst -> ycoord);
     for (int i = 0; i < 4; i++) free(inst -> sol_thread[i]);
-    free(inst->sol_thread);
+    free(inst -> sol_thread);
 }
 
 int main(int argc, char **argv) {
@@ -62,9 +68,10 @@ int main(int argc, char **argv) {
     //threeOpt(&inst, xstar);
     //smallerKnodes(&inst);
     
+    //multi_start(&inst, 20);
     if (inst.vns) vns(&inst, 100, 5);
     else if (inst.tabu_search) tabu_search(&inst, 5000, 100);
-    else if (inst.sim_annealing) simulated_annealing(&inst, 500);
+    else if (inst.sim_annealing) simulated_annealing(&inst, 500, 50);
     else if (inst.genetic) genetic_algorithm(&inst, 2, 100, 20);
     else {
         if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");

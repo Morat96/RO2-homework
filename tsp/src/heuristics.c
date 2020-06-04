@@ -10,10 +10,16 @@
 
 // ************************** MODELS DEFINITION ************************* //
 //
-// - Nearest Neighbourhood (greedy)
-// - Grasp (randomization)
-// - Insertion
-// - Insertion with Convex Hull
+// Solution builders:
+// - Nearest Neighbourhood (greedy);
+// - Grasp (randomization);
+// - Insertion;
+// - Insertion with Convex Hull;
+// - Random solution.
+//
+// Refining Algorithms:
+// - 2-OPT;
+// - 3-OPT.
 //
 // ********************************************************************** //
 

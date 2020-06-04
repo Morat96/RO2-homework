@@ -10,7 +10,16 @@
 
 // ************************** Variable Neighborhood Search ************************* //
 //
-// Description
+// Description:
+// - Build a first solution using NN algorithm and apply to it the 2-OPT algorithm.
+// - Compute and apply a random k-move to the solution.
+// - Reach the local minimum of the tour.
+// - Repeat "iter" times and save the best solution found.
+//
+// Parameters:
+// instance* inst: instance of the problem.
+// int iter: number of iterations.
+// int k: value for the random k-move.
 //
 // ********************************************************************************* //
 
@@ -103,8 +112,8 @@ void vns(instance* inst, int iter, int k) {
         }
     }
     
-    printf("\nBest objective function value: %lf\n", best_obj);
-    print_solution_light(inst, succ_best);
+    printf("Best objective function value: %lf\n", best_obj);
+    //print_solution_light(inst, succ_best);
     
     free(index);
     free(rand_index);
