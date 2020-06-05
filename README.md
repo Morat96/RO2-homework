@@ -1,15 +1,4 @@
 # Ricerca Operativa 2
-## Cartelle istanze
-### Compact
-Istanze per modelli compatti (devono avere pochi nodi, altrimenti ci mettono una vita, direi <= 25), si può eventualmente creare qualche istanza prendendo solo alcuni nodi da una istanza più grande. #instanze = almeno una decina.
-
-### Dataset 
-Istanze per algoritmi veloci ottimi (si può aggiungere anche qualche istanza più grande). #instanze = max 20.
-
-### Heuristic
-Istanze per algoritmi euristici (numero nodi >= 300). #instanze = max 20. <br>
-Per ogni istanza -> 4/5 diversi randomseed. <br>
-Ci dividiamo le run per tipo di algoritmo (es. compacts, heuristics ecc.).
 
 ## Parameters
 ```
