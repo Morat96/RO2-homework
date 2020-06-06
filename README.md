@@ -1,4 +1,4 @@
-# Ricerca Operativa 2
+# Operational Research 2
 
 ## Parameters
 ```
