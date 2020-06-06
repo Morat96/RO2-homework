@@ -29,6 +29,15 @@
 // CPXsetintparam(env, CPX_PARAM_NODELIM, 0);   --> limit on the branching node
 //
 // ********************************************************************** //
+
+/**
+ Loop method.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CLEX environment.
+ @param lp CLEX LP.
+ @param t1 start time in seconds.
+ */
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1) {
     
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));
@@ -126,6 +135,14 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1) {
 // Add SEC constraints until ncomp (number of components) is equal to 1
 //
 // ********************************************************************** //
+
+/**
+ Loop method second version.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CLEX environment.
+ @param lp CLEX LP.
+ */
 void loop_method_vers1(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));

@@ -16,13 +16,15 @@
 // - Reach the local minimum of the tour.
 // - Repeat "iter" times and save the best solution found.
 //
-// Parameters:
-// instance* inst: instance of the problem.
-// int iter: number of iterations.
-// int k: value for the random k-move.
-//
 // ********************************************************************************* //
 
+/**
+ Variable Neighborhood Search Algorithm for TSP.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param iter number of algorithm iterations.
+ @param k value for the random K-move.
+ */
 void vns(instance* inst, int iter, int k) {
     
     if (k % 2 == 0) k += 1;

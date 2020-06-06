@@ -23,15 +23,29 @@
 //
 // ********************************************************************** //
 
-// remove element from an array by sliding it
+/**
+ Remove element from an array by sliding it.
+
+ @param index array of int.
+ @param from start index.
+ @param to size of array.
+ @return if removal was successful.
+ */
 int remove_index(int* index, int from, int to) {
+    if (to < from) return 1;
     for (int c = from; c < to; c++) {
         index[c] = index[c+1];
     }
     return 0;
 }
 
-// compute minimum of an array and return the corresponding index
+/**
+ Compute minimum of an array and return the corresponding index.
+
+ @param array array of double.
+ @param arr_size array size.
+ @return array index of minimum value of the array.
+ */
 int min(double *array, int arr_size) {
     
     int min_index = 0;
@@ -48,7 +62,13 @@ int min(double *array, int arr_size) {
     return min_index;
 }
 
-// compute maximum of an array and return the corresponding index
+/**
+ Compute maximum of an array and return the corresponding index.
+
+ @param array array of double.
+ @param arr_size array size.
+ @return array index of maximum value of the array.
+ */
 int max(double *array, int arr_size) {
     
     int max_index = 0;
@@ -65,8 +85,14 @@ int max(double *array, int arr_size) {
     return max_index;
 }
 
-// compute the three smaller values of an array and store the indexes in the "ind" array
-// return 1 if the array size is smaller than three, otherwise return 0
+/**
+ Compute the three smaller values of an array and store the indexes in the "ind" array.
+
+ @param array array of double.
+ @param arr_size array size.
+ @param ind array of int containing the three smallest values of array.
+ @return return 1 if the array size is smaller than three, otherwise return 0.
+ */
 int three_min(double *array, int arr_size, int *ind) {
     
     // There should be at least three elements
@@ -106,7 +132,14 @@ int three_min(double *array, int arr_size, int *ind) {
     return 0;
 }
 
-// reverse the direction of a part of the tour
+/**
+ Reverse the direction of a part of the tour.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param start first node.
+ @param end last node.
+ @param succ TSP tour described with successors.
+ */
 void reverse_segment(instance* inst, int start, int end, int* succ) {
     
     int* index = (int*) calloc(inst -> nnodes, sizeof(int));
@@ -144,8 +177,12 @@ void reorder(instance* inst, int f, int* s, int* t, int* succ) {
     }
 }
 
-// Refining algorithm
-// 3-OPT move
+/**
+ Refining algorithm: 3-OPT move.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void threeOpt(instance* inst, double* xstar) {
     
     printf("Refining Algorithm: 3-OPT move\n");
@@ -375,8 +412,13 @@ void threeOpt(instance* inst, double* xstar) {
     free(succ);
 }
 
-// Refining algorithm
-// 2-OPT move
+/**
+ Refining algorithm: 2-OPT move.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ TPS solution with successors format.
+ @param objval TSP objective function value.
+ */
 void twOpt(instance* inst, int *succ, double* objval) {
     
     (*objval) = 0.0;
@@ -490,7 +532,12 @@ void twOpt(instance* inst, int *succ, double* objval) {
     //free(comp);
 }
 
-// Insertion heuristic with Convex Hull
+/**
+ Insertion heuristic with Convex Hull.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void insertion_ch(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Insertion with Convex Hull\n\n", inst -> input_file);
@@ -640,7 +687,12 @@ void insertion_ch(instance *inst, double *xstar) {
     free(succ);
 }
 
-// Insertion heuristic
+/**
+ Insertion heuristic.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void insertion(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Insertion\n\n", inst -> input_file);
@@ -771,7 +823,12 @@ void insertion(instance *inst, double *xstar) {
     free(succ);
 }
 
-// Nearest Neighborhood (greedy)
+/**
+ Nearest Neighborhood (greedy).
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void NearNeigh(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Nearest Neighborhood\n\n", inst -> input_file);
@@ -857,7 +914,12 @@ void NearNeigh(instance *inst, double *xstar) {
     free(succ);
 }
 
-// Grasp (randomization)
+/**
+ Grasp (randomization).
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void grasp(instance *inst, double *xstar) {
     
     printf("Resolve instance \"%s\" with Grasp\n\n", inst -> input_file);
@@ -986,7 +1048,11 @@ void grasp(instance *inst, double *xstar) {
     
 }
 
-// Grasp cycled (not a good idea for me)
+/**
+ Grasp cycled.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ */
 void grasp_cycled(instance *inst) {
     
     printf("Resolve instance \"%s\" with Grasp\n\n", inst -> input_file);
@@ -1123,7 +1189,12 @@ void grasp_cycled(instance *inst) {
     
 }
 
-// build a TSP random solution
+/**
+ build a TSP random solution
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution using CPLEX format.
+ */
 void random_solution(instance* inst, double* xstar) {
     
     printf("Resolve instance \"%s\" with Random\n\n", inst -> input_file);

@@ -17,6 +17,9 @@ void multi_start(instance* inst, int iter);
 // utils
 double dist(int i, int j, instance *inst);
 void random_solution_ms(instance* inst, int* succ, double* objval);
+void grasp_solution_ms(instance *inst, int* succ, double* objval);
 void twOpt(instance* inst, int *succ, double* objval);
+int min(double *array, int arr_size);
+int three_min(double *array, int arr_size, int *ind);
 
 #endif /* multi_start_h */

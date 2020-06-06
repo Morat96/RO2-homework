@@ -26,6 +26,14 @@
 // Parameters to tune: timelimit and percentages
 //
 // ********************************************************************** //
+
+/**
+ Local branching algorithm.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Local Branching\n\n", inst -> input_file);
@@ -158,6 +166,14 @@ void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp) {
 // Parameters to tune: timelimit and k
 //
 // ********************************************************************** //
+
+/**
+ Local branching algorithm second version.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void localbranching_2nd_vers(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     // local time limit

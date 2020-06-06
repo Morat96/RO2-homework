@@ -5,6 +5,7 @@
 //  Created by Matteo Moratello on 12/03/2020.
 //  Copyright © 2020 Matteo Moratello. All rights reserved.
 //
+
 #include "tsp.h"
 
 double second(void);
@@ -37,6 +38,11 @@ void random_solution(instance* inst, double* xstar);
 void twOpt(instance* inst, double* xstar);
 void threeOpt(instance* inst, double* xstar);*/
 
+/**
+ Free the struct instance for TSP.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ */
 void free_instance(instance *inst)
 {
     free(inst -> xcoord);
@@ -45,6 +51,13 @@ void free_instance(instance *inst)
     free(inst -> sol_thread);
 }
 
+/**
+ Main.
+
+ @param argc number of arguments.
+ @param argv array of char with arguments.
+ @return 0 if succeeded, 1 otherwise.
+ */
 int main(int argc, char **argv) {
     
     if ( argc < 2 ) { printf("Usage: %s -help for help\n", argv[0]); exit(1); }
@@ -68,13 +81,13 @@ int main(int argc, char **argv) {
     //threeOpt(&inst, xstar);
     //smallerKnodes(&inst);
     
-    //multi_start(&inst, 20);
+    multi_start(&inst, 10);
     if (inst.vns) vns(&inst, 100, 5);
     else if (inst.tabu_search) tabu_search(&inst, 5000, 100);
     else if (inst.sim_annealing) simulated_annealing(&inst, 500, 50);
     else if (inst.genetic) genetic_algorithm(&inst, 2, 100, 20);
     else {
-        if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
+        //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
     }
     
     double t2 = second();
@@ -87,7 +100,9 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// Others
+//////////////////////
+/////// Others ///////
+//////////////////////
 void smallerKnodes(instance* inst, int** distances) {
     
     int cnt = 1;

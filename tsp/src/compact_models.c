@@ -20,8 +20,13 @@
 // 7) T3
 // ********************************************************************** //
 
+/**
+ Model 1: compact model MTZ
 
-// Model 1: compact model MTZ
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_1(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: MTZ\n\n", inst -> input_file);
@@ -160,7 +165,13 @@ void build_model_1(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 2: compact model FLOW1
+/**
+ Model 2: compact model FLOW1
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_2(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: Flow1\n\n", inst -> input_file);
@@ -316,7 +327,13 @@ void build_model_2(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 3: compact model FLOW2
+/**
+ Model 3: compact model FLOW2
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_3(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: Flow2\n\n", inst -> input_file);
@@ -537,7 +554,13 @@ void build_model_3(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 4: compact model FLOW3
+/**
+ Model 4: compact model FLOW3
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_4(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: Flow3\n\n", inst -> input_file);
@@ -712,7 +735,13 @@ void build_model_4(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 5: compact model T1
+/**
+ Model 5: compact model T1
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_5(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: T1\n\n", inst -> input_file);
@@ -895,7 +924,13 @@ void build_model_5(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 6: compact model T2
+/**
+ Model 6: compact model T2
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_6(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: T2\n\n", inst -> input_file);
@@ -1110,7 +1145,13 @@ void build_model_6(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// Model 7: compact model T3
+/**
+ Model 7: compact model T3
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Compact Model: T3\n\n", inst -> input_file);

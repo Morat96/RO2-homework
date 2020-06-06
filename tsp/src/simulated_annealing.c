@@ -16,6 +16,13 @@
 //
 // ***************************************************************************************** //
 
+/**
+ Simulated annealing algorithm for TSP.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param iter number of iterations.
+ @param size temperature list size.
+ */
 void simulated_annealing(instance* inst, int iter, int size) {
     
     // produce the temperature list
@@ -87,7 +94,13 @@ void simulated_annealing(instance* inst, int iter, int size) {
     free(temp_list);
 }
 
-// produce the temperature list
+/**
+ Produce the temperature list.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param temperature_list temperature list.
+ @param temperature_size temperature list size.
+ */
 void produce_temperature_list(instance* inst, double* temperature_list, int temperature_size) {
     
     double* xstar = (double*) calloc(((inst -> nnodes * (inst -> nnodes - 1))/2), sizeof(double));
@@ -133,6 +146,13 @@ void produce_temperature_list(instance* inst, double* temperature_list, int temp
     free(best_sol);
 }
 
+/**
+ Swap two random edges of TSP tour.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ TPS solution with successors format.
+ @param objval TSP objective function value.
+ */
 void neigh_random_swap(instance* inst, int* succ, double* objval) {
     
     (*objval) = 0.0;
@@ -169,6 +189,14 @@ void neigh_random_swap(instance* inst, int* succ, double* objval) {
     for (int i = 0; i < inst -> nnodes; i++) (*objval) += dist(i, succ[i], inst);
 }
 
+/**
+ Return the max temperature and the corresponding array index.
+
+ @param temp_list temperature list.
+ @param size temperature list size.
+ @param t_max value of max temperature.
+ @param index array index of temperature list with max temperature.
+ */
 void t_max(double* temp_list, int size, double* t_max, int* index) {
     (*t_max) = 0.0;
     for (int i = 0; i < size; i++) {

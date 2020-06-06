@@ -26,6 +26,14 @@
 // Parameters to tune: timelimit and percentages
 //
 // ********************************************************************** //
+
+/**
+ Hardfixing algorithm.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Hard Fixing\n\n", inst -> input_file);
@@ -163,6 +171,14 @@ void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
 // Parameters to tune: timelimit and percentages
 //
 // ********************************************************************** //
+
+/**
+ Hardfixing algorithm second version.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void hardfixing_2nd_vers(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     // change percentages of each step

@@ -8,7 +8,11 @@
 
 #include "utilities.h"
 
-// simplified Parser
+/**
+ Input parser.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ */
 void read_input(instance *inst) {
     
     FILE *fin = fopen(inst->input_file, "r");
@@ -136,7 +140,13 @@ void read_input(instance *inst) {
     }
 }
 
-// parse command line
+/**
+ Parse the command line.
+
+ @param argc number of arguments.
+ @param argv array of string with arguments.
+ @param inst instance of the struct "instance" for TSP problem.
+ */
 void parse_command_line(int argc, char** argv, instance *inst)
 {
     if ( VERBOSE >= 100 ) printf(" running %s with %d parameters \n", argv[0], argc-1);
@@ -175,7 +185,7 @@ void parse_command_line(int argc, char** argv, instance *inst)
     
     if ( help || (VERBOSE >= 10) )        // print current parameters
     {
-        printf("\n\navailable parameters (vers. 2-may-2020) --------------------------------------------------\n");
+        printf("\n\navailable parameters (vers. 6-jun-2020) --------------------------------------------------\n");
         printf("-file %s\n", inst -> input_file);
         printf("-time_limit %lf\n", inst -> timelimit);
         printf("-model_type %d\n", inst -> model_type);
@@ -184,14 +194,22 @@ void parse_command_line(int argc, char** argv, instance *inst)
         printf("-callback %d\n", inst -> callback);
         printf("-hardfixing %d\n", inst -> hardfixing);
         printf("-localbranching %d\n", inst -> localbranching);
+        printf("-vns %d\n", inst -> vns);
+        printf("-ts %d\n", inst -> tabu_search);
+        printf("-sa %d\n", inst -> sim_annealing);
+        printf("-ga %d\n", inst -> genetic);
         printf("-------------------------------------------------------------------------------------------\n\n");
     }
     
     if ( help ) exit(1);
 }
 
+/**
+ Print the tour.
 
-// print the graph with solution
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ tour solution described with successors.
+ */
 void print_solution(instance *inst, int *succ) {
     
     FILE *file;
@@ -213,7 +231,12 @@ void print_solution(instance *inst, int *succ) {
     
 }
 
-// print the graph with solution
+/**
+ Print a light version of the tour.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ tour solution described with successors.
+ */
 void print_solution_light(instance *inst, int *succ) {
     
     FILE *file;
