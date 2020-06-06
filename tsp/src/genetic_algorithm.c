@@ -452,6 +452,8 @@ void mutation(instance* inst, int* child) {
 
 /**
  Select individuals to replace in the next generation.
+ @brief This function select the individuals based on their objective function value, that is, lower is their objective function
+ higher is the probability to been choose as replace.
 
  @param inst instance of the struct "instance" for TSP problem.
  @param fitness objective function values of the population.
@@ -484,7 +486,6 @@ void update_population(instance* inst, double* fitness, int size_pop, int* old_p
         if (not_present) old_pop[num++] = cnt - 1;
     }
     
-    //for (int i = 0; i < num_old_pop; i++) printf(" %d ", old_pop[i]);
     free(prob);
 }
 
