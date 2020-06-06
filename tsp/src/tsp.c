@@ -9,8 +9,17 @@
 #include <cut.h>
 
 #define EPS 1e-5
+
 void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
-// position
+
+/**
+ Return the index of CPLEX solution array from two subsequent nodes..
+
+ @param i first node.
+ @param j second node.
+ @param inst instance of the struct "instance" for TSP problem.
+ @return array position.
+ */
 int xpos(int i, int j, instance *inst)
 {
     if ( i == j ) print_error(" i == j in xpos" );
@@ -19,7 +28,18 @@ int xpos(int i, int j, instance *inst)
     return pos;
 }
 
-// distance between two nodes
+/**
+ Compute the distance between two nodes.
+ Three possible distance measures:
+ - Euclidean;
+ - Pseudo-Euclidean;
+ - Geographical.
+ 
+ @param i first node.
+ @param j second node.
+ @param inst instance of the struct "instance" for TSP problem.
+ @return distance between two nodes.
+ */
 double dist(int i, int j, instance *inst)
 {
     double dist = 0;
@@ -69,7 +89,13 @@ double dist(int i, int j, instance *inst)
     return dist;
 }
 
-// optimizer
+/**
+ Optimizer.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param t1 start time.
+ @return 0 if successful, otherwise 1.
+ */
 int TSPopt(instance *inst, double t1) {
     
     // open cplex model
@@ -245,7 +271,13 @@ int TSPopt(instance *inst, double t1) {
     return 0;
 }
 
-// build the model
+/**
+ Build the model.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void build_model_0(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     // type: Binary
@@ -299,7 +331,15 @@ void build_model_0(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
 }
 
-// build succ() and comp() wrt xstar()...
+/**
+ Build succ() and comp() wrt xstar().
+
+ @param xstar CPLEX solution.
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ TSP solution as successors.
+ @param comp component associated for each nodes.
+ @param ncomp number of components in the solution.
+ */
 void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp) {
 
 // only for debug

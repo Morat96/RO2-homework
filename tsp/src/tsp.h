@@ -13,7 +13,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <cplex.h>
 #include <pthread.h>
 #include <time.h>

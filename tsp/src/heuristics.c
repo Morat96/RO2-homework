@@ -162,21 +162,6 @@ void reverse_segment(instance* inst, int start, int end, int* succ) {
     free(index);
 }
 
-// order indices w.r.t. tour direction
-void reorder(instance* inst, int f, int* s, int* t, int* succ) {
-    
-    int ind = f;
-    for (int i = 0; i < inst -> nnodes; i++) {
-        if (ind == *s) return;
-        if (ind == *t) {
-            *t = *s;
-            *s = ind;
-            return;
-        }
-        ind = succ[ind];
-    }
-}
-
 /**
  Refining algorithm: 3-OPT move.
 

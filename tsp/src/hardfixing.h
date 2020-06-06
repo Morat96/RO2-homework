@@ -12,10 +12,29 @@
 #include <stdio.h>
 #include "tsp.h"
 
-double second(void);
-void print_error(const char *err);
-int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
-
+/**
+ Hardfixing algorithm.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param env CPLEX environment.
+ @param lp CPLEX LP.
+ */
 void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+/**
+ Compute the seconds passed from the program start.
+ 
+ @return time in seconds.
+ */
+double second(void);
+
+/**
+ Print an error and exit from the program.
+ 
+ @param err error to show.
+ */
+void print_error(const char *err);
+
+int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
 
 #endif /* hardfixing_h */

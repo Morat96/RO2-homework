@@ -530,8 +530,3 @@ void compute_mean_best_fitness(double* fitness, int size, double* mean, double* 
     }
     (*mean) /= size;
 }
-
-
-
-
-

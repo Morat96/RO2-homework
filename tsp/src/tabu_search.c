@@ -86,7 +86,6 @@ void tabu_search(instance* inst, int iter, int list_size) {
     free(xstar);
 }
 
-
 /**
  Find the less worse edge swap in the TSP tour.
 
