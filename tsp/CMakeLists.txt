@@ -36,6 +36,16 @@ set(SRC
     src/loop_method.c
     src/compact_models.h
     src/compact_models.c
+    src/vns.h
+    src/vns.c
+    src/tabu_search.h
+    src/tabu_search.c
+    src/simulated_annealing.h
+    src/simulated_annealing.c
+    src/genetic_algorithm.h
+    src/genetic_algorithm.c
+    src/multi_start.h
+    src/multi_start.c
 )
 
 set (CMAKE_CXX_STANDARD 11)
