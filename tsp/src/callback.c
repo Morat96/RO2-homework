@@ -30,7 +30,16 @@
 
 // ********************************* LAZY CALLBACK ******************************* //
 
-// lazy callback: integer LP
+/**
+ Lazy callback: produce a cut for the LP TSP problem in integer solutions.
+
+ @param env Pointer to the CPLEX environment.
+ @param cbdata Pointer to pass to functions that obtain callback-specific information.
+ @param wherefrom An integer value reporting where in the optimization this function was called.
+ @param cbhandle Pointer to private user data.
+ @param useraction_p Pointer to an integer specifying the action for CPLEX to take at the completion of the user callback.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int CPXPUBLIC mylazycallback(CPXCENVptr env,
                              void *cbdata,
                              int wherefrom,
@@ -61,7 +70,16 @@ int CPXPUBLIC mylazycallback(CPXCENVptr env,
     return 0;                                               // return 1 would mean error --> abort Cplex's execution
 }
 
-// add SEC constraints
+/**
+ Add SEC constraints to the problem.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution in CPLEX format.
+ @param env Pointer to the CPLEX environment.
+ @param cbdata Pointer to pass to functions that obtain callback-specific information.
+ @param wherefrom An integer value reporting where in the optimization this function was called.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, int wherefrom) {
     
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));
@@ -135,7 +153,16 @@ int myseparation(instance *inst, double *xstar, CPXCENVptr env, void *cbdata, in
     return (ncomp == 1? 0 : ncomp);
 }
 
-// User callback
+/**
+ User callback: produce a cut for the LP TSP problem in fractional solutions.
+
+ @param env Pointer to the CPLEX environment.
+ @param cbdata Pointer to pass to functions that obtain callback-specific information.
+ @param wherefrom An integer value reporting where in the optimization this function was called.
+ @param cbhandle Pointer to private user data.
+ @param useraction_p Pointer to an integer specifying the action for CPLEX to take at the completion of the user callback.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int CPXPUBLIC UserCutCallback(CPXCENVptr env,
                               void *cbdata,
                               int wherefrom,
@@ -186,7 +213,15 @@ int CPXPUBLIC UserCutCallback(CPXCENVptr env,
     return 0;                                                                           // return 1 would mean error --> abort Cplex's execution
 }
 
-// add SEC in continuous relaxation solutions
+/**
+ Add SEC in continuous relaxation solutions.
+
+ @param cutval value of size of the cut.
+ @param cutcount number of nodes in the cut.
+ @param cut nodes belonging to the cut.
+ @param inParam Pointer to private user data.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int doit_fn_concorde(double cutval, int cutcount, int *cut , void *inParam) {
     //printf("cutval: %lf \ncutcount: %d \n", cutval, cutcount);
     input* inputVal = (input *) inParam;
@@ -204,8 +239,20 @@ int doit_fn_concorde(double cutval, int cutcount, int *cut , void *inParam) {
     return 0;
 }
 
-// heuristic callback
-// compute a heuristic solution from an integer solution of CPLEX
+/**
+ Heuristic callback.
+ Compute a heuristic solution from an integer solution of CPLEX.
+
+ @param env Pointer to the CPLEX environment.
+ @param cbdata Pointer to pass to functions that obtain callback-specific information.
+ @param wherefrom An integer value reporting where in the optimization this function was called.
+ @param cbhandle Pointer to private user data.
+ @param objval_p new objective function value.
+ @param x new heuristic solution.
+ @param checkfeas_p if 1 CPLEX checks if the solution is feasible, otherwise 0.
+ @param useraction_p Pointer to an integer specifying the action for CPLEX to take at the completion of the user callback.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int CPXPUBLIC myheuristic (CPXCENVptr env,
                            void       *cbdata,
                            int        wherefrom,
@@ -247,7 +294,14 @@ int CPXPUBLIC myheuristic (CPXCENVptr env,
 
 // ******************************** GENERIC CALLBACK ******************************* //
 
-// generic callback implementation
+/**
+ Generic callback implementation.
+
+ @param context Pointer to a callback context.
+ @param contextid context identification.
+ @param user Pointer to private user data.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user) {
     
     instance* inst = (instance *) user;
@@ -336,7 +390,14 @@ int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *
     return 0;
 }
 
-// add SEC constraints
+/**
+ Add SEC constraints to the TSP problem.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP solution in CPLEX format.
+ @param context CPLEX context.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context) {
     
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));
@@ -412,7 +473,15 @@ int my_separation(instance *inst, double *xstar, CPXCALLBACKCONTEXTptr context) 
     return (ncomp == 1 ? 0 : ncomp);
 }
 
-// add SEC in continuous relaxation solutions
+/**
+ Add SEC in continuous relaxation solutions.
+
+ @param cutval value of size of the cut.
+ @param cutcount number of nodes in the cut.
+ @param cut nodes belonging to the cut.
+ @param inParam Pointer to private user data.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int doit_fn_concorde_gen(double cutval, int cutcount, int *cut , void *inParam) {
     
     //printf("Relaxation \ncutval: %lf \ncutcount: %d \n\n", cutval, cutcount);
@@ -442,9 +511,17 @@ int doit_fn_concorde_gen(double cutval, int cutcount, int *cut , void *inParam) 
 
 // ****************************** MERGE COMP ALGORITHM ***************************** //
 
-// build a cycle from the distinct components found by CPLEX
-// merge components based on distances between nodes of different components
-// until the solution has one component -> feasible solution
+/**
+ Build a TSP tour from the distinct components found by a CPLEX solution.
+ 
+ @brief Merge components based on distances between nodes of different components,
+ until the solution has one component, that is, a feasible solution.
+
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ TSP solution as successors.
+ @param comp number of the component associated to each node in the solution.
+ @param ncomp number of components in the solution.
+ */
 void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp) {
     
     int first = 0;
@@ -534,7 +611,3 @@ void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp) {
     free(inv);
     free(index);
 }
-
-
-
-

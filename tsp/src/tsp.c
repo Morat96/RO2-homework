@@ -10,8 +10,6 @@
 
 #define EPS 1e-5
 
-void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
-
 /**
  Return the index of CPLEX solution array from two subsequent nodes..
 

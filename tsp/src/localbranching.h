@@ -37,6 +37,14 @@ double second(void);
  */
 void print_error(const char *err);
 
+/**
+ Generic callback implementation.
+ 
+ @param context Pointer to a callback context.
+ @param contextid context identification.
+ @param user Pointer to private user data.
+ @return The routine returns 0 (zero) if successful and nonzero if an error occurs.
+ */
 int my_generic_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *user);
 
 #endif /* localbranching_h */

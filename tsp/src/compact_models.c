@@ -1327,7 +1327,15 @@ void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp) {
 // ************************* BUILD MODEL SOLUTION *********************** //
 // ********************************************************************** //
 
-// build succ() and comp() wrt xstar()...
+/**
+ Build succ() and comp() wrt xstar().
+
+ @param xstar solution in CPLEX format.
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ solution as successors.
+ @param comp number of the component associated to each node in the solution.
+ @param ncomp number of components in the solution.
+ */
 void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp) {
     
     // only for debug

@@ -20,7 +20,9 @@
 #define VERBOSE 1 // printing level  (= 10 only incumbent, = 20 little output, = 50-60 good, = 70 verbose, >= 100 cplex log)
 #define debug 1   // debug checkings
 
-// Data structures
+/**
+ Data structures for TSP problem.
+ */
 typedef struct {
     
     //input data
@@ -59,7 +61,9 @@ typedef struct {
     
 } instance;
 
-// struct for Concorde mincut
+/**
+ Data structures for Concorde mincut
+ */
 typedef struct {
     
     instance *inst;                          // TSP instance
@@ -154,5 +158,18 @@ void print_solution(instance *inst, int *succ);
 void print_solution_light(instance *inst, int *succ);
 void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
 void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
+
+/**
+ Build a TSP tour from the distinct components found by a CPLEX solution.
+ 
+ @brief Merge components based on distances between nodes of different components,
+ until the solution has one component, that is, a feasible solution.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param succ TSP solution as successors.
+ @param comp number of the components of each node in the solution.
+ @param ncomp number of components in the solution.
+ */
+void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
 
 #endif /* tsp_h */
