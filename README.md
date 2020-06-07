@@ -1,5 +1,12 @@
 # Operational Research 2
 
+## Build
+
+mkdir build
+cd build
+cmake ..
+make
+
 ## Parameters
 ```
 $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,1} -callback {0,1} -hardfixing {0,1} -localbranching {0,1} -vns {0,1} -ts {0,1} -sa {0,1} -ga {0,1}
