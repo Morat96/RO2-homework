@@ -1,4 +1,4 @@
-# Operational Research 2
+# Traveling Salesman Problem
 
 ## Requirements
 
