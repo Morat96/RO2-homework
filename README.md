@@ -1,5 +1,10 @@
 # Operational Research 2
 
+## Requirements
+
+Link to CPLEX library and headers.
+Link to Concorde library and headers.
+
 ## Build
 
 mkdir build <br>
