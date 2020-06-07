@@ -2,8 +2,8 @@
 
 ## Requirements
 
-Link to CPLEX library and headers. <br>
-Link to Concorde library and headers.
+CPLEX library and headers. <br>
+Concorde library and headers.
 
 ## Build
 
