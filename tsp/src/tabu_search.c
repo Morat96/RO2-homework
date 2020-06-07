@@ -10,7 +10,11 @@
 
 // *********************************** Tabù Search ********************************* //
 //
-// Description: TO DO.
+// Compute a first solution with Near Neighborhood algorithm and refine it with 2-OPT.
+// In order to escape from a local optimum, compute the best 2-move swap (increasing the cost
+// of the solution) and save the two nodes in the tabù list. The size of the list is used-defined.
+// When the list is full, we empty it and we apply a 2-OPT move. The algorithm repeat the sequence,
+// until reaching the max number of iterations.
 //
 // ********************************************************************************* //
 

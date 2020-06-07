@@ -10,7 +10,15 @@
 
 // ************************************ Genetic Algorithm ********************************** //
 //
-// Description: TO DO.
+// The algorithm starts, computing a population of TSP solution at random using GRASP algorithm.
+// For each generation (i.e. number of iterations), get a fixed number of parents at random from the
+// current population. From the parents generates new childs combining the tour solution of two parents,
+// "repairing" them with the insertion algorithm approach. With a probability of 10% a child can be mutated,
+// which means that two nodes of the tour are swapped. In this manner we mantain diversification in the population.
+// The algorithm select the individual to replace from the current population in a weighted manner.
+// This means that individuals with a high objective function (i.e. bad TSP solutions) have an higher probability
+// to been discarded for the next generation. Both the best objective function and the mean objective function is computed.
+// The algorithm repeat the sequence until the maximum number of iteration is reached.
 //
 // ***************************************************************************************** //
 

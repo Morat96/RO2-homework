@@ -10,9 +10,11 @@
 
 // *********************************** Simulated Annealing ********************************* //
 //
-// List-Based Simulated Annealing Algorithm for Traveling Salesman Problem
-// Shi-hua Zhan, Juan Lin, Ze-jun Zhang and Yi-wen Zhong
-// https://www.hindawi.com/journals/cin/2016/1712630/
+// This is an alternative simulated annealing approach to resolve the TSP problem. The approach
+// is described in the paper below.
+// List-Based Simulated Annealing Algorithm for Traveling Salesman Problem.
+// Shi-hua Zhan, Juan Lin, Ze-jun Zhang and Yi-wen Zhong.
+// https://www.hindawi.com/journals/cin/2016/1712630/.
 //
 // ***************************************************************************************** //
 
