@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Link to CPLEX library and headers.
+Link to CPLEX library and headers. <br>
 Link to Concorde library and headers.
 
 ## Build
@@ -10,7 +10,7 @@ Link to Concorde library and headers.
 mkdir build <br>
 cd build <br>
 cmake .. <br>
-make <br>
+make
 
 ## Parameters
 ```
