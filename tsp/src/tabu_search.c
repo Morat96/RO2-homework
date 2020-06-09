@@ -118,28 +118,23 @@ void findBestEdgesSwap(instance* inst, int* succ, double* objval, tabu_vert* tab
     // objective function
     int delta = INT_MAX;
     int min_delta = INT_MAX;
-    int jump = 0;
     
     // for each couple of edges, compute obj function value and pick the minimim one
     // store indices of edges with the lowest obj func value
     for (int i = 0, a = 0; a < inst -> nnodes - 1; a++, i = succ[i]) {
         for (int j = succ[i], b = a + 1; b < inst -> nnodes; b++, j = succ[j]) {
-            for (int z = 0; z < ls; z++) {
-                tabu_vert verts = tabu_list[z];
-                if ((verts.vert1 == i || verts.vert2 == j)) {
-                    jump = 1;
-                    break;
-                }
-                jump = 0;
-            }
-            if (!jump) {
-                delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
-                if (delta != 0 && delta < min_delta) {
-                    nFirst = i;
-                    succ_f = succ[i];
-                    nSecond = j;
-                    succ_s = succ[j];
-                    min_delta = delta;
+            delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+            if (delta < min_delta) {
+                for (int z = 0; z < ls; z++) {
+                    tabu_vert verts = tabu_list[z];
+                    if ((verts.vert1 == i || verts.vert2 == j)) break;
+                    else {
+                        nFirst = i;
+                        succ_f = succ[i];
+                        nSecond = j;
+                        succ_s = succ[j];
+                        min_delta = delta;
+                    }
                 }
             }
         }
