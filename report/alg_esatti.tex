@@ -1,3 +1,5 @@
 \chapter{Exact Algorithms}
 
-qui la parte degli algorimti esatti
+On this chapter we will describe exact algorithms based on the Dantzig–Fulkerson– Johnson formulation, described in chapter 1. The main problem of this model is that the formulation has $O(2^n)$ SECs, so it is impossibile to implement all the constraints in the model since it would result in a very high execution time and memory usage even for small graphs.
+\\ For this reason, SECs constraints are added only when necessary in the model, in order to discard solutions with cycles. Using this technique, hopefully, only a small part of $O(2^n)$ SECs are added to the model.
+\\ The main algorithms that make use of this technique are Loop methods and CPLEX callbacks.
