@@ -36,8 +36,9 @@ will lead to a globally optimal solution.  %TODO AGGIUNGERE LA FONTE DELLA CITAZ
 Another problem is that this algorithm is deterministic, so this mean that if it is run twice starting from the same initial point, it produce the same solution. The consequence of this is that the number of different circuit that it can explore is limited to the total number of nodes.
 
 \subsection{GRASP}
-GRASP is a variation of nearest neighborhood that introduce a random component. On each iteration, rather than picking the nearest point to the last visited, select the three closest points and choose one of them at random as next visited vertex. \\
-Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one. \\
+GRASP is a variation of nearest neighborhood that introduce a random component. On each iteration, rather than picking the nearest point to the last visited, select the three closest points and choose one of them at random as next visited vertex. 
+(Or alternatively assign a different probability to each of the three points, for example 0.6 to the closest point and 0.3 and 0.1 respectively to the second and the third).
+Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one, and the next visited point is chosen at random from them. \\
 The introduction of the random component means that the probability to repeat the same sequence starting from the same point is very minimal, so GRASP can explore lots of different circuit resolving the problem of determinism of nearest neighborhood. 
 
 \begin{figure}[h!]
@@ -148,7 +149,65 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 
 
 \subsection{THREE-OPT}
-3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves. Moreover, I have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that is cubic doesn't work well with big problems, for example with instances with more than 10000 points.
+3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves (Figure 5.6). Moreover, we have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that is cubic doesn't work well with big problems, for example with instances with more than 10000 points.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt1.png}
+     \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt2.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt3.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt4.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt5.png}
+     \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt6.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt7.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\linewidth}
+    \includegraphics[width=\linewidth]{media/3opt8.png}
+    \caption{}
+  \end{subfigure}
+  \caption{All the possible 3-OPT moves given a triad of edges.}
+\end{figure}
+ 
+\noindent We also repeated the same experiment we did for the 2-OPT, so we run on different problems GRASP for 5 seconds and then 3-OPT on the result for other 5 second. The results are shown in the Table 5.2. Again the dataset is small because the only goal was to show the power of this refinement algorithm and not to compare it with other techniques. Observing the table we can notice that the improve for the smaller problems is almost the same, or sometimes better than the one with 2-OPT, but more importantly we can notice that the algorithm scales bad with big problems due to the fact that it's cubic. In fact 5 seconds is a relatively small amount of time and in this short period the number of 3-OPT moves that the algorithm is able to perform is small and the improve is small too.
+
+\begin{table}[h!]
+	\begin{center}
+		\begin{tabular}{l|c|c|c}
+			\textbf{Instance} & \textbf{GRASP} & \textbf{3-OPT} & \textbf{Improve}	\\
+			& (5 sec) & (5 sec) & \\
+			\hline
+			att48 & 42086 & 33588 & 20\% \\
+			eil101 & 875 & 665 & 25\% \\
+			ch130 & 9894 & 6373 & 35\% \\
+			ch150 & 10503 & 6828 & 35\% \\
+			a280 & 4588 & 3247 & 29\% \\
+			lin318 & 75526 & 56496 & 25\% \\ 
+			att532 & 153954 & 144295 & 6\% \\	
+			pr1002 & 487157 & 481381 & 1\% \\
+		\end{tabular}
+		\caption{Values of the objective functions after running on each instance GRASP algorithm for 5 seconds and then 3-OPT for other 5 seconds.}
+	\end{center}
+\end{table}
 
 \section{Metaheuristics}
 A metaheuristic is a higher-level procedure or heuristic designed to find, generate, or select a heuristic (partial search algorithm) that may provide a sufficiently good solution to an optimization problem, especially with incomplete or imperfect information or limited computation capacity \footnote{R. Balamurugan; A.M. Natarajan; K. Premalatha (2015). "Stellar-Mass Black Hole Optimization for Biclustering Microarray Gene Expression Data". Applied Artificial Intelligence an International Journal.}
@@ -160,13 +219,32 @@ The main problem of this technique is that is not very efficient because each ti
 More powerful technique will be shown on the following subsections.
 
 \subsection{Variable neighborhood search}
-Variable neighborhood search (VNS) provide a simple yet powerful way to escape the local minima. Let's assume that we have completed the refinement using 2-OPT. At this point we can perform a random move with a bigger research radius, a 3-OPT or a 5-OPT for example. Since this move is completely random, it will make the solution worse but it will also provide the "kick" that we need to escape the local minima. Now we can restart with 2-OPT until a new minima is found (that could also be the optimum).\\
-In synthesis, VNS, works with two phases that alternate continuously: an intensification  phase (2-OPT) where the algorithm move toward a minima and a diversification phase where VNS perform a 3-OPT or greater random move to exit from the minima.
+Variable neighborhood search (VNS) provide a simple yet powerful way to escape the local minima. Let's assume that we have completed the refinement using 2-OPT. At this point we can perform a random move with a bigger research radius, like a 3-OPT or a 5-OPT for example. Since this move is completely random, it will make the solution worse but it will also provide the "kick" that we need to escape the local minima. Now we can restart with 2-OPT until a new minima is found (that could also be the optimum).\\
+In synthesis, VNS, works with two phases that alternate continuously: an intensification  phase (2-OPT) where the algorithm move toward a minima and a diversification phase where VNS perform a k-OPT random move to exit from the minima.
 
 \begin{figure}[h!]
 \centering
 	\includegraphics[scale=0.8]{media/VNS.png} \\
 	\caption{Representation of an objective function and the ``kick" of a 5-OPT random move}
+\end{figure}
+
+On our implementation we use the technique showed in Figure 5.8. We select the edges to remove (that in our example are three) and then we reconnect the vertices so that the reversal of some edges to reconstruct the cycle (the one described in 5.2.1) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red )and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.42\linewidth}
+    \includegraphics[width=\linewidth]{media/vns1.png}
+     \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.42\linewidth}
+    \includegraphics[width=\linewidth]{media/vns2.png}
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.42\linewidth}
+    \includegraphics[width=\linewidth]{media/vns3.png}
+    \caption{}
+  \end{subfigure}
+  \caption{All the possible 3-OPT moves given a triad of edges.}
 \end{figure}
 
 
@@ -193,12 +271,12 @@ Considering the objective function, we have that, when T is high, the algorithm 
 
 \subsection{Genetic Algorithm}
 The genetic algorithm is inspired by the evolution theory, formulated by Charles Darwin during the $18^{th}$ century. 
-The algorithm starts with a population where each individual that belong to the population itself is a solution to the problem, so in our case each individual is a solution for the TSP. Each individual has also a fitness that is defined as the cost of the solution. On each iteration, the individuals that have the highest fitness are removed from the population: maintaining the parallelism with the evolution theory we can say that the individuals that didn't adapt to the environment (high fitness) died.
-On each iteration we have also that couples of individuals reproduce and the new elements substitute the ones that we have removed (so the population size remain constant). The children generated inherit characteristics from both their parents: a simple mechanism is just to pick part of the edges from one parent and the remaining from the other. Of course in this way the children is not a solution of the TSP problem cause some node may be visited more than once or may miss, so a corrective function is required. \\
+The algorithm starts with a population where each individual that belong to the population itself is a solution to the problem, so in our case each individual is a solution for the TSP. Each individual has also a fitness that is defined as the cost of the solution. On each iteration (also called epoch), the individuals that have the highest fitness are removed from the population: maintaining the parallelism with the evolution theory we can say that the individuals that didn't adapt to the environment (high fitness) died.
+On each iteration we have also that couples of individuals reproduce and the new elements substitute the ones that we have removed (so the population size remain constant). The children generated inherit characteristics from both their parents: a simple mechanism is just to pick part of the edges from one parent and the remaining from the other. Of course in this way the children is not a solution of the TSP problem cause some node may be visited more than once or may miss, so a repair function is required. In addition, at this point, a mutation function can be added: this mean that a children with probability x (that in general is low) can suffer a modify that hasn't any relation with its parents, like a random exchange of two vertices in the visit sequence. We can introduce this shrewdness to emulate in the algorithm the mutation mechanism that happens also in real life\\
 After some iteration we have that the average fitness improve due to the fact that we remove bad solution and we generate new solution from the better ones. When the algorithm end, the champion of the population, that is the solution with the best fitness, is the final result. \\
 
 \noindent Our first implementation of this algorithm was pretty simple. We generated a population of a size decided by the user using the GRASP algorithm. We created a probability mass function (PMF) normalizing the sum of the fitness, so on each iteration we randomly chose the elements to remove based on that mass function. This means that during the firsts iterations, when all the individual have almost the same fitness, the element are almost randomly remove, while when the algorithm progress and there is a more evident difference between good and bad individuals, with high probability only the worst solutions are removed. The number of element to remove on each iteration (that is equal to the number of children to generate) is a parameter decided by the user. \\
-To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a corrective function that remove all the points visited twice and insert the missing ones using the insertion algorithm described in 5.1.3. 
+To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function that remove all the points visited twice and insert the missing ones using the insertion algorithm described in 5.1.3. 
 
 \begin{figure}[h!]
   \centering
@@ -218,7 +296,7 @@ To reproduce two elements we used the following technique: we chose a random num
     \includegraphics[width=\linewidth]{media/correction4.png}
     \caption{Final result}
   \end{subfigure}
-  \caption{Example of the steps of a correction function}
+  \caption{Example of the steps of a repair function}
 \end{figure}
 
 The couples to reproduce are simply chosen at random from the population and we didn't implement any mechanism to control that same individual aren't choose more than once. We made this choice because on this algorithm the population have often big size, in general more than 10000 individuals, so the probability to pick the exactly same individuals more than once is very low.
@@ -232,9 +310,10 @@ expected behaviour (Figure 5.?? %TODO aggiungere il numero della figura
 	\caption{Plot of the average fitness and best fitness during the execution of a genetic algorithm.}
 \end{figure}
 
-\noindent The problem of our implementation became evident after testing it on different instances: the solutions had lot of intersection (like the ones generated by the GRASP algorithm) that of course don't belong to the optimum. An example of this can be seen on figure 5.??. So we tried to introduce the 2-OPT someway inside the genetic. \\
-A possibility that we first considered but we immediately discarded was to just apply the 2-OPT algorithm on the final solution provided by the genetic. This didn't make lot of sense because we did a lot of effort to produce a result with the genetic and then we discard a consistent part of it using the 2-OPT: a simple GRASP plus 2-OPT would be more efficient. \\
-Then we decided to add the 2-OPT to the correction function
+\noindent The problem of our implementation became evident after testing it on different instances: the solutions had lot of intersection (like the ones generated by the GRASP algorithm) that of course don't belong to the optimum. An example of this can be seen on figure 5.??. So we tried to introduce the 2-OPT someway inside the genetic. From this point, to distinguish the different versions of the genetic that we realized, we will call the implementation just described \textit{genetic 1}. \\
+A possibility that we first considered but we immediately discarded was to just apply the 2-OPT algorithm on the final solution provided by the genetic. This didn't make lot of sense because we did a lot of effort to produce a result with the genetic and then we discard a consistent part of it using the 2-OPT: a simple GRASP plus 2-OPT would be more efficient.
+Then we decided to add the 2-OPT to the repair function. So each children, after being repaired was also refined using the 2-opt rule. Let's call this version \textit{genetic 2}. We immediately noticed a large reduction of the number of epochs executed in the same amount of time with respect to genetic 1. This is because the populations used in the genetic algorithm are large and even if 2-OPT is quite fast it has to be executed a lot of time. \\
+Finally we tried an hybrid approach between genetic 1 and genetic 2: after the repair function the refinement is executed with a probability x decided by the user. With this version each epoch is faster than genetic 2 because the 2-opt is executed less time, however the price of this is the introduction of another parameter that is the probability x.
 
 \begin{figure}[h!]
 \centering
