@@ -401,6 +401,12 @@ To describe the algorithm we asserted that the tabu list is made of couples of e
 The tenure is another parameter to set. A possible way to do this is to set a minimal and a maximal value and let the tenure oscillate among them during the algorithm. So we will have diversification phases when the tenure is big and there are lot of forbidden move and intensification phases when the tenure is small and the algorithm has lot of freedom. This is called reactive tabu search.
 Another shrewdness is that if we encounter a move that is forbidden but that improves the incumbent, we will not perform that move but we will update the value of the incumbent in any case (Aspiration criterion).
 
+\begin{figure}[h!]
+\centering
+	\includegraphics[scale=0.40]{media/tabuSearch1.png} \\
+	\caption{Objective function and incumbent during the execution of tabu search}
+\end{figure}
+
 
 \subsection{Simulated Annealing}
 This metaheuristic algorithm take inspiration from the annealing technique in metallurgy that consist on heating the material and then cooling it in a controlled way. When the temperature of the materials is high, the atoms inside it it vibrates and move in a chaotic way. As the temperature decreases, the atoms reduce their state of agitation until a stable point is reached. \\
