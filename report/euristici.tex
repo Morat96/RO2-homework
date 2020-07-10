@@ -55,10 +55,10 @@ GRASP is a variation of nearest neighborhood that introduce a random component. 
 				\State v1, v2, v3 $\leftarrow$ pick 3 closest and not visited vertex from currentVertex
 				\State nextVertex $\leftarrow$ choose at random one between v1, v2, v3
 				\State notVisitedList $\leftarrow$ remove(nextVertex) 
-				\State S $leftarrow$ add(nextVertex)
+				\State S $\leftarrow$ add(nextVertex)
 				\State currentVertex $\leftarrow$ nextVertex
 			\EndFor
-			\If{$cost(S) < cost(bestSolution)$}
+			\If{cost(S) $<$ cost$($bestSolution$)$}
 				\State bestSolution $\leftarrow$ S
 			\EndIf
 		\EndWhile 
@@ -87,9 +87,42 @@ The introduction of the random component means that the probability to repeat th
 \end{figure}
 
 \subsection{Insertion heuristic}
-This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted. The algorithm than can be executed several time, starting every time from different initial points to explore new solutions and updating the incumbent if necessary. \\
+This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted. The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
 The cost to compute the best extra mileage is $O(n^2)$, so this mean that the entire algorithm is $O(n^3)$.\\
 It is also possible to add the GRASP rule, so rather then selecting the point with the best extra mileage, find the three smallest extra mileages and choose at random between them, in this way the algorithm doesn't converge to the same solution starting from the same initial circuit. \\
+
+\begin{algorithm}
+	\caption{Insertion heuristic}\label{Insertion method}
+	\hspace*{\algorithmicindent} \textbf{Input:} Instance I of the TSP \\
+	\hspace*{\algorithmicindent} \textbf{Output:} Admissible solution for the instance
+    \begin{algorithmic}[1]
+    		\State \textit{cost(bestSolution) $\leftarrow \infty$}
+		\While{! termination condition}
+			\State S $\leftarrow$ empty list
+			\State S $\leftarrow$ add 2 initial vertices
+			\While{! all point are inserted}
+				\State bestExtraMileage $\leftarrow \infty$
+				\For{\textbf{each} point p to insert}
+					\State minExtraMileage $\leftarrow \infty$
+					\For{\textbf{each} edge e $\in$ S}
+						\State extraMileage $\leftarrow$ computeExtraMileage(p, e)
+						\If{extraMileage $<$ minExtraMileage}
+							\State minExtraMileage $\leftarrow$ extraMileage
+						\EndIf
+					\EndFor
+					\If{minExtraMileage $<$ bestExtraMileage}
+						\State bestExtraMileage $\leftarrow$ minExtraMileage
+					\EndIf
+				\EndFor
+				\State S $\leftarrow$ insert point with bestExtraMileage in the best poisiton
+			\EndWhile
+			\If{cost(S) $<$ cost(bestSolution)}
+				\State bestSolution $\leftarrow$ S
+			\EndIf
+		\EndWhile 
+		\State \textbf{return} bestSolution
+    \end{algorithmic}
+\end{algorithm}
 
 \begin{figure}[h!]
   \centering
@@ -179,8 +212,8 @@ that is the cost of the initial removed edges minus the cost of the new edges. I
     \end{algorithmic}
 \end{algorithm}
 
-
-\noindent This algorithm is very good to remove edge intersections, like the ones produced  by nearest neighborhood (or GRASP). Here in the table below some examples.\\
+\noindent On our implementation we followed the procedure described above, with the addition of a matrix to store all the distances between points, to avoid to recompute them more than once.\\
+This algorithm is very good to remove edge intersections, like the ones produced  by nearest neighborhood (or GRASP). Here in the table below some examples.\\ 
 
 \begin{table}[h!]
 	\begin{center}
@@ -301,8 +334,8 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 			\Else
 				\State S $\leftarrow$ perform random k-OPT move
 			\EndIf
-			\If{$cost(S) < cost(bestSolution)$}
-				\State $bestSolution \leftarrow S$
+			\If{cost$($S$)$ $<$ cost$($bestSolution$)$}
+				\State bestSolution $\leftarrow S$
 			\EndIf
 		\EndWhile
 		\State \textbf{return} bestSolution
@@ -349,15 +382,15 @@ To describe the algorithm we asserted that the tabu list is made of couples of e
 			\If{tabuList is full}
 				\State tabuList $\leftarrow$ empty list
 			\EndIf
-			\State $bestMove \leftarrow$ find best and not forbidden 2-OPT move of S
-			\If{$\Delta(bestMove) > 0$}
+			\State bestMove $\leftarrow$ find best and not forbidden 2-OPT move of S
+			\If{$\Delta($bestMove$) >$ 0}
 				\State S $\leftarrow$ perform bestMove
 			\Else
 				\State S $\leftarrow$ perform bestMove
 				\State tabuList $\leftarrow$ add(bestMove)
 			\EndIf
-			\If{$cost(S) < cost(bestSolution)$}
-				\State $bestSolution \leftarrow S$
+			\If{cost$($S$)$ $<$ cost$($bestSolution$)$}
+				\State bestSolution $\leftarrow S$
 			\EndIf
 		\EndWhile
 		\State \textbf{return} bestSolution
@@ -380,6 +413,56 @@ Considering the objective function, we have that, when T is high, the algorithm 
 	\caption{Example of the work of the simulated annealing. Note the initial random exploration with high temperature and the move toward the minima with a lower temperature}
 \end{figure}
 
+\begin{algorithm}
+	\caption{Simulated Annealing}\label{Annealing method}
+	\hspace*{\algorithmicindent} \textbf{Input:} Admissible solution S \\
+	\hspace*{\algorithmicindent} \textbf{Output:} Best solution found
+    \begin{algorithmic}[1]
+    		\State \textit{let p be the probability to accept a bad move}
+    		\State \textit{let T be the temperature}
+		\While{! termination condition}
+			\State $\Delta \leftarrow$ random 2-OPT move
+			\If{$\Delta > 0$}
+				\State S $\leftarrow$ perform the move
+			\Else 
+				\State p $\leftarrow$ f$($T$)$
+				\State r $\leftarrow$ random number $\in [0, 1)$
+				\If{r $<$ p}
+					\State S $\leftarrow$ perform the move
+				\EndIf 
+			\EndIf
+			\If{temperature change condition}
+				\State decrease T
+			\EndIf
+		\EndWhile
+		\State \textbf{return} S
+    \end{algorithmic}
+\end{algorithm}
+
+\noindent Of course the choose of the cooling schedule and the function that regulate the probability to accept a move with respect to the temperature are pivotal and can have a big impact on the performance of the algorithm itself. \\
+On our implementation we followed the procedure showed in the paper %TODO add paper
+that we are going to briefly explain.
+Let X be the initial solution and Y a solution produced after a random 2-OPT move on x, let $f(X)$, $f(Y)$ be the cost respectively of X and Y, let $p_0$ be the initial probability. On each iteration, until the temperature list is full, generate a new Y. If $f(Y) > f(X)$ (pejorative move) compute a temperature with the following formula:
+\begin{equation*}
+t = \frac{-\vert f(y) - f(x) \vert}{\ln{(p_0)}}
+\end{equation*}
+otherwise, if $f(Y) < f(X)$, put X = Y and then compute t in the same way.
+Now to describe the remaining part of our implementation let's consider N, that is a parameter decided by the user that indicate the maximum number of iteration where we use the same temperature. Let also i = 0, 1... N be a counter for those iteration. We start by extracting $T_{max}$ from the temperature list, this will be the temperature of the system for the next following N iteration. On each iteration we generate a random 2-OPT move: if it is meliorative the solution is simply updated. If it is pejorative we compute a probability $p_i$ defined as:
+\begin{equation*}
+p_i = \exp \Bigl( \frac{-(f(Y)-f(X))}{t_{max}} \Bigr)
+\end{equation*}
+then we generate a random number $r_i \in [0, 1)$ and if $r_i < p_i$ the move is accepted.
+At this point, if we accept a bad move, we need to calculate another temperature $T_i$, defined as:
+\begin{equation*}
+T_i = \frac{-d_i}{p_i}
+\end{equation*} 
+where $d_i$ is the difference between $f(Y)$ and $f(X)$ on iteration i. We need also to keep in memory a counter c for each time we have performed a pejorative move. When we reach N iteration, we have to decrease the temperature: we compute the mean
+\begin{equation*}
+T_{mean} = \frac{1}{c} \sum T_i
+\end{equation*}
+and we substitute $T_{max}$ with $T_{mean}$. Since $T_i < T_{max}$ we have also that $T_{mean} < T_{max}$ so with the substitution we decrease the temperature. Now we pick another $T_{max}$ and we repeat the entire procedure until the algorithm terminate.
+
+
 
 \subsection{Genetic Algorithm}
 The genetic algorithm is inspired by the evolution theory, formulated by Charles Darwin during the $18^{th}$ century. 
@@ -396,21 +479,21 @@ After some iteration we have that the average fitness improve due to the fact th
     		\State $\textit{t} \leftarrow 0$
     		\State $\textit{bestSolution}$
     		\State $\textit{fitnessList}$
-    		\State fitnessList, bestSolution $\leftarrow computeFitness(P_t)$ 
+    		\State fitnessList, bestSolution $\leftarrow$ computeFitness$(P_t)$ 
     		\While{! condition of termination}
-    			\For{$i = 0$, $i < N$, i++}
-    				\State $removeElement(P_t)$
-    				\State $update(fitnessList)$
+    			\For{i $=$ 0, i $<$ N, i++}
+    				\State removeElement$(P_t)$
+    				\State update$($fitnessList$)$
     			\EndFor
-    			\For{$i = 0$, $i < N$, i++}
-    				\State $S \leftarrow generateNewChildren(P_t)$
-    				\State $repair(S)$
-    				\State $fitnessList \leftarrow add(fitness(S))$
-    				\If{$fitness(S) < fitness(bestSolution)$}
-    					\State $bestSolution \leftarrow S$
+    			\For{i $=$ 0, i $<$ N, i++}
+    				\State S $\leftarrow$ generateNewChildren$(P_t)$
+    				\State repair$($S$)$
+    				\State fitnessList $\leftarrow$ add$($fitness$($S$))$
+    				\If{fitness$($S$) < $fitness$($bestSolution$)$}
+    					\State bestSolution $\leftarrow S$
     				\EndIf
     			\EndFor
-    			\State $\textit{t} \leftarrow t+1$
+    			\State \textit{t} $\leftarrow$ t+1
     		\EndWhile
     		\State \textbf{return} bestSolution 
     \end{algorithmic}
