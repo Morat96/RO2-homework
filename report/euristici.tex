@@ -399,13 +399,17 @@ To describe the algorithm we asserted that the tabu list is made of couples of e
 
 \noindent The handle of the tabu list is very important and different strategies can have a big impact on the algorithm. Of course if we continue inserting element we will reach a point where there aren't possible moves. So we limit the size of the tabu list. The size is called tenure. When the list is full, the older element are removed.
 The tenure is another parameter to set. A possible way to do this is to set a minimal and a maximal value and let the tenure oscillate among them during the algorithm. So we will have diversification phases when the tenure is big and there are lot of forbidden move and intensification phases when the tenure is small and the algorithm has lot of freedom. This is called reactive tabu search.
-Another shrewdness is that if we encounter a move that is forbidden but that improves the incumbent, we will not perform that move but we will update the value of the incumbent in any case (Aspiration criterion).
+Another shrewdness is that if we encounter a move that is forbidden but that improves the incumbent, we will not perform that move but we will update the value of the incumbent in any case (Aspiration criterion).\\
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[scale=0.40]{media/tabuSearch1.png} \\
+	\includegraphics[scale=0.6]{media/tabuSearch1.png} \\
 	\caption{Objective function and incumbent during the execution of tabu search}
 \end{figure}
+
+\noindent On our implementation we use a fixed-size tabu list, with the tenure that is a parameter decided by the user. The list records only one vertex involved in the move: so for example if we perform a pejorative move and we substitute the edges $v_{ab}$ and $v_{cd}$ with $v_{ac}$ and $v_{bd}$, only the vertex a is stored in the tabù list. When we find a good move, we check that all the 4 vertices involved are not in the tabu list, so even if we record only one point per move, this is sufficient to avoid to return back after a pejorative move. \\
+The check if a move is forbidden require a $O(k)$, where k is the tenure. So we perform this control only to moves that are better than the best move found until that moment (It's useless to check pejorative moves or moves that are not candidate to be selected as best move). \\
+Finally we also implemented the aspiration criterion, so if a forbidden move leads to an improve of the incumbent, we keep that solution and we update the incumbent too.
 
 
 \subsection{Simulated Annealing}
