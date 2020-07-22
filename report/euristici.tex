@@ -1,5 +1,6 @@
 \chapter{Stand-alone heuristics}
-On this chapter we will illustrate some stand-alone heuristics. These algorithms are so called because they provide an heuristic solution without relying on CPLEX or any other solver. The literature in this case is huge: there are plenty of different approaches and each of them can have multiple variations. On this report we will cover some of the major ideas. 
+On this chapter we will illustrate some stand-alone heuristics. These algorithms are so called because they provide an heuristic solution without relying on CPLEX or any other solver. The literature in this case is huge: there are plenty of different approaches and each of them can have multiple variations. On this report we will cover some of the major ideas. \\
+For all the experiments to collect data for the performance profiles and the comparison between different algorithms we used a dataset of 20 instances, with a size between 400 and 3000 points. A detailed list of all the instances used and their dimension can be found on the tables of the section 5.4.
 
 \section{Heuristic solution builder}
 On this section we will illustrate some heuristics algorithm to generate in a rapid way a solution for the TSP problem. Of course the results provided by these algorithms are admissible solutions but not the optimum solution.
@@ -165,6 +166,16 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
   \end{subfigure}
   \caption{Execution of the insertion with convex hull on 2 different problems. It is possible to see the initial convex hull and the final result when all the points inside it are inserted}
 \end{figure}
+
+\subsection{Final confrontation between solution builder}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=1]{media/builder.pdf}
+	\caption{Performance profile of the solution builders}
+\end{figure}
+
+Here the final confrontation between the heuristic solution builders. To obtain these result we test the algorithms on the dataset of 20 instances with a time limit of 5 minutes. 
 
 \newpage
 
@@ -559,7 +570,7 @@ Finally we tried an hybrid approach between genetic 1 and genetic 2: after the r
 	\caption{Solution of the instance ch150 provided by our first implementation of the genetic. Note the big number of edge intersections.}
 \end{figure}
 
-\noindent We tested these three versions to find which ones is the best. We used a dataset of 20 instances, with a size between 600 and 3000 points. We establish a time limit of 10 minutes and a population size of 2000 elements with 200 new elements each epoch. The 2-OPT, when applied inside the repair function, has a time limit of one second. Note that we were forced to use a population with a limited size, in fact after few tests we discovered that it's very difficult to handle a big population (like 10000 or more elements) on a single machine, cause the algorithm became incredibly slow.
+\noindent We tested these three versions on the dataset to find which ones is the best. We establish a time limit of 10 minutes and a population size of 2000 elements with 200 new elements each epoch. The 2-OPT, when applied inside the repair function, has a time limit of one second. Note that we were forced to use a population with a limited size, in fact after few tests we discovered that it's very difficult to handle a big population (like 10000 or more elements) on a single machine, cause the algorithm became incredibly slow.
 The table %TODO add table
 report the final value of the objective function obtained by each algorithm and the number of epoch that it was able to execute within the time limit. The first thing that we can notice, as expected, is that the introduction of the 2-OPT involves a big decrease of the epochs performed. However in both genetic 2 and 3 results are better, so even if we pay an increase of execution time for each epoch, the addition of the refinement is worth. This became more evident if we consider the performance profile, where genetic 1 is far the worst algorithm. \\ 
 Again, looking to the performance profile, genetic 2 seems to be the best, followed by genetic 3 that is slightly worse. However we chose genetic 3 as the winner of this first ``eliminatory phase" for the following reasons: first of all the difference in the performance profile is tiny and since the dataset used is quite small we cannot say with absolute certainty that genetic 2 is the best. Moreover if we perform a 2-OPT on each new element, we move away from the idea of the genetic, in fact each children has to pass through a repair function and then a refinement, so with high probability it will maintain very few elements of its parents. Finally we execute very few epochs with respect to genetic 1 and 3 and this is against the principle of the evolution of the population. So this is why we selected the third version of the algorithm to compete with the others metaheuristics.\\
@@ -612,6 +623,20 @@ So with this strategy we can run the genetic on a cluster, solving the problem o
 	\includegraphics[scale=1]{media/metaheuristics.pdf} \\
 	\caption{Performance profile of the metaheuristics}
 \end{figure}
+
+On Figure 5.17 it is possible to see the performance profile of all the metaheuristics we analyzed in this section. We tested each algorithm on the usual dataset with a time limit of 30 minute per instance (all the other details about the experiments are report on section 5.4). The parameter we used are the following:
+
+\begin{itemize}
+	\item \textbf{Multi start}: no parameter except for time limit.
+	\item \textbf{VNS}: 5-OPT random move for the kick.
+	\item \textbf{Tabu search}: tenure equals to 40\% of the instance size.
+	\item \textbf{Simulated annealing}: temperature list of 5000 elements, 1000 iteration with the same temperature.
+	\item \textbf{Genetic}: population size of 2000, 200 new elements per epoch. 
+\end{itemize}
+
+\noindent The first thing we can notice is that the VNS has the best performance. Of course our dataset is quite small, so we cannot say with absolute certainty that VNS is in absolute the best algorithm. However our results are aligned with the ones we saw during the course and the ones obtained by other students, so we can conclude that VNS is a very good heuristic solution for the TSP. \\
+Another thing we can notice are the poor performance of the genetic. This result was expected due to the fact we were forced to use small populations and to introduce the 2-OPT at the expense of the number of epoch for each run. \\
+Finally, noteworthy is the simulates annealing that seems to have very good performance.
 
 \newpage
 
@@ -713,6 +738,37 @@ We report here the tables with the results and their details we obtained on the 
 
 \begin{table}[h!]
 	\begin{center}
+		\caption{\textbf{\large Simulated Annealing}}
+		\begin{tabular}{l|c|c|c|c}
+			\textbf{Instance} & \textbf{Time limit} & \textbf{Objective} & \textbf{Optimum} & \textbf{ Gap } \\
+			& (min) & \textbf{function} & & (\%)\\
+			\hline
+			d657		&	30	&	50853	&	48912	&	3,82	\\
+			d1291	&	30	&	55631	&	50801	&	8,68	\\
+			fl417	&	30	&	11960	&	11861	&	0,83	\\
+			fl1400	&	30	&	21011	&	20127	&	3,61	\\
+			fl1577	&	30	&	23208	&	22204	&	4,33	\\
+			nrw1379	&	30	&	60290	&	56638	&	6,06	\\
+			p654		&	30	&	36663	&	34643	&	5,51	\\
+			pcb1173	&	30	&	61274	&	56892	&	7,15	\\
+			pcb3038	&	30	&	160064	&	137694	&	13,98	\\
+			pr1002	&	30	&	270144	&	259045	&	4,11	\\
+			pr2392	&	30	&	412826	&	378032	&	8,43	\\
+			rl1304	&	30	&	275741	&	252948	&	8,27	\\
+			rl1323	&	30	&	286098	&	270199	&	5,56	\\
+			rl1889	&	30	&	353047	&	316536	&	10,34	\\
+			u724		&	30	&	44111	&	41910	&	4,99	\\
+			u1060	&	30	&	236150	&	224094	&	5,1	\\
+			u2152  	&	30	&	72906	&	64253	&	11,87	\\
+			u2319 	&	30	&	243034	&	234256	&	3,61	\\
+			vm1084 	&	30	&	252216	&	239297	&	5,12	\\
+			vm1748	&	30	&	369762	&	336556	&	8,98	\\
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\begin{table}[h!]
+	\begin{center}
 		\caption{\textbf{\large Genetic}}
 		\begin{tabular}{l|c|c|c|c}
 			\textbf{Instance} & \textbf{Time limit} & \textbf{Objective} & \textbf{Optimum} & \textbf{ Gap } \\
@@ -744,12 +800,31 @@ We report here the tables with the results and their details we obtained on the 
 
 \begin{table}[h!]
 	\begin{center}
-		\caption{\textbf{\large Comparison between obj functions}}
+		\caption{\textbf{\large Comparison between objective functions}}
 		\begin{tabular}{l|c|c|c|c|c}
 			\textbf{Instance} & \textbf{Multi-start} & \textbf{    VNS    } & \textbf{Tabu search} & \textbf{Simulated} & \textbf{Genetic} \\
 			& & & & \textbf{annealing} &\\
 			\hline
-			
+			d657	 &	51608    & 49921	& 50222	& 50853	& 51590 \\
+			d1291 &	56577    & 52217	& 58274	& 55631	& 56405 \\
+			fl417 &	12176    & 11970	& 12339	& 11960	& 12030 \\
+			fl1400 &	 21291   & 20657	& 21751	& 21011	& 21317 \\
+			fl1577 & 23953   & 22692	& 24728	& 23208	& 26054 \\
+			nrw1379 & 61766  & 59272	& 59349	& 60290	& 63077 \\
+			p654    & 36361  & 34832	& 37672	& 36663	& 35033 \\
+			pcb1173 & 62375  & 58668	& 59146	& 61274	& 62303 \\
+			pcb3038 & 154679 & 149738 & 146111 & 160064 & 215382 \\
+			pr1002	& 281778 & 264881 & 285259 & 270144 & 276044 \\
+			pr2392	& 422804 & 399147 & 423364 & 412826 & 546694 \\
+			rl1304	& 276760 & 255863 & 281595 & 275741 & 284911 \\
+			rl1323	& 298429 & 275537 & 293050 & 286098 & 306511 \\
+			rl1889	& 348391 & 324641 & 350028 & 353047 & 457862 \\
+			u724		& 45316  & 43054  & 45604 & 44111 & 44930 \\
+			u1060	& 240853 & 230070 & 243788 & 236150 & 240476 \\
+			u2152  	& 73356	& 69208	& 74865 & 72906 & 93952 \\
+			u2319 	& 249621	 & 242850 & 249119 & 243034 & 284055 \\
+			vm1084 	& 260289	 & 244211 & 264646 & 252216 & 255868 \\
+			vm1748	& 368113	 & 350364 & 372908 & 369762 & 432545 \\
 		\end{tabular}
 	\end{center}
 \end{table}

@@ -1,3 +1,117 @@
 \chapter{Compact Models}
+Here we introduce different formulations for the traveling salesman problem that we implemented. For all the following model we will use the decision variable $x_{ij}$ already defined in 1.2.
 
-Qui la parte dei modelli compatti
+\section{Sequential formulation}
+For this version, formulated by Miller, Tucker and Zemlin in 1960, we introduce the continuous variable 
+\begin{equation*}
+	u_i = \text{sequence in which point i is visited} \ (i \neq 1)
+\end{equation*}
+and the constraint 2.4. In total this formulation has $n^2-n+2$ constraints, $n(n-1)$ 0-1 variables and $(n-1)$ continuous variables.
+
+\begin{subequations}
+	\begin{equation}
+		\text{min} \underbrace{\sum_{(i,j) \in A} c_{ij}x_{ij}}_\text{circuit cost}
+	\end{equation}
+	\begin{equation}
+		\underbrace{\sum_{(i,j) \in \delta^{-}(j)} x_{ij} = 1}_\text{one edge incoming in j}, \quad j \in V 
+	\end{equation}
+	\begin{equation}
+		\underbrace{\sum_{(i,j) \in \delta^{+}(j)} x_{ij} = 1}_\text{one edge outgoing in i}, \quad i \in V
+	\end{equation}
+	\begin{equation}
+		u_i-u_j+nx_{ij} \leq n-1 \quad \forall i,j \in N-\lbrace 1 \rbrace, \ i\neq j
+	\end{equation}
+\end{subequations}
+
+\section{Single commodity flow}
+Provided by Gavish and Graves in 1978, it adds continuous variables: 
+\begin{equation*}
+	y_{ij} = \text{flow in arch} \ (i,j) \ i \neq j
+\end{equation*}
+In total it has $n(n+2)$ constraints, $n(n-1)$ 0-1 variables and $n(n-1)$ continuous variables.
+Note that the 2.2d can be improved substituting the second term with $(n-1)x_{ij}$
+
+\begin{subequations}
+	\begin{equation}
+		\text{min} \sum_{(i,j) \in A} c_{ij}x_{ij} \\
+	\end{equation}
+	\begin{equation}
+		\sum_{(i,j) \in \delta^{-}(j)} x_{ij} = 1, \quad j \in V \\
+	\end{equation}
+	\begin{equation}
+		\sum_{(i,j) \in \delta^{+}(j)} x_{ij} = 1, \quad i \in V \\
+	\end{equation}
+	\begin{equation}
+		y_{ij} \leq (n-1)x_{ij} \quad \forall i,j \in N, \ i \neq j \\
+	\end{equation}
+	\begin{equation}
+		\sum_{j, \; j \neq 1} y_{1j} = n-1 \\
+	\end{equation}
+	\begin{equation}
+		\sum_{i, \; i \neq j} y_{ij} - \sum_{k, \; i \neq k} y_{jk} = 1 \quad \forall j \in N - \lbrace 1 \rbrace
+	\end{equation}
+\end{subequations}
+
+\section{Two commodity flow}
+Created by Finke, Claus and Gunn in 1983. It maintains constraint 2.1b and 2.1c (they and the objective function are not showed in the formulation below) and introduce the continuous variables:
+\begin{equation*}
+	y_{ij} = \text{flow of commodity 1 in arc} \ (i,j) \ i \neq j
+\end{equation*}
+\begin{equation*}
+	z_{ij} = \text{flow of commodity 2 in arc} \ (i,j) \ i \neq j
+\end{equation*}
+and add the constraints:
+
+\begin{subequations}
+	\begin{equation}
+	 	\sum_{j, \; j \neq 1} (y_{1j}-y_{j1}) = n-1
+	\end{equation}
+	\begin{equation}
+		\sum_{j} (y_{ij}-y_{ji}) = 1 \quad \forall i \in N-\lbrace 1 \rbrace, \ i \neq j
+	\end{equation}
+	\begin{equation}
+		\sum_{j, \; j \neq 1} (z_{1j}-z_{j1}) = -(n-1)
+	\end{equation}
+	\begin{equation}
+		\sum_{j} (z_{ij}-z_{ji}) = -1 \quad \forall i \in N-\lbrace 1 \rbrace, \ i \neq j
+	\end{equation}
+	\begin{equation}
+		\sum_{j} (y_{ij}+z_{ij}) = n-1 \quad \forall i \in N
+	\end{equation}
+	\begin{equation}
+		y_{ij}+z_{ij} = (n-1)x_{ij} \quad \forall i, j \in N
+	\end{equation}
+\end{subequations}
+
+In total it has $n(n+4)$ constraints, $n(n-1)$ 0-1 variables and $2n(n-1)$.
+
+\section{Multi-commodity flow}
+Proposed by Wong and Claus in 1984. Again constraint 2.1b and 2.1c are maintained. It introduce the continuous variable:
+\begin{equation*}
+	y_{ij}^k = \text{flow of commodity k in arc} \ (i,j) \in N-\lbrace 1 \rbrace
+\end{equation*}
+and the following constraints:
+\begin{subequations}
+	\begin{equation}
+		y_{ij} \leq x_{ij} \quad \forall i,j,k \in N, \ k \neq 1
+	\end{equation}
+	\begin{equation}
+		\sum_{i} y_{1i}^k = 1 \quad \forall k \in N-\lbrace 1 \rbrace
+	\end{equation}
+	\begin{equation}
+		\sum_{i} y_{i1}^k = 0 \quad \forall k \in N-\lbrace 1 \rbrace
+	\end{equation}
+	\begin{equation}
+		\sum_{i} y_{ik}^k = 1 \quad \forall k \in N-\lbrace 1 \rbrace
+	\end{equation}
+	\begin{equation}
+		\sum_{j} y_{kj}^k = 0 \quad \forall k \in N-\lbrace 1 \rbrace
+	\end{equation}
+	\begin{equation}
+		\sum_{i} y_{ij}^k - \sum_{i} y_{ji}^k = 0 \quad \forall j,k \in N-\lbrace 1 \rbrace, \ j \neq k
+	\end{equation}
+\end{subequations}
+In total there are $n^3+n^2+6n-3$ constraints, $n(n-1)$ 0-1 variables and $n(n-1)^2$
+
+\section{First stage dependent T1}
+Introduced by Fox, Gavish and Graves in 1980. 
