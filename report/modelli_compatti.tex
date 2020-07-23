@@ -53,7 +53,7 @@ Note that the 2.2d can be improved substituting the second term with $(n-1)x_{ij
 \end{subequations}
 
 \section{Two commodity flow}
-Created by Finke, Claus and Gunn in 1983. It maintains constraint 2.1b and 2.1c (they and the objective function are not showed in the formulation below) and introduce the continuous variables:
+Created by Finke, Claus and Gunn in 1983. It maintains constraint 2.1b and 2.1c (from this point they and the objective function will not be shown in the formulation) and introduce the continuous variables:
 \begin{equation*}
 	y_{ij} = \text{flow of commodity 1 in arc} \ (i,j) \ i \neq j
 \end{equation*}
@@ -113,5 +113,63 @@ and the following constraints:
 \end{subequations}
 In total there are $n^3+n^2+6n-3$ constraints, $n(n-1)$ 0-1 variables and $n(n-1)^2$
 
-\section{First stage dependent T1}
-Introduced by Fox, Gavish and Graves in 1980. 
+\section{First stage dependent (T1)}
+Introduced by Fox, Gavish and Graves in 1980. Constraint 2.1b and 2.1c are maintained, in addition we have 0-1 integer variables:
+\[ y_{ij}^t =
+	\begin{cases}
+		1 \quad \text{if the edge} \ (i,j) \ \text{is traversed at stage t} \\
+		0 \quad \text{otherwise}
+	\end{cases}
+\]
+and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ 0-1 variables.
+
+\begin{subequations}
+	\begin{equation}
+		\sum_{i,j,t} y_{ij}^t = n
+	\end{equation}
+	\begin{equation}
+		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace 
+	\end{equation}
+	\begin{equation}
+		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall i,j \in N, \ i \neq j
+	\end{equation}
+	with the condition
+	\begin{equation}
+		y_{il}^t = 0 \; \forall t \neq n, \quad y_{ij}^t = 0 \; \forall t \neq 1, \quad y_{ij}^l = 0 \; \forall i \neq 1, \quad i \neq j
+	\end{equation}
+\end{subequations}
+
+\section{Second stage dependent (T2)}
+Provided by Fox, Gavish and Graves in 1980. It uses the same variables of T1 and constraints 2.1b and 2.1c and it adds:
+
+\begin{subequations} 
+	\begin{equation}
+		\sum_{i,t \; i \neq j} y_{ij}^t = 1 \quad \forall j \in N
+	\end{equation}
+	\begin{equation}
+		\sum_{j,t \; j \neq i} y_{ij}^t = 1 \quad \forall i \in N
+	\end{equation}
+	\begin{equation}
+		\sum_{i \; j \neq i} y_{ij}^t = 1 \quad \forall t \in N
+	\end{equation}
+	\begin{equation}
+		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace
+	\end{equation}
+\end{subequations}
+In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ 0-1 variables.
+
+\section{Third stage dependent (T3)}
+Again we have the same variables of T1 and constraints 2.1b and 2.1c. In addition, 
+for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
+\begin{subequations}
+	\begin{equation}
+		\sum_{j} y_{1j}^1 = 1
+	\end{equation}
+	\begin{equation}
+		\sum_{i} y_{i1}^n = 1
+	\end{equation}
+	\begin{equation}
+		\sum_{j} y_{ij}^t - \sum_{k} y_{ki}^{t-1} = 0 \quad \forall i,t \in N-\lbrace 1 \rbrace
+	\end{equation}
+\end{subequations}
+
