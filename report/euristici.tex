@@ -67,7 +67,7 @@ GRASP is a variation of nearest neighborhood that introduce a random component. 
     \end{algorithmic}
 \end{algorithm}
 
-Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one, and the next visited point is chosen at random from them. \\
+\noindent Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one, and the next visited point is chosen at random from them. \\
 The introduction of the random component means that the probability to repeat the same sequence starting from the same point is very minimal, so GRASP can explore lots of different circuit resolving the problem of determinism of nearest neighborhood. 
 
 \begin{figure}[h!]
@@ -88,7 +88,7 @@ The introduction of the random component means that the probability to repeat th
 \end{figure}
 
 \subsection{Insertion heuristic}
-This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted. The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
+This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted (Figure 5.3). The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
 The cost to compute the best extra mileage is $O(n^2)$, so this mean that the entire algorithm is $O(n^3)$.\\
 It is also possible to add the GRASP rule, so rather then selecting the point with the best extra mileage, find the three smallest extra mileages and choose at random between them, in this way the algorithm doesn't converge to the same solution starting from the same initial circuit. \\
 
@@ -151,7 +151,7 @@ It is also possible to add the GRASP rule, so rather then selecting the point wi
 
 \subsection{Insertion with convex hull}
 This is a variation of the insertion algorithm. It works in the same way but the initialization is different: rather than starting from an initial cycle made of two random points, compute the convex hull \footnote{In geometry, the convex hull or convex envelope or convex closure of a shape is the smallest convex set that contains it. %TODO AGGIUNGERE CITAZIONE WIKIPEDIA 
-} of the instance. Then iterate and insert all the remaining points, that are all inside the convex hull, in the same way of Insertion heuristic (Figure 5.??).\\
+} of the instance. Then iterate and insert all the remaining points, that are all inside the convex hull, in the same way of Insertion heuristic (Figure 5.4).\\
 On our implementation, to find the initial convex hull, we used the Graham Scan algorithm, freely provided by the website www.geeksforgeeks.org. This algorithm is $O(n \cdot log(n))$ and it is performed only once at the beginning so it doesn't impact the overall execution time for the insertion that is $O(n^3)$ as explained on the previous subsection. For more information about the Graham Scan consult \url{https://www.geeksforgeeks.org/convex-hull-set-2-graham-scan/}
 
 \begin{figure}[h!]
@@ -171,24 +171,24 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=1]{media/builder.pdf}
+	\includegraphics[scale=0.8]{media/builder.pdf}
 	\caption{Performance profile of the solution builders}
 \end{figure}
 
-Here the final confrontation between the heuristic solution builders. To obtain these result we test the algorithms on the dataset of 20 instances with a time limit of 5 minutes. 
+On Figure 5.5 the final confrontation between the heuristic solution builders. To obtain these result we test the algorithms on the dataset of 20 instances with a time limit of 5 minutes. 
 
-\newpage
+\clearpage
+%\newpage
 
 \section{Refining algorithms}
 Refining algorithm are so called because they start from an admissible solution that could by provided by any other algorithm and they try to improve it with a series of iteration.
 
 \subsection{TWO-OPT}
-The first algorithm we present is TWO-OPT (or 2-OPT). To explain this technique, let's consider two edges, the first delimited by vertices a and b and with cost $c_{ab}$, the second delimited by c and d and with cost $c_{ab}$ (Both edges belong to an admissible solution provided by any algorithm). Now let's remove these edges and reconnect the vertices in a different way: as result we obtain the edges a, c and b, d with cost respectively $c_{ac}$ and $c_{bd}$. Now lets compute: 
+The first algorithm we present is TWO-OPT (or 2-OPT). To explain this technique, let's consider two edges, the first delimited by vertices a and b and with cost $c_{ab}$, the second delimited by c and d and with cost $c_{cd}$ (Both edges belong to an admissible solution provided by any algorithm). Now let's remove these edges and reconnect the vertices in a different way: as result we obtain the edges a, c and b, d with cost respectively $c_{ac}$ and $c_{bd}$. Now lets compute: 
 \begin{equation*}
-\Delta = c_{ab} + c_{ab} - (c_{ac} + c_{bd})
+\Delta = c_{ab} + c_{cd} - (c_{ac} + c_{bd})
 \end{equation*}
-that is the cost of the initial removed edges minus the cost of the new edges. If $\Delta > 0$, it means that the new edges are better than the older and the swap is worth because it reduce (improve) the objective function. Of course the new solution produced is still admissible (Figure 5.?? %TODO add figure number
-).\\
+that is the cost of the initial removed edges minus the cost of the new edges. If $\Delta > 0$, it means that the new edges are better than the older and the swap is worth because it reduce (improve) the objective function. Of course the new solution produced is still admissible (Figure 5.6).\\
 
 \begin{figure}[h!]
 \centering
@@ -225,7 +225,7 @@ that is the cost of the initial removed edges minus the cost of the new edges. I
 \end{algorithm}
 
 \noindent On our implementation we followed the procedure described above, with the addition of a matrix to store all the distances between points, to avoid to recompute them more than once.\\
-This algorithm is very good to remove edge intersections, like the ones produced  by nearest neighborhood (or GRASP). Here in the table below some examples.\\ 
+This algorithm is very good to remove edge intersections, like the ones produced  by nearest neighborhood (or GRASP). Here in Table 5.1 some examples.\\ 
 
 \begin{table}[h!]
 	\begin{center}
@@ -247,7 +247,7 @@ This algorithm is very good to remove edge intersections, like the ones produced
 \end{table}
 
 \noindent These results were obtained after running GRASP for five seconds and then refining the solution with 2-OPT for other five seconds. Of course this dataset is very small but it gives the idea of the power of this technique, we have, in fact, a significant improve of the objective function in all the cases. To notice that the improve increase with large problem. \\
-It is possible to visualize the action of 2-OPT by plotting the solution before and after the refining:
+It is possible to visualize the action of 2-OPT by plotting the solution before and after the refining like in Figure 5.7.
 
 \begin{figure}[h!]
 \centering
@@ -260,7 +260,7 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 
 
 \subsection{THREE-OPT}
-3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves (Figure 5.6). Moreover, we have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that is cubic doesn't work well with big problems, for example with instances with more than 10000 points.
+3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves (Figure 5.8). Moreover, we have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that is cubic doesn't work well with big problems, for example with instances with more than 10000 points.
 
 \begin{figure}[h!]
   \centering
@@ -299,7 +299,7 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
   \caption{All the possible 3-OPT moves given a triad of edges.}
 \end{figure}
  
-\noindent We also repeated the same experiment we did for the 2-OPT, so we run on different problems GRASP for 5 seconds and then 3-OPT on the result for other 5 second. The results are shown in the Table 5.2. Again the dataset is small because the only goal was to show the power of this refinement algorithm and not to compare it with other techniques. Observing the table we can notice that the improve for the smaller problems is almost the same, or sometimes better than the one with 2-OPT, but more importantly we can notice that the algorithm scales bad with big problems due to the fact that it's cubic. In fact 5 seconds is a relatively small amount of time and in this short period the number of 3-OPT moves that the algorithm is able to perform is small and the improve is small too.
+\noindent We also repeated the same experiment we did for the 2-OPT, so we run on different problems GRASP for 5 seconds and then 3-OPT on the result for other 5 second. The results are shown on Table 5.2. Again the dataset is small because the only goal was to show the power of this refinement algorithm and not to compare it with other techniques. Observing the table we can notice that the improve for the smaller problems is almost the same, or sometimes better than the one with 2-OPT, but more importantly we can notice that the algorithm scales bad with big problems due to the fact that it's cubic. In fact 5 seconds is a relatively small amount of time and in this short period the number of 3-OPT moves that the algorithm is able to perform is small so the improve is poor.
 
 \begin{table}[h!]
 	\begin{center}
@@ -359,10 +359,10 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 \begin{figure}[h!]
 \centering
 	\includegraphics[scale=0.8]{media/VNS.png} \\
-	\caption{Representation of an objective function and the ``kick" of a 5-OPT random move}
+	\caption{Representation of an objective function during VNS and the ``kick" of a 5-OPT random move}
 \end{figure}
 
-\noindent On our implementation we use the technique showed in Figure 5.8. We select the edges to remove (that in our example are three) and then we reconnect the vertices so that the reversal of some edges to reconstruct the cycle (the one described in 5.2.1) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red )and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move, where k is establish at the beginning of the execution.
+\noindent On our implementation we use the technique showed in Figure 5.10. We select the edges to remove (that in our example are three) and then we reconnect the vertices in a specific way, so that the reversal of some edges to reconstruct the cycle (the one described in 5.2.1) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red) and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move, where k is establish at the beginning of the execution.
 
 \begin{figure}[h!]
   \centering
@@ -378,7 +378,7 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
     \includegraphics[width=\linewidth]{media/vns3.png}
     \caption{}
   \end{subfigure}
-  \caption{All the possible 3-OPT moves given a triad of edges.}
+  \caption{Passages for a k-OPT random move (In this case a 3-OPT move).}
 \end{figure}
 
 
@@ -525,17 +525,17 @@ After some iteration we have that the average fitness improve due to the fact th
 
 
 \noindent Our first implementation of this algorithm was pretty simple. We generated a population of a size decided by the user using the GRASP algorithm. We created a probability mass function (PMF) normalizing the sum of the fitness, so on each iteration we randomly chose the elements to remove based on that mass function. This means that during the firsts iterations, when all the individual have almost the same fitness, the element are almost randomly remove, while when the algorithm progress and there is a more evident difference between good and bad individuals, with high probability only the worst solutions are removed. The number of element to remove on each iteration (that is equal to the number of children to generate) is a parameter decided by the user. \\
-To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function that remove all the points visited twice and insert the missing ones using the insertion algorithm described in 5.1.3. 
+To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function (Figure 5.13) that remove all the points visited twice and insert the missing ones using the insertion algorithm described in 5.1.3. 
 
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/correction1.png}
-     \caption{Non corrected children}
+     \caption{Non repaired children}
   \end{subfigure}
   \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/correction2.png}
-    \caption{Twice-visited edges removal}
+    \caption{Twice-visited vertices removal}
   \end{subfigure}
   \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/correction3.png}
@@ -548,10 +548,9 @@ To reproduce two elements we used the following technique: we chose a random num
   \caption{Example of the steps of a repair function}
 \end{figure}
 
-The couples to reproduce are simply chosen at random from the population and we didn't implement any mechanism to control that same individual aren't choose more than once. We made this choice because on this algorithm the population have often big size, in general more than 10000 individuals, so the probability to pick the exactly same individuals more than once is very low.
+\noindent The couples to reproduce are simply chosen at random from the population and we didn't implement any mechanism to control that same individual aren't choose more than once. We made this choice because on this algorithm the population have often big size, in general more than 10000 individuals, so the probability to pick the exactly same individuals more than once is very low.
 After some run, plotting the average fitness and the best fitness, we could observe the 
-expected behaviour (Figure 5.?? %TODO aggiungere il numero della figura
- ): the average fitness continuously decrease until it get closer to the best fitness (that improve only sometimes).  \\
+expected behaviour (Figure 5.14): the average fitness continuously decrease until it get closer to the best fitness (that improve only sometimes).  \\
 
 \begin{figure}[h!]
 \centering
@@ -559,10 +558,10 @@ expected behaviour (Figure 5.?? %TODO aggiungere il numero della figura
 	\caption{Plot of the average fitness and best fitness during the execution of a genetic algorithm.}
 \end{figure}
 
-\noindent The problem of our implementation became evident after testing it on different instances: the solutions had lot of intersection (like the ones generated by the GRASP algorithm) that of course don't belong to the optimum. An example of this can be seen on figure 5.??. So we tried to introduce the 2-OPT someway inside the genetic. From this point, to distinguish the different versions of the genetic that we realized, we will call the implementation just described \textit{genetic 1}. \\
+\noindent The problem of our implementation became evident after testing it on different instances: the solutions had lot of intersection (like the ones generated by the GRASP algorithm) that of course don't belong to the optimum. An example of this can be seen on Figure 5.15. So we tried to introduce the 2-OPT someway inside the genetic. From this point, to distinguish the different versions of the genetic that we realized, we will call the implementation just described \textit{genetic 1}. \\
 A possibility that we first considered but we immediately discarded was to just apply the 2-OPT algorithm on the final solution provided by the genetic. This didn't make lot of sense because we did a lot of effort to produce a result with the genetic and then we discard a consistent part of it using the 2-OPT: a simple GRASP plus 2-OPT would be more efficient.
-Then we decided to add the 2-OPT to the repair function. So each children, after being repaired was also refined using the 2-opt rule. Let's call this version \textit{genetic 2}. We immediately noticed a large reduction of the number of epochs executed in the same amount of time with respect to genetic 1. This is because the populations used in the genetic algorithm are large and even if 2-OPT is quite fast it has to be executed a lot of time. \\
-Finally we tried an hybrid approach between genetic 1 and genetic 2: after the repair function the refinement is executed with a probability x decided by the user. With this version each epoch is faster than genetic 2 because the 2-opt is executed less time, however the price of this is the introduction of another parameter that is the probability x.\\
+Then we decided to add the 2-OPT to the repair function. So each children, after being repaired was also refined using the 2-OPT rule. Let's call this version \textit{genetic 2}. We immediately noticed a large reduction of the number of epochs executed in the same amount of time with respect to genetic 1. This is because the populations used in the genetic algorithm are large and even if 2-OPT is quite fast it has to be executed a lot of time. \\
+Finally we tried an hybrid approach between genetic 1 and genetic 2: after the repair function the refinement is executed with a probability x decided by the user. With this version each epoch is faster than genetic 2 because the 2-OPT is executed less time, however the price of this is the introduction of another parameter that is the probability x.\\
 
 \begin{figure}[h!]
 \centering
@@ -571,8 +570,7 @@ Finally we tried an hybrid approach between genetic 1 and genetic 2: after the r
 \end{figure}
 
 \noindent We tested these three versions on the dataset to find which ones is the best. We establish a time limit of 10 minutes and a population size of 2000 elements with 200 new elements each epoch. The 2-OPT, when applied inside the repair function, has a time limit of one second. Note that we were forced to use a population with a limited size, in fact after few tests we discovered that it's very difficult to handle a big population (like 10000 or more elements) on a single machine, cause the algorithm became incredibly slow.
-The table %TODO add table
-report the final value of the objective function obtained by each algorithm and the number of epoch that it was able to execute within the time limit. The first thing that we can notice, as expected, is that the introduction of the 2-OPT involves a big decrease of the epochs performed. However in both genetic 2 and 3 results are better, so even if we pay an increase of execution time for each epoch, the addition of the refinement is worth. This became more evident if we consider the performance profile, where genetic 1 is far the worst algorithm. \\ 
+The Table 5.3 report the final values of the objective functions obtained by each algorithm and the number of epoch that it was able to execute within the time limit. The first thing that we can notice, as expected, is that the introduction of the 2-OPT involves a big decrease of the epochs performed. However in both genetic 2 and 3 results are better, so even if we pay an increase of execution time for each epoch, the addition of the refinement is worth. This became more evident if we consider the performance profile (Figure 5.16), where genetic 1 is far the worst algorithm. \\ 
 Again, looking to the performance profile, genetic 2 seems to be the best, followed by genetic 3 that is slightly worse. However we chose genetic 3 as the winner of this first ``eliminatory phase" for the following reasons: first of all the difference in the performance profile is tiny and since the dataset used is quite small we cannot say with absolute certainty that genetic 2 is the best. Moreover if we perform a 2-OPT on each new element, we move away from the idea of the genetic, in fact each children has to pass through a repair function and then a refinement, so with high probability it will maintain very few elements of its parents. Finally we execute very few epochs with respect to genetic 1 and 3 and this is against the principle of the evolution of the population. So this is why we selected the third version of the algorithm to compete with the others metaheuristics.\\
 
 \begin{table}[h!]
