@@ -4,7 +4,40 @@ On this chapter we will illustrate two heuristic solution for the TCP that are b
 \section{Hard fixing}
 When we have to resolve a large instance of TSP, CPLEX can require a large amount of time. Moreover in some practical application we may have to resolve the problem in a certain amount of time that we cannot exceed. So for this reason we can set a time limit for CPLEX, that means that the solver will return the best solution found within that limit. The hard fixing algorithm starts from this point. Let's set a time limit (10 minutes for example) and consider the solution obtained. Of course this solution with high probability is not the optimum solution, but it may contains some edges that belong to it. So the idea is to fix some edges, and pass the new model to CPLEX. In order to do this we can simply work on the bounds of the variables: if we set $1 \leq x(i,j) \leq 1$ the corresponding edge is fixed on the solution. The new model of course is simpler, because we have a smaller amount of variables, so when we resolve it with CPLEX (again with a fixed time limit) it may find a better solution. This procedure can also be iterate until a final time limit (like 1 hour) is reached: each time we release the variables that were fixed on the previous iteration (just reset the bounds to $0 \leq x(i,j) \leq 1$) and we choose a new set of edges to fix.
 Note that when the variables are fixed, due to the fact that the instance is smaller, CPLEX may resolve that model to its optimum before the time limit exceed.
-Of course the choice of which edge to fix and their number is quite relevant. In general a good idea is to set a fixing percentage and randomly choose the variables to fix. We can also decide to variate the percentage over the iterations, for example starting with an high value (like 90\%) and then decrease it until zero. This mean that on the initial iterations the problem to resolve is very small so we may get a significant improve, while on the last iterations we have a big problem but lot of freedom to refine the solution. Of course this is only an example and other strategies can be implemented. 
+Of course the choice of which edge to fix and their number is quite relevant. In general a good idea is to set a fixing percentage and randomly choose the variables to fix. We can also decide to variate the percentage over the iterations, for example starting with an high value (like 90\%) and then decrease it until zero. This mean that on the initial iterations the problem to resolve is very small so we may get a significant improve, while on the last iterations we have a big problem but lot of freedom to refine the solution. Of course this is only an example and other strategies can be implemented.  
+
+\begin{algorithm}
+    \caption{Hard Fixing}\label{Hard Fixing}
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
+    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ heuristic solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+    \State $\textit{percentage} \gets \textit{0.9}$
+    \State $\textit{remaining\_time} \gets \textit{timelimit}$
+    \State $\textit{time\_x\_cycle} \gets \textit{timelimit / 5}$
+    \State $\textit{start} \gets \textit{second()}$
+    \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+    \State first\_solution $ \leftarrow $ \textbf{$\ast$ Heuristic solution with GRASP + 2-OPT $\ast$ }
+    \State model $ \leftarrow $  CPXaddmipstarts(first\_solution)
+    \While {(\textit{remaining\_time} $>$= 0)} 
+    	\If{$ (\textit{remaining\_time} > \textit{time\_x\_cycle})$} 
+	\State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{time\_x\_cycle}) $
+	
+	\Else \State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{remaining\_time}) $
+	\EndIf
+	\State $\textit{t1} \gets \textit{second()}$
+    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model}) $\;
+	\State $\textit{t2} \gets \textit{second()}$
+	\State $\textit{remaining\_time} \gets \textit{remaining\_time - (t2 $-$ t1)}$
+	\If{$ (\textit{remaining\_time} <= 0)$} 
+	\State \textbf{break}
+	\EndIf
+	\State \textbf{$\ast$ If current solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ 0.15 $ $\ast$}
+	\State \textbf{$\ast$ Reset the lower bound of all the variables to 0.0 $\ast$}
+	\State \textbf{$\ast$ Take at random ``percentage" of model variables and set them to 1.0  $\ast$}
+    \EndWhile
+    \State \textbf{return} $z \text{*} $
+    \end{algorithmic}
+    \end{algorithm}
 
 \section{Local branching}
 The strategy of this algorithm is similar to the one of hard fixing: each iteration fix some edges in order to give to CPLEX a simpler version of the problem. However, rather then randomly choose the variable to fix, we let CPLEX decide which edges to maintain. We can achieve this with the introduction of a new constraint: let's consider an initial solution H provided by CPLEX within a time limit, let $x_e^H$ be the variables equals to one on this solution, we want the sum of these variables to be greater or equals than a percentage of the total number of edges. More formally:
@@ -15,3 +48,38 @@ where $\alpha$ is the selected percentage and n is the size of the instance. In 
 Of course this is not a valid constraint for the problem, cause we are not sure that the variables equals to one on a solution belong to the optimum.\\
 Again we can iterate the procedure, each time removing the old constrain and generating a new one, based on the new solution, until a final time limit is reached. The fact that the selection of the variables to fix is not random, means that the CPLEX solution is deterministic, so it is not wise to execute two iterations with the same fixing percentage, cause we may resolve two times the same problem obtaining the same solution within the time limit.
 Finally, another shrewdness that is required, is that this algorithm works only if the fixing percentage is very high, so iteration with percentage of 50-60 or less should be avoided.
+
+\begin{algorithm}
+    \caption{Local branching}\label{Local branching}
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
+    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ heuristic solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+    \State $\textit{percentage} \gets \textit{$|$V $|$ $\ast$ 0.95}$
+    \State $\textit{remaining\_time} \gets \textit{timelimit}$
+    \State $\textit{time\_x\_cycle} \gets \textit{timelimit / 5}$
+    \State $\textit{start} \gets \textit{second()}$
+    \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+    \State first\_solution $ \leftarrow $ \textbf{$\ast$ Heuristic solution with GRASP + 2-OPT $\ast$ }
+    \State model $ \leftarrow $  CPXaddmipstarts(first\_solution)
+    \While {(\textit{remaining\_time} $>$= 0)} 
+    	\If{$ (\textit{remaining\_time} > \textit{time\_x\_cycle})$} 
+	\State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{time\_x\_cycle}) $
+	
+	\Else \State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{remaining\_time}) $
+	\EndIf
+	\State $\textit{t1} \gets \textit{second()}$
+    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model}) $\;
+	\State $\textit{t2} \gets \textit{second()}$
+	\State $\textit{remaining\_time} \gets \textit{remaining\_time - (t2 $-$ t1)}$
+	\If{$ (\textit{remaining\_time} <= 0)$} 
+	\State \textbf{break}
+	\EndIf
+	\State \textbf{$\ast$ If current solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ (0.05 \ast percentage)$ $\ast$}
+	\State \textbf{$\ast$ Save the indices of the solution variables $\ast$}
+	\State \textbf{$\ast$ If is not the first cycle remove the last row of the model $\ast$}
+	\State \textbf{$\ast$ Add the new local branching constraint with $\alpha n = percentage $ $\ast$}
+    \EndWhile
+    \State \textbf{return} $z \text{*} $
+    \end{algorithmic}
+    \end{algorithm}
+
