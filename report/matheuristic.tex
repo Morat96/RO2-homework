@@ -16,7 +16,7 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
     \caption{Hard Fixing}\label{Hard Fixing}
     
     \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ heuristic solution to TSP on the input graph $G$
+    \hspace*{\algorithmicindent} \textbf{Output:} A solution for the TSP problem
     \begin{algorithmic}[1]
     \State $\textit{percentage} \gets \textit{0.9}$
     \State $\textit{remaining\_time} \gets \textit{timelimit}$
@@ -32,14 +32,14 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
 	\EndIf
 	
 	\State $\textit{t1} \gets \textit{second()}$
-    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model}) $\;
+    	\State $\textbf{\textit{x}} \gets \text{solution}(\text{model}) $\;
 	\State $\textit{t2} \gets \textit{second()}$
 	\State $\textit{remaining\_time} \gets \textit{remaining\_time $-$ (t2 $-$ t1)}$
 	\If{$ (\textit{remaining\_time} <= 0)$} 
 	\State \textbf{break}
 	\EndIf
-	\State \textbf{$\ast$ If current solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ 0.15. $ $\ast$}
-	\State \textbf{$\ast$ Reset the lower bound of all the variables to 0.0 $\ast$}
+	\State \textbf{$\ast$ If the solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ 0.15. $ $\ast$}
+	\State \textbf{$\ast$ Restore the default bounds for each variable $\ast$}
 	\algstore{myalg}
     	\end{algorithmic}
    	\end{algorithm}
@@ -47,9 +47,9 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
 	\begin{algorithm}                     
    	 \begin{algorithmic} [1]              
     	\algrestore{myalg}
-	\State \textbf{$\ast$ Take at random ``percentage" of model variables and set them to 1.0  $\ast$}
+	\State \textbf{$\ast$ Hard fixing of each variable according to \textit{percentage} $\ast$}
     \EndWhile
-    \State \textbf{return} $z \text{*} $
+    \State \textbf{return} \textbf{\textit{x}} 
     \end{algorithmic}
     \end{algorithm}
 
@@ -68,7 +68,7 @@ At each iteration of the while loop (line 7), the variables of the solution are 
 \begin{algorithm} [H]
     \caption{Local branching}\label{Local branching}
     \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ heuristic solution to TSP on the input graph $G$
+    \hspace*{\algorithmicindent} \textbf{Output:}  A solution for the TSP problem
     \begin{algorithmic}[1]
     \State $\textit{percentage} \gets \textit{$|$V $|$ $\ast$ $0.95$}$
     \State $\textit{remaining\_time} \gets \textit{timelimit}$
@@ -83,18 +83,18 @@ At each iteration of the while loop (line 7), the variables of the solution are 
 	\Else \State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{remaining\_time}) $
 	\EndIf
 	\State $\textit{t1} \gets \textit{second()}$
-    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model}) $\;
+    	\State $\textbf{\textit{x}} \gets \text{optimal\_solution}(\text{model}) $\;
 	\State $\textit{t2} \gets \textit{second()}$
 	\State $\textit{remaining\_time} \gets \textit{remaining\_time $-$ (t2 $-$ t1)}$
 	\If{$ (\textit{remaining\_time} <= 0)$} 
 	\State \textbf{break}
 	\EndIf
-	\State \textbf{$\ast$ If current solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ (0.05 \ast percentage).$ $\ast$}
+	\State \textbf{$\ast$ If the solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ (0.05 \ast percentage).$ $\ast$}
 	\State \textbf{$\ast$ Save the indices of the solution variables. $\ast$}
 	\State \textbf{$\ast$ If is not the first cycle remove the last row of the model. $\ast$}
 	\State \textbf{$\ast$ Add the new local branching constraint with $\alpha n = percentage. $ $\ast$}
     \EndWhile
-    \State \textbf{return} $z \text{*} $
+    \State \textbf{return} \textbf{\textit{x}}
     \end{algorithmic}
     \end{algorithm}
 
