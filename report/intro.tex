@@ -40,3 +40,20 @@ where $x_{ij}$ are the decision variables defined in this way:
 \]
 
 \noindent The 1.2 means that the sum of all the outgoing edges in each vertex must be equals to 1, similar the 1.3 says that the sum of all the edges entering a vertex must be equals to one. So if we consider both 1.2 and 1.3 we have that each vertex must have only one incoming and one outgoing edge. \\ The 1.4 says that each vertex v must be reachable from the vertex 1, so that the solution must be connected and must visit all the vertices (subtour are not allowed). These constraints are $O(2^n)$, on the following chapter we will show some possible solution to handle them.
+\\\\
+In the next chapters we are going to present all our algorithms together with their implementations and tests. In particular, this report is structured as follows:
+
+\begin{itemize}
+  \item in Chapter 2 we will present some Compact models that we have studied and implemented, showing for each the mathematical formulation, a little description and a performance comparison between them;
+  \item in Chapter 3 we will present Exact algorithms which can solve the TSP problem to optimum using the DJF formulation, handling the SECs constraints with different approaches;
+    \item in Chapter 4 we will present two heuristic algorithms based on CPLEX that can handle problem with thousands of nodes;
+    \item in Chapter 5 we will present some TSP solution builders and a variety of metaheuristic algorithms;
+     \item in Chapter 6 we will present the conclusions of our work.
+\end{itemize}
+
+All the source code we developed is available at:
+\begin{center}
+https://github.com/Morat96/RO2-homework \footnote{For more informations on how compile and run the code, see the README.}. 
+
+\end{center}
+
