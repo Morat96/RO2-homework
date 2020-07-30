@@ -15,27 +15,26 @@ The algorithm then proceeds solving the problem within a while loop (lines 3-4),
 It may seem that this method is not very efficient, but with recent, increasingly sophisticated solvers, this method can lead to the optimal solution, even with many nodes, in a few seconds.
 \begin{algorithm}
     \caption{Simple Loop}\label{Loop Method}
-    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ optimal solution to TSP on the input graph $G$
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}^+$\\
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
     \begin{algorithmic}[1]
     \State $\textit{done} \gets \textit{false}$
     \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
     \While {!done} 
-    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model})$\;
+    	\State $\textbf{\textit{z}\text{*}} \gets \text{optimal\_solution}(\text{model})$\;
 	\If{$components(z\text{*}) > 1$} 
-	\State \textbf{ $\ast$ Add to the model SECs for each connected component $\ast$ }
+	\State \textbf{ $\ast$ Add SECs for each connected component to the model $\ast$ }
 	
 	\Else \State $\textit{done} \gets \textit{true}$
 	\EndIf	
     \EndWhile
-    \State \textbf{return} $z \text{*} $
+    \State \textbf{return} $\textbf{\textit{z}\text{*}} $
     \end{algorithmic}
     \end{algorithm}
 \noindent
 \subsection{Heuristic Loop}
 The Algorithm 1 has a drawback, since at each iteration we solve to the optimum the TSP problem, even if the constraints collected until that point, are not sufficient to achieve the true optimum. In other words, we must wait that the solver finds out the optimal solution, even if the constraints avaiable may allow solutions with subtours.
-\\ For this reason, we implemented an ``heuristic" version of the method seen before. This method is composed of two phases. 
-For this reason, we implemented an ``heuristic" version of the method seen before. This method is composed of two phases. The first phase is used to collecting some SEC constraints, relaxing the optimality concept, setting for example an higher value for the solution GAP or limiting the solution in the root node of the branching tree.
+\\ For this reason, we implemented an ``heuristic" version of the method seen before. This method is composed of two phases. The first phase is used to collecting some SEC constraints, relaxing the optimality concept, setting for example an higher value for the solution GAP or limiting the solution in the root node of the branching tree.
 This phase permits add useful constraints to the model, without computing the optimal solution in each iteration. In fact, with this phase we can obtain a lot of useful SECs in a short time, especially in the first iterations.
 This phase is active until the solution found has more than one component, from then on, will be activated the second phase. 
 In the second phase, the ``relaxation" of the solver is removed, solving essentially the problem with the Simple Loop method and this ensure that the solution computed is the true optimal solution.
@@ -46,8 +45,8 @@ During the first phase, we have collected, hopefully, a number of useful SEC con
 For the second phase, please refer to the Simple Loop (Algorithm 1).
 \begin{algorithm}
     \caption{Heuristic Loop}\label{Loop Method}
-    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:} $z \text{*} $ optimal solution to TSP on the input graph $G$
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}^+$\\
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
     \begin{algorithmic}[1]
     \State $\textit{done} \gets \textit{false}$
     \State $\textit{first\_phase} \gets \textit{true}$
@@ -59,9 +58,9 @@ For the second phase, please refer to the Simple Loop (Algorithm 1).
 	\State CPXsetintparam $ \leftarrow $\textbf{ $\ast$ Return to original solver setting in order to obtain an optimal solution $\ast$ }
 	\State $\textit{second\_phase} \gets \textit{false}$
 	\EndIf
-    	\State $z \text{*} \gets \text{optimal\_solution}(\text{model})$\;
+    	\State $\textbf{\textit{z}\text{*}}  \gets \text{optimal\_solution}(\text{model})$\;
 	\If{$components(z\text{*}) > 1$} 
-	\State \textbf{ $\ast$ Add to the model SECs for each connected component $\ast$ }
+	\State \textbf{ $\ast$ Add SECs for each connected component to the model $\ast$ }
 	\EndIf
 	\If{$ components(z\text{*}) == 1 \And first\_phase$} 
 	\State $\textit{first\_phase} \gets \textit{false}$
@@ -71,10 +70,264 @@ For the second phase, please refer to the Simple Loop (Algorithm 1).
 	\State $\textit{done} \gets \textit{true}$
 	\EndIf
     \EndWhile
-    \State \textbf{return} $z \text{*} $
+    \State \textbf{return} $\textbf{\textit{z}\text{*}} $
     \end{algorithmic}
     \end{algorithm}
     
 \newpage
+\subsection{Final comparison between Loop Methods}
+\newpage
 \section{Callbacks}
+On this section we will describe how to solve the DFJ model using CPLEX callbacks. Until now, the algorithms we described resolve the TSP problem with an iterative approach, that is, solve multiple times the problem of a relaxed model, adding the SECs constraints when the solution found has multiple tours. Since CPLEX uses the branch-and-cut technique to solve exactly the model, with this approach multiple decision trees will be created from scratch, losing much of the information from previous trees. Another way to handle the SECs constraints is to exploit the branch-and-cut technique. In particular, when an integer solution is found by CPLEX during the decision tree, we can reject it if contains multiple tours, adding for each of them a SEC constraint. With this method we develop only a single decision tree, and this results, hopefully, in a faster computation. To this end, CPLEX provides a series of callbacks that can be used for adding constraints and solutions on the fly.
+
+\subsection{Lazy Callback}
+The lazy callback permits to resolve the TSP problem in a very fast and natural way. As described previously, in order to solve the problem we must reject solutions that have multiple tours, adding SECs constraints on the fly. This leads to Algorithm 3 in which we instantiate the model and the objective function as usual (line 2). Then we instantiate a procedure called LazyCallback (line 3). A LazyCallback is a function called by the optimizer when an integer solution is found during the branch-and-cut algorithm. The task of the callback is to check if solution passed has more than one connected components (line 8) and if it is the case, to reject the solution adding the SECs constraints to the model. Thereafter, the resolution resumes (lines 9 - 11).
+The routine continues by optimally solving the model and returning the solution found (lines 4 - 5).
+
+
+\begin{algorithm}
+    \caption{Lazy Callback}\label{Lazy Callback}
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+   \Function{TSPopt}{$G = (V,E) , c : E \rightarrow \mathbb{R}^+$}
+  \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+  \State optimizer $ \leftarrow $ \textbf{$\ast$ Initialize the LazyCallback function within the optimizer $\ast$ }
+  \State $\textbf{\textit{z}\text{*}} \gets \text{optimizer(model)}$
+  \State \Return \textbf{\textit{z}\text{*}}
+\EndFunction
+\\
+  \Function{LazyCallback}{\textbf{\textit{x}}, model}
+  \State comp $ \leftarrow $ \textbf{$\ast$ number of components in the integer solution \textit{x} $\ast$ }
+  \If{$ (comp > 1) $} 
+	\State \textbf{ $\ast$ Add SECs for each connected component to the model $\ast$ }
+	\EndIf  
+	\State \Return 
+	\EndFunction
+
+    \end{algorithmic}
+    \end{algorithm}
+
+\subsection{UserCut Callback}
+Another interesting callback is the UserCut which is used to generate SECs constraints on fractional solutions. The idea is pretty the same as the Lazy callback; when a fractional solution is found during the exploration of the decision tree by the solver, the UserCutCallback function checks the solution and adds constraints to the model on the fly. The procedure is described in algorithm 4. In this case both LazyCallback and UserCutCallback must be defined (line 3). In particular, the UserCutCallback function checks how many components there are in the solution (line 14), if there are many connected components then it adds the SECs for each connected component (lines 15 - 16). Instead, when the graph is connected, we apply to the model violated cuts, looking for sections with a capacity less than a certain threshold. The cutoff value is set to 2.0 - $\epsilon$, with $\epsilon$ = 0.1 in our implementation (lines 17 - 18). We used the \textit{Concorde}\footnote{http://www.math.uwaterloo.ca/tsp/concorde.html} algorithms in order to fast computing the connected components and violated cuts in fractional solutions. Due to the fact that fractional solutions are more than integer solutions and that the UserCutCallback function employs several time consuming algorithms, the callback is called only when the depth of the decision tree is less than or equal to 10, which is a reasonable tradeoff between number of constraints applied to the model and time spent in executing flow algorithms.
+
+
+
+\begin{algorithm}
+    \caption{UserCut Callback}\label{UserCut Callback}
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+   \Function{TSPopt}{$G = (V,E) , c : E \rightarrow \mathbb{R}^+$}
+  \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+  \State optimizer $ \leftarrow $ \textbf{$\ast$ Initialize the callback functions within the solver $\ast$ }
+  \State $\textbf{\textit{z}\text{*}} \gets \text{optimizer(model)}$
+  \State \Return \textbf{\textit{z}\text{*}}
+\EndFunction
+\\
+  \Function{LazyCallback}{\textbf{\textit{x}}, model}
+  \State comp $ \leftarrow $ \textbf{$\ast$ number of components in the integer solution \textit{x} $\ast$ }
+  \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\EndIf  
+	\State \Return 
+	\EndFunction
+	\\
+	\Function{UserCutCallback}{\textbf{\textit{x}}, model}
+  \State comp $ \leftarrow $ \textbf{$\ast$ number of components in the fractional solution \textit{x} $\ast$ }
+  \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\EndIf
+	\If{$ (comp = 1) $} 
+	\State \textbf{$\ast$ Add SECs on the separated fractionary solution $\ast$ }
+	\EndIf 
+	\State \Return 
+	\EndFunction
+
+    \end{algorithmic}
+    \end{algorithm}
+    
+\subsection{Heuristic Callback}
+The last callback that we present is the Heuristic which is used to provide to the solver heuristic feasible solutions from fractional or infeasible solutions. 
+In our case, since we are trying to solve the TSP problem, we generate first a tour from integer solutions with multiple connected components and then we add them to the solver using the CPLEX heuristic callback, which permits to add solutions and to automatically check their feasibility. This technique is very useful in the early stages of the branch-and-cut algorithm because, by providing a TSP solution to the solver, we can provide an upper-bound to the optimal solution, thus cutting many branches of the decision tree. This led us to define the Algorithm 5. The main differences with respect to Algorithm 4 are the addition of a new function called HeuristicCallback and a new algorithm to compute a tour starting from an integer solution with multiple components provided in the LazyCallback function. Since we want the algorithms to be thread safe, we must keep track of the index of each thread that produce a specific solution. To to this, for every integer solution with multiple connected components provided by the Lazy callback, we compute a new solution composed by a single tour (i.e. a TSP solution), saving in addition the index of the thread that has computed that solution (lines 11 - 12).
+The algorithm to compute a tour starting from an infeasible solution is presented in Algorithm 6. The idea is very simple, melt connected components in a single tour optimizing the total length by merging the most nearest components.
+In particular, the algorithm starts by computing the number of components of the solution (line 2). This value correspond to the iterations that the algorithm must perform in order to merge all the components of the solution (line 3). Inside the while loop, the algorithm compute the minimum delta for each pair of nodes of the graph that are in different components. The delta correpond to the incremental cost of the objective function due to a specific swap of edges. Two cases are possible (lines 6 - 13); in the first case, the edge composed of $(a, a^{\prime} = \textit{succ}(a))$ is replaced by $(a, b)$ and the edge $(b, b^{\prime})$ is replaced by $(b^{\prime}, a^{\prime})$, increasing the objective function of $\Delta(a,b)$. In this case, the order of the edges in the second component must be reversed to preserve the correct direction of the graph (Figure 3.1 a - b). The second case is simpler and is obtained by crossing the edges as in Figure 3.1 c and d. Once the minimum delta is found, the correct swap is applied to the graph (lines 14 - 20) and the number of components is reduced by 1 (line 21 - 22). 
+Concluding the description of algorithm 5, when the HeuristicCallback function is called by the solver, it checks whether a solution has been saved for the current thread (line 24) and, if a solution exists, it adds it to the solver, leaving the latter to verify its feasibility (line 25).
+
+\begin{algorithm}
+    \caption{Heuristic Callback}\label{Heuristic Callback}
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+   \Function{TSPopt}{$G = (V,E) , c : E \rightarrow \mathbb{R}^+$}
+  \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+  
+  \State optimizer $ \leftarrow $ \textbf{$\ast$ Initialize the callback functions within the solver $\ast$ }
+  \algstore{myalg}
+    	\end{algorithmic}
+   	\end{algorithm}
+	\vspace{1cm}
+	\begin{algorithm}                     
+   	 \begin{algorithmic} [1]              
+    	\algrestore{myalg}
+  \State $\textbf{\textit{z}\text{*}} \gets \text{optimizer(model)}$
+  \State \Return \textbf{\textit{z}\text{*}}
+\EndFunction
+\\
+  \Function{LazyCallback}{\textbf{\textit{x}}, model}
+  \State comp $ \leftarrow $ \textbf{$\ast$ number of components in the integer solution \textit{x} $\ast$ }
+  \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\State \textbf{\textit{x}$^{\prime}$} $ \leftarrow $ \text{complete\_tour(\textbf{\textit{x}})}
+	\State \textbf{$\ast$ Save \textbf{\textit{x}$^{\prime}$} and the thread index $\ast$ }
+	\EndIf  
+	\State \Return 
+	\EndFunction
+	\\
+	\Function{UserCutCallback}{\textbf{\textit{x}}, model}
+  \State comp $ \leftarrow $ \textbf{$\ast$ number of components in the fractional solution \textit{x} $\ast$ }
+  \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\EndIf
+	\If{$ (comp = 1) $} 
+	\State \textbf{$\ast$ Add SECs on the separated fractionary solution $\ast$ }
+	\EndIf 
+	\State \Return 
+	\EndFunction
+	\\
+	\Function{HeuristicCallback}{\textbf{\textit{x}}, model}
+	\State \textbf{if} $\ast$ there is a solution available in the current thread $\ast$ \textbf{then}
+	\State \textbf{$\ast$ Add the TSP heuristic solution \textbf{\textit{x}$^{\prime}$} to the solver $\ast$ }
+	\State \Return 
+	\EndFunction
+
+    \end{algorithmic}
+    \end{algorithm}
+    
+    \noindent
+    
+    \begin{algorithm}[H]
+    \caption{complete tour}\label{complete tour}
+    \hspace*{\algorithmicindent} \textbf{Input:} \textbf{\textit{x}} solution with multiple connected components \\ 
+    \hspace*{\algorithmicindent} \textbf{Output:} \textbf{\textit{x}$^{\prime}$} heuristic TSP solution
+    \begin{algorithmic}[1]
+    \State \textit{min} $\gets \infty$
+    \State \textit{ncomp} $\gets $ components(\textbf{\textit{x}})
+    
+	
+    \While {(ncomp != 1)} 
+    \ForEach {$a,b \in \mathcal V $}
+    \If{$ (comp(a)$  !=  $comp(b)) $} 
+	\State $\Delta(a,b) = dist(a, b^{\prime}) + dist(b, a^{\prime}) - dist(a, a^{\prime}) - dist(b, b^{\prime})$
+	\If{$ (\Delta(a,b) < min) $} 
+	\State $ min = \Delta(a,b) $
+	\State \textit{flag} $\gets 0$
+	\EndIf 
+	\State $\Delta(a,b)^{\prime} = dist(a, b) + dist(b^{\prime}, a^{\prime}) - dist(a, a^{\prime}) - dist(b, b^{\prime})$
+	\If{$ (\Delta(a,b)^{\prime} < min) $} 
+	\State $ min = \Delta(a,b)^{\prime} $
+	\State \textit{flag} $\gets 1$
+	\EndIf 
+	\EndIf 
+    \EndFor
+    \algstore{myalg1}
+    	\end{algorithmic}
+   	\end{algorithm}
+	\noindent
+	\begin{algorithm}                   
+   	 \begin{algorithmic} [1]              
+    	\algrestore{myalg1}
+    \If{$ (flag = 1) $} 
+    \State \textbf{$\ast$ reverse the order of edges of the second component $\ast$ }
+    \State $ (a, b) \gets (a, a^{\prime})$
+    \State $ (b^{\prime}, a^{\prime}) \gets (b, b^{\prime})$
+    \EndIf 
+    \If{$ (flag = 0) $} 
+    \State $ (a, b^{\prime}) \gets (a, a^{\prime})$
+    \State $ (b, a^{\prime}) \gets (b, b^{\prime})$
+    \EndIf 
+    \State \textbf{$\ast$ update components of \textbf{\textit{x}} $\ast$ }
+    \State \text{ncomp} $\gets \text{ncomp $-$ 1} $    
+    \EndWhile
+    \State \textbf{return} $ \textbf{\textit{x}} $
+    \end{algorithmic}
+    \end{algorithm}
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/HEU-1__.pdf}
+     \caption{First case: before merging}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/HEU-solved2.pdf}
+    \caption{First case: after merging}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/HEU-2_.pdf}
+    \caption{Second case: before merging}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/HEU-2solved2.pdf}
+    \caption{Second case: after merging}
+  \end{subfigure}
+  \caption{The two ways to merge connected components used by the complete\_tour algorithm.}
+\end{figure}
+\clearpage
+\noindent
+Since the overall algorithm is $O(n^2)$, the Heuristic Callback is called only when the depth of the decision tree is less than or equal to 10.
+\subsection{Generic Callback}
+The Generic Callback is a relatively new function that contains essentially two new features with respect to previous callbacks.
+The first one is that the callback, during a call to a user-defined function, doesn't stop the execution of the \textit{Dynamic Search} algorithm. The latter is a branch-and-cut based algorithm, which is kept secret by CPLEX and which guarantee better performance than the traditional but robust branch-and-cut algorithm.
+The second feature is that with a single callback we can define each previous callback using the \textit{context}. The context is a CPLEX structure that defines in which part of the brach-and-cut algorithm the solver calls the callback.
+An example of the use of Generic Callback is presented in Algorithm 7.  This algorithm includes the three callbacks implemented in Algorithm 6, namely, Lazy callback, UserCut Callback and Heuristic Callback. 
+The solver calls the generic callback function with the context CANDIDATE when an integer solution is found (line 8). In this case, we simply collected all function included in the Lazy callback and in the Heuristic callback (lines 9 - 15). On the other hand, after each fractional solution found by the solver the context used is RELAXATION (line 16). In this part of the algorithm, we collected all the function included in the UserCut callback together with the Concorde algorithms (lines 17 - 21).
+
+\begin{algorithm}
+    \caption{Generic Callback}\label{Generic Callback}
+    \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
+    \begin{algorithmic}[1]
+   \Function{TSPopt}{$G = (V,E) , c : E \rightarrow \mathbb{R}^+$}
+  \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
+  \State optimizer $ \leftarrow $ \textbf{$\ast$ Initialize the callback function within the solver $\ast$ }
+  \State $\textbf{\textit{z}\text{*}} \gets \text{optimizer(model)}$
+  \State \Return \textbf{\textit{z}\text{*}}
+\EndFunction
+\\
+  \Function{GenericCallback}{\textbf{\textit{x}}, context, model}
+ 
+  \If{$ (context = CANDIDATE) $} 
+   	\State comp $ \leftarrow $ \textbf{$\ast$ number of components in the integer solution \textit{x} $\ast$ }
+	 \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\State \textbf{\textit{x}$^{\prime}$} $ \leftarrow $ \text{complete\_tour(\textbf{\textit{x}})}
+	\State \textbf{$\ast$ Save \textbf{\textit{x}$^{\prime}$} and the thread index $\ast$ }
+	\EndIf  
+	\State \textbf{if} $\ast$ there is a solution available in the current thread $\ast$ \textbf{then}
+	\State \textbf{$\ast$ Add the TSP heuristic solution \textbf{\textit{x}$^{\prime}$} to the solver $\ast$ }
+	\EndIf  
+	\If{$ (context = RELAXATION) $} 
+   	\State comp $ \leftarrow $ \textbf{$\ast$ number of components in the fractional solution \textit{x} $\ast$ }
+	 \If{$ (comp > 1) $} 
+	\State \textbf{$\ast$ Add SECs for each connected component to the model $\ast$ }
+	\EndIf
+		    \algstore{myalg2}
+    	\end{algorithmic}
+   	\end{algorithm}
+	\vspace{1cm}
+	\begin{algorithm}                   
+   	 \begin{algorithmic} [1]              
+    	\algrestore{myalg2}
+	\If{$ (comp = 1) $} 
+	\State \textbf{$\ast$ Add SECs on the separated fractionary solution $\ast$ }
+	\EndIf 
+	\EndIf  
+	\State \Return 
+	\EndFunction
+
+    \end{algorithmic}
+    \end{algorithm}
+
+\subsection{Final comparison between callbacks}
+
+
+
+
 
