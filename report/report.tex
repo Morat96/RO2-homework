@@ -12,6 +12,10 @@
 \usepackage[noend]{algpseudocode}
 \setcounter{tocdepth}{2}
 \usepackage{amsfonts}
+
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
@@ -45,7 +49,7 @@
 \textsc{\Large Operations Research Course Report}\\
 [1cm]
 \textsc{\Huge \textbf{ \textsl{Travelling Salesman Problem}}}\\
-[7cm]
+[7.5cm]
 \textsc{\Large \textit{ \textsl{Barison Marco}}}\\
 [0.4cm]
 \textsc{\Large \textit{ \textsl{Moratello Matteo}}}\\
