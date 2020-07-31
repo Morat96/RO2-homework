@@ -12,20 +12,20 @@ will lead to a globally optimal solution.  %TODO AGGIUNGERE LA FONTE DELLA CITAZ
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/neighbor1.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/fase1.pdf}
      \caption{Initial step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/neighbor2.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/fase2.pdf}
     \caption{Second step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/neighbor3.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/fase3.pdf}
     \caption{Third step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/neighbor4.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/fase4.pdf}
     \caption{Final result}
   \end{subfigure}
   \caption{Execution of nearest neighbor algorithm}
@@ -72,16 +72,16 @@ The introduction of the random component means that the probability to repeat th
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/GRASP1.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/grasp_fase1.pdf}
      \caption{Initial step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/GRASP2.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/grasp_fase2.pdf}
     \caption{Second step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/GRASP3.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/grasp_fase3.pdf}
     \caption{Third step}
   \end{subfigure}
   \caption{Execution of 3 steps of GRASP. Each time the 3 closest points are considered and one is picked at random.}
@@ -127,20 +127,20 @@ It is also possible to add the GRASP rule, so rather then selecting the point wi
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/insertion1.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/insertion1.pdf}
      \caption{Initial step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/insertion2.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/insertion2.pdf}
     \caption{Second step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/insertion3.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/insertion3.pdf}
     \caption{Third step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.4\linewidth}
-    \includegraphics[width=\linewidth]{media/insertion4.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/insertion4.pdf}
     \caption{Final result}
   \end{subfigure}
   \caption{Execution of insertion heuristic algorithm}
@@ -156,11 +156,11 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.5\linewidth}
+  \begin{subfigure}[b]{0.65\linewidth}
     \includegraphics[width=\linewidth]{media/convex1.jpg}
      \caption{problem att48}
   \end{subfigure}
-  \begin{subfigure}[b]{0.5\linewidth}
+  \begin{subfigure}[b]{0.65\linewidth}
     \includegraphics[width=\linewidth]{media/convex2.jpg}
     \caption{problem a280}
   \end{subfigure}
@@ -193,8 +193,8 @@ that is the cost of the initial removed edges minus the cost of the new edges. I
 \begin{figure}[h!]
 \centering
 	\begin{tabular}{@{}cccc@{}}
-		\includegraphics[scale=0.6]{media/2-opt1.png} &
-		\includegraphics[scale=0.6]{media/2-opt2.png} \\
+		\includegraphics[scale=0.6]{media/twopt1.pdf} &
+		\includegraphics[scale=0.6]{media/twopt2.pdf} \\
 	\end{tabular}
 	\caption{The 2-OPT move, edges in red are removed and replaced by green edges.}
 \end{figure}
@@ -252,8 +252,8 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 \begin{figure}[h!]
 \centering
 	\begin{tabular}{@{}cccc@{}}
-		\includegraphics[scale=0.40]{media/before2opt.png} \\
-		\includegraphics[scale=0.40]{media/after2opt.png} \\
+		\includegraphics[scale=0.45]{media/before2opt.png} \\
+		\includegraphics[scale=0.45]{media/after2opt.png} \\
 	\end{tabular}
 	\caption{Solution of 5 sec of GRASP before (top image) and after (bottom image) a refining of 5 sec}
 \end{figure}
@@ -265,35 +265,35 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt1.png}
+    \includegraphics[width=\linewidth]{media/threeopt1.pdf}
      \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt2.png}
+    \includegraphics[width=\linewidth]{media/threeopt2.pdf}
     \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt3.png}
+    \includegraphics[width=\linewidth]{media/threeopt3.pdf}
     \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt4.png}
+    \includegraphics[width=\linewidth]{media/threeopt4.pdf}
     \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt5.png}
+    \includegraphics[width=\linewidth]{media/threeopt5.pdf}
      \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt6.png}
+    \includegraphics[width=\linewidth]{media/threeopt6.pdf}
     \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt7.png}
+    \includegraphics[width=\linewidth]{media/threeopt7.pdf}
     \caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.24\linewidth}
-    \includegraphics[width=\linewidth]{media/3opt8.png}
+    \includegraphics[width=\linewidth]{media/threeopt8.pdf}
     \caption{}
   \end{subfigure}
   \caption{All the possible 3-OPT moves given a triad of edges.}
