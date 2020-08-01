@@ -209,7 +209,7 @@ that is the cost of the initial removed edges minus the cost of the new edges. I
 		\While{! termination condition}
 			\State best$\Delta \leftarrow \infty$
 			\For {\textbf{each} couples of edge $v_{ab}$, $v_{cd} \in S$}
-				\State $\Delta \leftarrow c_{ab} + c_{ab} - (c_{ac} + c_{bd})$ 
+				\State $\Delta \leftarrow c_{ab} + c_{cd} - (c_{ac} + c_{bd})$ 
 				\If{$\Delta < Best\Delta$}
 					\State best$\Delta \leftarrow \Delta$
 				\EndIf
@@ -434,7 +434,7 @@ Considering the objective function, we have that, when T is high, the algorithm 
 \begin{figure}[h!]
 \centering
 	\includegraphics[scale=0.77]{media/sim_annealing.pdf} \\
-	\caption{Example of the work of the simulated annealing. Note the initial random exploration with high temperature and the move toward the minima with a lower temperature}
+	\caption{Example of the work of the simulated annealing. Note the initial random exploration with high temperature and the move toward the minima with a lower temperature.}
 \end{figure}
 
 \begin{algorithm}
@@ -513,7 +513,7 @@ After some iteration we have that the average fitness improve due to the fact th
     				\State S $\leftarrow$ generateNewChildren$(P_t)$
     				\State repair$($S$)$
     				\State fitnessList $\leftarrow$ add$($fitness$($S$))$
-    				\If{fitness$($S$) < $fitness$($bestSolution$)$}
+    				\If{fitness$($S$) < $ fitness$($bestSolution$)$}
     					\State bestSolution $\leftarrow S$
     				\EndIf
     			\EndFor
