@@ -67,7 +67,7 @@ GRASP is a variation of nearest neighborhood that introduce a random component. 
     \end{algorithmic}
 \end{algorithm}
 
-\noindent Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one, and the next visited point is chosen at random from them. \\
+\noindent Our implementation was almost the same of nearest neighborhood, with the construction for each point of the initial list of all other points sorted by their distance from that point, with the only difference that first three available points are picked from the list, rather than only one, and the next visited point is chosen at random from them. 
 The introduction of the random component means that the probability to repeat the same sequence starting from the same point is very minimal, so GRASP can explore lots of different circuit resolving the problem of determinism of nearest neighborhood. 
 
 \begin{figure}[h!]
@@ -156,11 +156,11 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.65\linewidth}
+  \begin{subfigure}[b]{0.8\linewidth}
     \includegraphics[width=\linewidth]{media/convex1.jpg}
      \caption{problem att48}
   \end{subfigure}
-  \begin{subfigure}[b]{0.65\linewidth}
+  \begin{subfigure}[b]{0.8\linewidth}
     \includegraphics[width=\linewidth]{media/convex2.jpg}
     \caption{problem a280}
   \end{subfigure}
@@ -174,7 +174,7 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
 	\includegraphics[scale=0.8]{media/builder.pdf}
 	\caption{Performance profile of the solution builders}
 \end{figure}
-
+\noindent
 On Figure 5.5 the final confrontation between the heuristic solution builders. To obtain these result we test the algorithms on the dataset of 20 instances with a time limit of 5 minutes. 
 
 \clearpage
@@ -252,8 +252,8 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 \begin{figure}[h!]
 \centering
 	\begin{tabular}{@{}cccc@{}}
-		\includegraphics[scale=0.45]{media/before2opt.png} \\
-		\includegraphics[scale=0.45]{media/after2opt.png} \\
+		\includegraphics[scale=0.5]{media/before2opt.png} \\
+		\includegraphics[scale=0.5]{media/after2opt.png} \\
 	\end{tabular}
 	\caption{Solution of 5 sec of GRASP before (top image) and after (bottom image) a refining of 5 sec}
 \end{figure}
@@ -358,7 +358,7 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[scale=0.8]{media/VNS.png} \\
+	\includegraphics[scale=0.77]{media/vns_graph.pdf} \\
 	\caption{Representation of an objective function during VNS and the ``kick" of a 5-OPT random move}
 \end{figure}
 
@@ -366,16 +366,16 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.42\linewidth}
-    \includegraphics[width=\linewidth]{media/vns1.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/vnss12.pdf}
      \caption{}
   \end{subfigure}
-  \begin{subfigure}[b]{0.42\linewidth}
-    \includegraphics[width=\linewidth]{media/vns2.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/vnss22.pdf}
     \caption{}
   \end{subfigure}
-  \begin{subfigure}[b]{0.42\linewidth}
-    \includegraphics[width=\linewidth]{media/vns3.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/vnss32.pdf}
     \caption{}
   \end{subfigure}
   \caption{Passages for a k-OPT random move (In this case a 3-OPT move).}
@@ -421,7 +421,7 @@ Another shrewdness is that if we encounter a move that is forbidden but that imp
 	\caption{Objective function and incumbent during the execution of tabu search}
 \end{figure}
 
-\noindent On our implementation we use a fixed-size tabu list, with the tenure that is a parameter decided by the user. The list records only one vertex involved in the move: so for example if we perform a pejorative move and we substitute the edges $v_{ab}$ and $v_{cd}$ with $v_{ac}$ and $v_{bd}$, only the vertex a is stored in the tabù list. When we find a good move, we check that all the 4 vertices involved are not in the tabu list, so even if we record only one point per move, this is sufficient to avoid to return back after a pejorative move. \\
+\noindent On our implementation we use a fixed-size tabu list, with the tenure that is a parameter decided by the user. The list records only one vertex involved in the move: so for example if we perform a pejorative move and we substitute the edges $v_{ab}$ and $v_{cd}$ with $v_{ac}$ and $v_{bd}$, only the vertex a is stored in the tabù list. When we find a good move, we check that all the 4 vertices involved are not in the tabu list, so even if we record only one point per move, this is sufficient to avoid to return back after a pejorative move. 
 The check if a move is forbidden require a $O(k)$, where k is the tenure. So we perform this control only to moves that are better than the best move found until that moment (It's useless to check pejorative moves or moves that are not candidate to be selected as best move). \\
 Finally we also implemented the aspiration criterion, so if a forbidden move leads to an improve of the incumbent, we keep that solution and we update the incumbent too.
 
@@ -433,7 +433,7 @@ Considering the objective function, we have that, when T is high, the algorithm 
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[scale=0.8]{media/SimulatedAnnealing.png} \\
+	\includegraphics[scale=0.77]{media/sim_annealing.pdf} \\
 	\caption{Example of the work of the simulated annealing. Note the initial random exploration with high temperature and the move toward the minima with a lower temperature}
 \end{figure}
 
@@ -529,20 +529,20 @@ To reproduce two elements we used the following technique: we chose a random num
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{media/correction1.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/gene1.pdf}
      \caption{Non repaired children}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{media/correction2.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/gene2.pdf}
     \caption{Twice-visited vertices removal}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{media/correction3.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/gene3.pdf}
     \caption{Insertion of remaining element}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{media/correction4.png}
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=\linewidth]{media/gene4.pdf}
     \caption{Final result}
   \end{subfigure}
   \caption{Example of the steps of a repair function}
