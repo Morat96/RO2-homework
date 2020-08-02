@@ -1,6 +1,30 @@
 # Prerequisites
 *.d
 
+# latex
+*.aux
+*.glo
+*.idx
+*.log
+*.toc
+*.ist
+*.acn
+*.acr
+*.alg
+*.blg
+*.dvi
+*.glg
+*.gls
+*.ilg
+*.ind
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc1
+*.out
+*.synctex.gz
+
 # Folder view configuration files
 .DS_Store
 Desktop.ini
