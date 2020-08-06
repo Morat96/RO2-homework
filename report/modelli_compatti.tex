@@ -177,3 +177,24 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 	\end{equation}
 \end{subequations}
 
+\section{Final comparison between Compact Models}
+
+\begin{figure}[H]
+\centering
+	\includegraphics[scale=0.9]{media/compact10.pdf} \\
+	\caption{Performance profile for compact models with time ratio 10}
+	\label{fig:compacts10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+	\includegraphics[scale=0.9]{media/compact200.pdf} \\
+	\caption{Performance profile for compact models with time ratio 200}
+	\label{fig:compacts200}
+\end{figure}
+
+We have decided to test the performance only for the MTZ's formulation and the Flow Based formulations. The main reason about this choice is the amount of time that is required for the Time staged formulations.
+From the performance profile, it is possible to observe that the model that works best in practice is  the "Single Commodity Flow" one. Also the "Two Commodity Flow" and MTZ models obtained a decent score, while the "Multi Commodity Flow" was not so good. \\
+The scope of Figure ~\ref{fig:compacts200} is to highlight the difference in performance between the "Multi Commodity Flow" model and the other ones.\\
+As a remark, for the tests we used small datasets, with a number of nodes up to 80. Testing these compact models on bigger datasets would have been unfeasible for time reasons.
+
