@@ -116,7 +116,7 @@ berlin52  & 19 & 0.097& 0.065\\
 bier127  & 19 & 4.456& 5.910\\
 ch130  & 19 & 5.183& 6.728\\
 ch150  & 19 & 10.200& 17.139\\
-d198  & 19 & 65.949;&70.533\\
+d198  & 19 & 65.949&70.533\\
 gil262  & 19 & 54.885&42.880\\
 kroA100  & 19 & 4.190&4.722\\
 kroA150  & 19 & 25.094&17.489\\
@@ -177,7 +177,7 @@ bier127  & 19071996 & 4.610& 4.364\\
 ch130  & 19071996 & 4.844& 6.604\\
 ch150  & 19071996 & 10.942& 15.347\\
 d198  & 19071996 & 71.141& 67.801\\
-gil262  & 19071996 &61.853;&45.738\\
+gil262  & 19071996 &61.853&45.738\\
 kroA100  & 19071996 & 4.449& 4.557\\
 kroA150  & 19071996 &27.511& 15.670\\
 kroA200  & 19071996 & 59.241& 81.205\\
@@ -789,7 +789,7 @@ rd400  & 3563.643 & 223.105 & 408.701 & 300.483 & 176.906 & 71.727 & 337.442 & 3
 
 \setlength\LTleft{0cm}
 \noindent
-Below we report the number of nodes solved by the Callbacks. Algorithms with * are \textbf{Generic Callbacks}. A value of 0 indicates that the algorithm has solved the TSP problem on the root node.
+Below we report the number of nodes solved by the Callbacks. Algorithms with * are \textbf{Generic Callbacks}. A value of 0 indicates that the algorithm has solved the TSP problem in the root node.
 
 \setlength\LTleft{-1.1cm}
 \begin{center}
@@ -940,7 +940,55 @@ rd400  & 19071996 & 169473 & 6129 & 9471 & 6597 & 4514 & 2818\\
 
 \newpage
 \section{Matheuristics} 
-In this section we report the time measurements of the Matheuristics algorithms with their relative seed and algorithm.
+In this section we report the objective function values of the Matheuristic algorithms.
+
+\setlength\LTleft{\fill}
+
+\begin{center}
+\begin{longtable}{lccllr}
+\caption{\textbf{\large Hard Fixing}} \label{tab:Loop} \\
+
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{c}{\textbf{Time*}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
+			& (min) & (sec) & \textbf{function} & & (\%)\\ \hline
+\endfirsthead
+
+\multicolumn{6}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{c}{\textbf{Time*}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
+			& (min) & (sec) & \textbf{function} & & (\%)\\  \hline
+\endhead
+
+\hline \multicolumn{6}{r}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+			d657 & 30 & 1082.196 & 48907 & 48907 & 0.00 \\
+			d1291 & 30 & - & 51382 & 50801 & 1.13  \\
+			fl417 & 30 & 430.301 & 11861 & 11861 & 0.00\\
+			fl1400 & 30 & - & 20784 & 20127 &  3.16 \\
+			fl1577 & 30 & - & 22600 & 22204 &  1.75\\
+			nrw1379 & 30 & - & 57410 & 56638 & 1.34 \\
+			p654 & 30 & 29.874 & 34643 & 34643 & 0.00 \\
+			pcb1173 & 30 & - & 57939 & 56892 & 1.80  \\
+			pcb3038 & 30 & - & 145539 & 137694 & 5.39  \\
+			pr1002 & 30 & 573.221 & 259045 & 259045 & 0.00  \\
+			pr2392 & 30 & - & 394861 & 378032 & 4.26 \\
+			rl1304 & 30 & - &254441 & 252948 & 0.59  \\
+			rl1323 & 30  & - & 278498 & 270199 &  2.98 \\
+			rl1889 & 30 & - & 333773 & 316536 & 5.16 \\
+			u724 & 30 & 526.134 & 41908 & 41908 & 0.00 \\
+			u1060 & 30 & 1801.107 & 224094 & 224094 & 0.00  \\
+			u2152 & 30 & - & 66062 & 64253 & 2.74 \\
+			u2319 & 30 & 540.117 & 234256 & 234256 & 0.00 \\
+			vm1084 & 30 & - & 243560 & 239297 & 1.75  \\
+			vm1748 & 30 & - &347571 & 336556 & 3.17 \\
+
+\end{longtable}
+\textbf{Time*:} time taken to compute the optimal solution.
+\end{center}
+
 
 \newpage
 \section{Stand-alone heuristics} 
@@ -949,7 +997,7 @@ In this section we report the tables with the results and their details we obtai
 \setlength\LTleft{\fill}
 
 \begin{center}
-\begin{longtable}{lclll}
+\begin{longtable}{lcllr}
 \caption{\textbf{\large Multi-start}} \label{tab:Loop} \\
 
 \hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
@@ -968,32 +1016,32 @@ In this section we report the tables with the results and their details we obtai
 \hline \hline
 \endlastfoot
 
-			d657 & 30 & 51608 & 48912 & 5,22 \\
-			d1291 & 30 & 56577 & 50801 & 10,2  \\
-			fl417 & 30 & 12176 & 11861 & 2,59\\
-			fl1400 & 30 & 21291 & 20127 &  5,47 \\
-			fl1577 & 30 & 23953 & 22204 &  7,3\\
-			nrw1379 & 30 & 61766 & 56638 & 8,3 \\
-			p654 & 30 & 36361 & 34643 & 4,7 \\
-			pcb1173 & 30 & 62375 & 56892 & 8,79  \\
-			pcb3038 & 30 & 154679 & 137694 & 10,98  \\
-			pr1002 & 30 & 281778 & 259045 & 8,07  \\
-			pr2392 & 30 & 422804 & 378032 & 10,59 \\
-			rl1304 & 30 & 276760 & 252948 & 8,60  \\
-			rl1323 & 30  & 298429 & 270199 &  9,46 \\
-			rl1889 & 30 & 348391 & 316536 & 9,14 \\
-			u724 & 30 & 45316 & 41910 & 7,51 \\
-			u1060 & 30 & 240853 & 224094 & 6,96  \\
-			u2152 & 30 & 73356 & 64253 & 12,40 \\
-			u2319 & 30 & 249621 & 234256 & 6,16 \\
-			vm1084 & 30 & 260289 & 239297 & 8,06  \\
-			vm1748 & 30 & 368113 & 336556 & 8,57 \\
+			d657 & 30 & 51608 & 48907 & 5.23 \\
+			d1291 & 30 & 56577 & 50801 & 10.21  \\
+			fl417 & 30 & 12176 & 11861 & 2.59\\
+			fl1400 & 30 & 21291 & 20127 &  5.47 \\
+			fl1577 & 30 & 23953 & 22204 &  7.30 \\
+			nrw1379 & 30 & 61766 & 56638 & 8.30 \\
+			p654 & 30 & 36361 & 34643 & 4.70 \\
+			pcb1173 & 30 & 62375 & 56892 & 8.79  \\
+			pcb3038 & 30 & 154679 & 137694 & 10.98  \\
+			pr1002 & 30 & 281778 & 259045 & 8.07  \\
+			pr2392 & 30 & 422804 & 378032 & 10.59 \\
+			rl1304 & 30 & 276760 & 252948 & 8.60  \\
+			rl1323 & 30  & 298429 & 270199 &  9.46 \\
+			rl1889 & 30 & 348391 & 316536 & 9.14 \\
+			u724 & 30 & 45316 & 41908 & 7.52 \\
+			u1060 & 30 & 240853 & 224094 & 6.96  \\
+			u2152 & 30 & 73356 & 64253 & 12.40 \\
+			u2319 & 30 & 249621 & 234256 & 6.16 \\
+			vm1084 & 30 & 260289 & 239297 & 8.06  \\
+			vm1748 & 30 & 368113 & 336556 & 8.57 \\
 
 \end{longtable}
 \end{center}
 
 \begin{center}
-\begin{longtable}{lclll}
+\begin{longtable}{lcllr}
 \caption{\textbf{\large VNS}} \label{tab:Loop} \\
 
 \hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
@@ -1012,33 +1060,33 @@ In this section we report the tables with the results and their details we obtai
 \hline \hline
 \endlastfoot
 
-			d657 & 30 & 49921 & 48912 & 2,02 \\
-			d1291 & 30 & 52217 & 50801 & 2,71  \\
-			fl417 & 30 & 11970 & 11861 & 0,91\\
-			fl1400 & 30 & 20657 & 20127 &  2,57 \\
-			fl1577 & 30 & 22692 & 22204 &  2,15\\
-			nrw1379 & 30 & 59272 & 56638 & 4,44 \\
-			p654 & 30 & 34832 & 34643 & 0,54 \\
-			pcb1173 & 30 & 58668 & 56892 & 3,02  \\
-			pcb3038 & 30 & 149738 & 137694 & 8,04  \\
-			pr1002 & 30 & 264881 & 259045 & 2,2  \\
-			pr2392 & 30 & 399147 & 378032 & 5,29 \\
-			rl1304 & 30 & 255863 & 252948 & 1,14  \\
-			rl1323 & 30  & 275537 & 270199 &  1,93 \\
-			rl1889 & 30 & 324641 & 316536 & 2,5 \\
-			u724 & 30 & 43054 & 41910 & 2,66 \\
-			u1060 & 30 & 230070 & 224094 & 2,6  \\
-			u2152 & 30 & 69208 & 64253 & 7,16 \\
-			u2319 & 30 & 242850 & 234256 & 3,54 \\
-			vm1084 & 30 & 244211 & 239297 & 2,01  \\
-			vm1748 & 30 & 350364 & 336556 & 3,94 \\
+			d657 & 30 & 49921 & 48907 & 2.03 \\
+			d1291 & 30 & 52217 & 50801 & 2.71  \\
+			fl417 & 30 & 11970 & 11861 & 0.91\\
+			fl1400 & 30 & 20657 & 20127 &  2.57 \\
+			fl1577 & 30 & 22692 & 22204 &  2.15\\
+			nrw1379 & 30 & 59272 & 56638 & 4.44 \\
+			p654 & 30 & 34832 & 34643 & 0.54 \\
+			pcb1173 & 30 & 58668 & 56892 & 3.02  \\
+			pcb3038 & 30 & 149738 & 137694 & 8.04  \\
+			pr1002 & 30 & 264881 & 259045 & 2.20  \\
+			pr2392 & 30 & 399147 & 378032 & 5.29 \\
+			rl1304 & 30 & 255863 & 252948 & 1.14  \\
+			rl1323 & 30  & 275537 & 270199 &  1.93 \\
+			rl1889 & 30 & 324641 & 316536 & 2.50 \\
+			u724 & 30 & 43054 & 41908 & 2.66 \\
+			u1060 & 30 & 230070 & 224094 & 2.60  \\
+			u2152 & 30 & 69208 & 64253 & 7.16 \\
+			u2319 & 30 & 242850 & 234256 & 3.54 \\
+			vm1084 & 30 & 244211 & 239297 & 2.01  \\
+			vm1748 & 30 & 350364 & 336556 & 3.94 \\
 
 \end{longtable}
 \end{center}
 
 
 \begin{center}
-\begin{longtable}{lclll}
+\begin{longtable}{lcllr}
 \caption{\textbf{\large Tabu Search}} \label{tab:Loop} \\
 
 \hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
@@ -1057,33 +1105,33 @@ In this section we report the tables with the results and their details we obtai
 \hline \hline
 \endlastfoot
 
-			d657 & 30 & 50222 & 48912 & 2,60 \\
-			d1291 & 30 & 58274 & 50801 & 12,82  \\
-			fl417 & 30 & 12339 & 11861 & 3,87\\
-			fl1400 & 30 & 21751 & 20127 &  7,46 \\
-			fl1577 & 30 & 24728 & 22204 &  10,2\\
-			nrw1379 & 30 & 59349 & 56638 & 4,57 \\
-			p654 & 30 & 37672 & 34643 & 8,04 \\
-			pcb1173 & 30 & 59146 & 56892 & 3,81  \\
-			pcb3038 & 30 & 146111 & 137694 & 5,76  \\
-			pr1002 & 30 & 285259 & 259045 & 9,19  \\
-			pr2392 & 30 & 423364 & 378032 & 10,70 \\
-			rl1304 & 30 & 281595 & 252948 & 10,17  \\
-			rl1323 & 30  & 293050 & 270199 &  7,8 \\
-			rl1889 & 30 & 350028 & 316536 & 9,57 \\
-			u724 & 30 & 45604 & 41910 & 8,1 \\
-			u1060 & 30 & 243788 & 224094 & 8,08  \\
-			u2152 & 30 & 74865 & 64253 & 14,17 \\
+			d657 & 30 & 50222 & 48907 & 2.62 \\
+			d1291 & 30 & 58274 & 50801 & 12.82  \\
+			fl417 & 30 & 12339 & 11861 & 3.87\\
+			fl1400 & 30 & 21751 & 20127 &  7.46 \\
+			fl1577 & 30 & 24728 & 22204 &  10.20\\
+			nrw1379 & 30 & 59349 & 56638 & 4.57 \\
+			p654 & 30 & 37672 & 34643 & 8.04 \\
+			pcb1173 & 30 & 59146 & 56892 & 3.81  \\
+			pcb3038 & 30 & 146111 & 137694 & 5.76  \\
+			pr1002 & 30 & 285259 & 259045 & 9.19  \\
+			pr2392 & 30 & 423364 & 378032 & 10.70 \\
+			rl1304 & 30 & 281595 & 252948 & 10.17  \\
+			rl1323 & 30  & 293050 & 270199 &  7.80 \\
+			rl1889 & 30 & 350028 & 316536 & 9.57 \\
+			u724 & 30 & 45604 & 41908 & 8.10 \\
+			u1060 & 30 & 243788 & 224094 & 8.08  \\
+			u2152 & 30 & 74865 & 64253 & 14.17 \\
 			u2319 & 30 & 249119 & 234256 & 5.97 \\
-			vm1084 & 30 & 264646 & 239297 & 9,58  \\
-			vm1748 & 30 & 372908 & 336556 & 9,75 \\
+			vm1084 & 30 & 264646 & 239297 & 9.58  \\
+			vm1748 & 30 & 372908 & 336556 & 9.75 \\
 
 \end{longtable}
 \end{center}
 
 
 \begin{center}
-\begin{longtable}{lclll}
+\begin{longtable}{lcllr}
 \caption{\textbf{\large Simulated Annealing}} \label{tab:Loop} \\
 
 \hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
@@ -1102,33 +1150,33 @@ In this section we report the tables with the results and their details we obtai
 \hline \hline
 \endlastfoot
 
-			d657		&	30	&	50853	&	48912	&	3,82	\\
-			d1291	&	30	&	55631	&	50801	&	8,68	\\
-			fl417	&	30	&	11960	&	11861	&	0,83	\\
-			fl1400	&	30	&	21011	&	20127	&	3,61	\\
-			fl1577	&	30	&	23208	&	22204	&	4,33	\\
-			nrw1379	&	30	&	60290	&	56638	&	6,06	\\
-			p654		&	30	&	36663	&	34643	&	5,51	\\
-			pcb1173	&	30	&	61274	&	56892	&	7,15	\\
-			pcb3038	&	30	&	160064	&	137694	&	13,98	\\
-			pr1002	&	30	&	270144	&	259045	&	4,11	\\
-			pr2392	&	30	&	412826	&	378032	&	8,43	\\
-			rl1304	&	30	&	275741	&	252948	&	8,27	\\
-			rl1323	&	30	&	286098	&	270199	&	5,56	\\
-			rl1889	&	30	&	353047	&	316536	&	10,34	\\
-			u724		&	30	&	44111	&	41910	&	4,99	\\
-			u1060	&	30	&	236150	&	224094	&	5,1	\\
-			u2152  	&	30	&	72906	&	64253	&	11,87	\\
-			u2319 	&	30	&	243034	&	234256	&	3,61	\\
-			vm1084 	&	30	&	252216	&	239297	&	5,12	\\
-			vm1748	&	30	&	369762	&	336556	&	8,98	\\
+			d657		&	30	&	50853	&	48907	&	3.83	\\
+			d1291	&	30	&	55631	&	50801	&	8.68	\\
+			fl417	&	30	&	11960	&	11861	&	0.83	\\
+			fl1400	&	30	&	21011	&	20127	&	3.61	\\
+			fl1577	&	30	&	23208	&	22204	&	4.33	\\
+			nrw1379	&	30	&	60290	&	56638	&	6.06	\\
+			p654		&	30	&	36663	&	34643	&	5.51	\\
+			pcb1173	&	30	&	61274	&	56892	&	7.15	\\
+			pcb3038	&	30	&	160064	&	137694	&	13.98	\\
+			pr1002	&	30	&	270144	&	259045	&	4.11	\\
+			pr2392	&	30	&	412826	&	378032	&	8.43	\\
+			rl1304	&	30	&	275741	&	252948	&	8.27	\\
+			rl1323	&	30	&	286098	&	270199	&	5.56	\\
+			rl1889	&	30	&	353047	&	316536	&	10.34	\\
+			u724		&	30	&	44111	&	41908	&	4.99	\\
+			u1060	&	30	&	236150	&	224094	&	5.10	\\
+			u2152  	&	30	&	72906	&	64253	&	11.87	\\
+			u2319 	&	30	&	243034	&	234256	&	3.61	\\
+			vm1084 	&	30	&	252216	&	239297	&	5.12	\\
+			vm1748	&	30	&	369762	&	336556	&	8.98	\\
 
 \end{longtable}
 \end{center}
 
 
 \begin{center}
-\begin{longtable}{lclll}
+\begin{longtable}{lcllr}
 \caption{\textbf{\large Genetic Algorithm}} \label{tab:Loop} \\
 
 \hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
@@ -1147,26 +1195,26 @@ In this section we report the tables with the results and their details we obtai
 \hline \hline
 \endlastfoot
 
-			d657 & 30 & 51590 & 48912 & 5,19 \\
-			d1291 & 30 & 56405 & 50801 & 9,94  \\
-			fl417 & 30 & 12030 & 11861 & 1,4\\
-			fl1400 & 30 & 21317 & 20127 &  5,58 \\
-			fl1577 & 30 & 26054 & 22204 &  14,78\\
-			nrw1379 & 30 & 63077 & 56638 & 10,21 \\
-			p654 & 30 & 35033 & 34643 & 1,11 \\
-			pcb1173 & 30 & 62303 & 56892 & 8,69  \\
-			pcb3038 & 30 & 215382 & 137694 & 36,07  \\
-			pr1002 & 30 & 276044 & 259045 & 6,16  \\
-			pr2392 & 30 & 546694 & 378032 & 30,85 \\
-			rl1304 & 30 & 284911 & 252948 & 11,22  \\
-			rl1323 & 30  & 306511 & 270199 &  11,85 \\
-			rl1889 & 30 & 457862 & 316536 & 30,87 \\
-			u724 & 30 & 44930 & 41910 & 6,72 \\
-			u1060 & 30 & 240476 & 224094 & 6,81  \\
-			u2152 & 30 & 93952 & 64253 & 31,61 \\
-			u2319 & 30 & 284055 & 234256 & 17,53 \\
-			vm1084 & 30 & 255868 & 239297 & 6,48  \\
-			vm1748 & 30 & 432545 & 336556 & 22,19 \\
+			d657 & 30 & 51590 & 48907 & 5.20 \\
+			d1291 & 30 & 56405 & 50801 & 9.94  \\
+			fl417 & 30 & 12030 & 11861 & 1.40\\
+			fl1400 & 30 & 21317 & 20127 &  5.58 \\
+			fl1577 & 30 & 26054 & 22204 &  14.78\\
+			nrw1379 & 30 & 63077 & 56638 & 10.21 \\
+			p654 & 30 & 35033 & 34643 & 1.11 \\
+			pcb1173 & 30 & 62303 & 56892 & 8.69  \\
+			pcb3038 & 30 & 215382 & 137694 & 36.07  \\
+			pr1002 & 30 & 276044 & 259045 & 6.16  \\
+			pr2392 & 30 & 546694 & 378032 & 30.85 \\
+			rl1304 & 30 & 284911 & 252948 & 11.22  \\
+			rl1323 & 30  & 306511 & 270199 &  11.85 \\
+			rl1889 & 30 & 457862 & 316536 & 30.87 \\
+			u724 & 30 & 44930 & 41908 & 6.72 \\
+			u1060 & 30 & 240476 & 224094 & 6.81  \\
+			u2152 & 30 & 93952 & 64253 & 31.61 \\
+			u2319 & 30 & 284055 & 234256 & 17.53 \\
+			vm1084 & 30 & 255868 & 239297 & 6.48  \\
+			vm1748 & 30 & 432545 & 336556 & 22.19 \\
 
 \end{longtable}
 \end{center}
@@ -1175,14 +1223,14 @@ In this section we report the tables with the results and their details we obtai
 \begin{longtable}{llllll}
 \caption{\textbf{\large Comparison between objective functions}} \label{tab:Loop} \\
 
-\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu search}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
-&  &  & & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
+&  &  & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
 \endfirsthead
 
 \multicolumn{6}{c}%
 {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
-\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu search}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
-&  &  & & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
+&  &  & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
 \endhead
 
 \hline \multicolumn{6}{r}{{Continued on next page}} \\ \hline
