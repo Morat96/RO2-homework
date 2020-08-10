@@ -4,11 +4,10 @@
   year = "2006"
 }
 
-@article{ormanWilliams,
-  title={A Survey of Different Integer Programming Formulations of the Travelling Salesman Problem},
-  author={A.J. Orman,  H.P. Williams},
-  journal={Shell Gas and Power International B.V. The Hague, Netherlands and London School of Economics, Houghton Street, London, WC2A 2AE},
-  pages={95--106}
+@inproceedings{ormanWilliams,
+  title={A survey of different integer programming formulations of the travelling salesman problem},
+  author={A. J. Orman and H. Paul Williams},
+  year={2007}
 }
 
 @article{dolan2002benchmarking,
@@ -34,5 +33,48 @@
 	author={Matteo Fischetti},
 	year={2018},
 	publisher={Kindle Direct Publishing}
+}
+
+
+@article{LB,
+	Abstract = {The availability of effective exact or heuristic solution methods for general Mixed-Integer Programs (MIPs) is of paramount importance for practical applications. In the present paper we investigate the use of a generic MIP solver as a black-box ``tactical'' tool to explore effectively suitable solution subspaces defined and controlled at a ``strategic'' level by a simple external branching framework. The procedure is in the spirit of well-known local search metaheuristics, but the neighborhoods are obtained through the introduction in the MIP model of completely general linear inequalities called local branching cuts. The new solution strategy is exact in nature, though it is designed to improve the heuristic behavior of the MIP solver at hand. It alternates high-level strategic branchings to define the solution neighborhoods, and low-level tactical branchings to explore them. The result is a completely general scheme aimed at favoring early updatings of the incumbent solution, hence producing high-quality solutions at early stages of the computation. The method is analyzed computationally on a large class of very difficult MIP problems by using the state-of-the-art commercial software ILOG-Cplex 7.0 as the black-box tactical MIP solver. For these instances, most of which cannot be solved to proven optimality in a reasonable time, the new method exhibits consistently an improved heuristic performance: in 23 out of 29 cases, the MIP solver produced significantly better incumbent solutions when driven by the local branching paradigm.},
+	Author = {Fischetti, Matteo and Lodi, Andrea},
+	Da = {2003/09/01},
+	Date-Added = {2020-08-10 20:20:20 +0000},
+	Date-Modified = {2020-08-10 20:20:20 +0000},
+	Doi = {10.1007/s10107-003-0395-5},
+	Id = {Fischetti2003},
+	Isbn = {1436-4646},
+	Journal = {Mathematical Programming},
+	Number = {1},
+	Pages = {23--47},
+	Title = {Local branching},
+	Ty = {JOUR},
+	Url = {https://doi.org/10.1007/s10107-003-0395-5},
+	Volume = {98},
+	Year = {2003},
+	Bdsk-Url-1 = {https://doi.org/10.1007/s10107-003-0395-5}}
+
+
+@article{DFJ,
+author = {Dantzig, G. B. and Fulkerson, D. R. and Johnson, S. M.},
+title = {On a Linear-Programming, Combinatorial Approach to the Traveling-Salesman Problem},
+journal = {Operations Research},
+volume = {7},
+number = {1},
+pages = {58-66},
+year = {1959},
+doi = {10.1287/opre.7.1.58},
+
+URL = { 
+        https://doi.org/10.1287/opre.7.1.58
+    
+},
+eprint = { 
+        https://doi.org/10.1287/opre.7.1.58
+    
+}
+,
+    abstract = { This paper elaborates a method of attack on traveling-salesman problems, proposed by the authors in an earlier paper, in which linear programming is used to reduce the combinatorial magnitude of such problems. To illustrate the method, a step-by-step solution of Barachet's ten-city example is presented. }
 }
 

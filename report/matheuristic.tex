@@ -5,7 +5,7 @@ On this chapter we will illustrate two heuristic solution for the TSP problem th
 When we have to resolve a large instance of TSP, CPLEX can require a large amount of time. Moreover in some practical application we may have to resolve the problem in a certain amount of time that we cannot exceed. So for this reason we can set a time limit for CPLEX, that means that the solver will return the best solution found within that limit. The hard fixing algorithm starts from this point. Let's set a time limit (10 minutes for example) and consider the solution obtained. Of course this solution with high probability is not the optimum solution, but it may contains some edges that belong to it. So the idea is to fix some edges, and pass the new model to CPLEX. In order to do this we can simply work on the bounds of the variables: if we set $1 \leq x(i,j) \leq 1$ the corresponding edge is fixed on the solution. The new model of course is simpler, because we have a smaller amount of variables, so when we resolve it with CPLEX (again with a fixed time limit) it may find a better solution. This procedure can also be iterate until a final time limit (like 1 hour) is reached: each time we release the variables that were fixed on the previous iteration (just reset the bounds to $0 \leq x(i,j) \leq 1$) and we choose a new set of edges to fix.
 Note that when the variables are fixed, due to the fact that the instance is smaller, CPLEX may resolve that model to its optimum before the time limit exceed.
 Of course the choice of which edge to fix and their number is quite relevant. In general a good idea is to set a fixing percentage and randomly choose the variables to fix. We can also decide to variate the percentage over the iterations, for example starting with an high value (like 90\%) and then decrease it until zero. This mean that on the initial iterations the problem to resolve is very small so we may get a significant improve, while on the last iterations we have a big problem but lot of freedom to refine the solution. Of course this is only an example and other strategies can be implemented.  
-\\\\ Our implementation of the Hard Fixing is presented in Algorithm 3. 
+\\\\ Our implementation of the Hard Fixing is presented in Algorithm \ref{alg:hf}. 
 We used two variables to manage the time limit of the algorithm. The variable \textit{remaining\_time} keeps track of the time left to the algorithm to compute the solution. At beginning the variable assumes the value of the original time limit given by the user (line 2). The variable \textit{time\_x\_cycle} is the inner time limit and it is initially fixed to \textit{time\_limit/5} (line 3). Since with the inner time limit is very hard that an initial good solution will be computed, we provide to CPLEX a heuristic solution builded with the algorithm GRASP and refined with the 2-OPT algorithm (lines 4-6).
 The algorithm then proceeds solving the problem within a while loop (line 7). At each iteration, we initially set the inner time limit as CPLEX environment parameter (lines 8 - 11). 
 Then the solution, within the time limit, is computed (line 13) with the time needed to compute it (lines 12 and 14).
@@ -42,6 +42,7 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
 	\State \textbf{$\ast$ Restore the default bounds for each variable $\ast$}
 	\algstore{myalg}
     	\end{algorithmic}
+	\label{alg:hf}
    	\end{algorithm}
 	
 	\begin{algorithm}                     
@@ -54,7 +55,7 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
     \end{algorithm}
 
 \section{Local branching}
-The strategy of this algorithm is similar to the one of hard fixing: each iteration fix some edges in order to give to CPLEX a simpler version of the problem. However, rather then randomly choose the variable to fix, we let CPLEX decide which edges to maintain. We can achieve this with the introduction of a new constraint: let's consider an initial solution H provided by CPLEX within a time limit, let $x_e^H$ be the variables equals to one on this solution, we want the sum of these variables to be greater or equals than a percentage of the total number of edges. More formally:
+The strategy of this algorithm \cite{LB} is similar to the one of hard fixing: each iteration fix some edges in order to give to CPLEX a simpler version of the problem. However, rather then randomly choose the variable to fix, we let CPLEX decide which edges to maintain. We can achieve this with the introduction of a new constraint: let's consider an initial solution H provided by CPLEX within a time limit, let $x_e^H$ be the variables equals to one on this solution, we want the sum of these variables to be greater or equals than a percentage of the total number of edges. More formally:
 \begin{equation*}
 	\sum_{e \in E, \; x_e^H = 1} x_e \geq \alpha n
 \end{equation*}
@@ -62,8 +63,8 @@ where $\alpha$ is the selected percentage and n is the size of the instance. In 
 Of course this is not a valid constraint for the problem, cause we are not sure that the variables equals to one on a solution belong to the optimum.\\
 Again we can iterate the procedure, each time removing the old constrain and generating a new one, based on the new solution, until a final time limit is reached. The fact that the selection of the variables to fix is not random, means that the CPLEX solution is deterministic, so it is not wise to execute two iterations with the same fixing percentage, cause we may resolve two times the same problem obtaining the same solution within the time limit.
 Finally, another shrewdness that is required, is that this algorithm works only if the fixing percentage is very high, so iteration with percentage of 50-60 or less should be avoided. 
-\\\\ Our implementation of the Local branching is presented in Algorithm 4. The implementation is pretty similar to Algorithm 3, for this reason we only emphasise the differences between the two algorithms. 
-At each iteration of the while loop (line 7), the variables of the solution are saved and a new local branching constraint is added to the model, removing the previous one. The known term of the constraint, that is the variable \textit{percentage} in the algorithm, is initially set to: number of nodes $\ast$ 0.95 (line 1) and is updated with the same conditions as Algorithm 3, but in this case subtracting from the variable \textit{percentage} the value: number of nodes $\ast$ 0.05 (lines 18 - 21). As in algorithm 3, the sequence is repeated as long as the user-set time limit is reached.
+\\\\ Our implementation of the Local branching is presented in Algorithm \ref{alg:lb}. The implementation is pretty similar to Algorithm \ref{alg:hf}, for this reason we only emphasise the differences between the two algorithms. 
+At each iteration of the while loop (line 7), the variables of the solution are saved and a new local branching constraint is added to the model, removing the previous one. The known term of the constraint, that is the variable \textit{percentage} in the algorithm, is initially set to: number of nodes $\ast$ 0.95 (line 1) and is updated with the same conditions as Algorithm \ref{alg:hf}, but in this case subtracting from the variable \textit{percentage} the value: number of nodes $\ast$ 0.05 (lines 18 - 21). As in algorithm \ref{alg:hf}, the sequence is repeated as long as the user-set time limit is reached.
 
 \begin{algorithm} [H]
     \caption{Local branching}\label{Local branching}
@@ -96,6 +97,7 @@ At each iteration of the while loop (line 7), the variables of the solution are 
     \EndWhile
     \State \textbf{return} \textbf{\textit{x}}
     \end{algorithmic}
+    \label{alg:lb}
     \end{algorithm}
 
 \subsection{Final comparison between Matheuristics}
