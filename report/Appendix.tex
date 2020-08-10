@@ -940,6 +940,7 @@ rd400  & 19071996 & 169473 & 6129 & 9471 & 6597 & 4514 & 2818\\
 
 \newpage
 \section{Matheuristics} 
+\label{resultMath}
 In this section we report the objective function values of the Matheuristic algorithms.
 
 \setlength\LTleft{\fill}
@@ -987,6 +988,98 @@ In this section we report the objective function values of the Matheuristic algo
 
 \end{longtable}
 \textbf{Time*:} time taken to compute the optimal solution.
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{lccllr}
+\caption{\textbf{\large Local Branching}} \label{tab:Loop} \\
+
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{c}{\textbf{Time*}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
+			& (min) & (sec) & \textbf{function} & & (\%)\\ \hline
+\endfirsthead
+
+\multicolumn{6}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Time Limit}} & \multicolumn{1}{c}{\textbf{Time*}} & \multicolumn{1}{r}{\textbf{Objective}}& \multicolumn{1}{r}{\textbf{Optimum}} & \multicolumn{1}{r}{\textbf{Gap}} \\
+			& (min) & (sec) & \textbf{function} & & (\%)\\  \hline
+\endhead
+
+\hline \multicolumn{6}{r}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+			d657 & 30 & 812.298 & 48907 & 48907 & 0.00 \\
+			d1291 & 30 & - & 52728 & 50801 & 3.65  \\
+			fl417 & 30 & 360.047 & 11861 & 11861 & 0.00\\
+			fl1400 & 30 & - & 21036 & 20127 &  4.32 \\
+			fl1577 & 30 & - & 22707 & 22204 &  2.22\\
+			nrw1379 & 30 & - & 57944 & 56638 & 2.25 \\
+			p654 & 30 & 32.424 & 34643 & 34643 & 0.00 \\
+			pcb1173 & 30 & - & 58610 & 56892 & 2.93  \\
+			pcb3038 & 30 & - & 144274 & 137694 & 4.56  \\
+			pr1002 & 30 & 1801.185 & 259045 & 259045 & 0.00  \\
+			pr2392 & 30 & - & 396768 & 378032 & 4.72 \\
+			rl1304 & 30 & - & 259250 & 252948 & 2.43  \\
+			rl1323 & 30  & - & 280767 & 270199 &  3.76 \\
+			rl1889 & 30 & - & 333128 & 316536 & 4.98 \\
+			u724 & 30 & 982.572 & 41908 & 41908 & 0.00 \\
+			u1060 & 30 & - & 226185 & 224094 & 0.92  \\
+			u2152 & 30 & - & 66867 & 64253 & 3.90 \\
+			u2319 & 30 & 915.828 & 234256 & 234256 & 0.00 \\
+			vm1084 & 30 & - & 242896 & 239297 & 1.48  \\
+			vm1748 & 30 & - & 348641 & 336556 & 3.47 \\
+
+\end{longtable}
+\textbf{Time*:} time taken to compute the optimal solution.
+\end{center}
+
+
+
+\begin{center}
+\begin{longtable}{lllllll}
+\caption{\textbf{\large Comparison between objective functions}} \label{tab:Loop} \\
+
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Optimum}} & \multicolumn{2}{c}{\textbf{Hard Fixing}} & \multicolumn{2}{c}{\textbf{Local Branching}}  \\ 
+&  &  Obj. Function & Gap & Obj. Function & Gap\\  \hline
+\endfirsthead
+
+\multicolumn{6}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Optimum}} & \multicolumn{2}{c}{\textbf{Hard Fixing}} & \multicolumn{2}{c}{\textbf{Local Branching}}  \\ 
+&  &  Obj. Function & Gap & Obj. Function & Gap\\  \hline
+\endhead
+
+\hline \multicolumn{6}{r}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+			d657	 &	48907 & 48907    & 0.00	& 48907	& 0.00  \\
+			d1291 &	50801 & 51382    & 1.13	& 52728	& 3.65  \\
+			fl417 &	11861 & 11861    & 0.00	& 11861	& 0.00  \\
+			fl1400 &	20127 & 20784   & 3.16	& 21036	& 4.32  \\
+			fl1577 & 22204 & 22600   & 1.75	& 22707	& 2.22  \\
+			nrw1379 & 56638 & 57410  & 1.34	& 57944	& 2.25  \\
+			p654    & 34643 & 34643  & 0.00	& 34643	& 0.00  \\
+			pcb1173 & 56892 & 57939  & 1.80	& 58610	& 2.93  \\
+			pcb3038 & 137694 & 145539 & 5.39 & 144274 & 4.56  \\
+			pr1002	& 259045 & 259045 & 0.00 & 259045 & 0.00  \\
+			pr2392	& 378032 & 394861 & 4.26 & 396768 & 4.72  \\
+			rl1304	& 252948 & 254441 & 0.59 & 259250 & 2.43  \\
+			rl1323	& 270199 & 278498 & 2.98 & 280767 & 3.76  \\
+			rl1889	& 316536 & 333773 & 5.16 & 333128 & 4.98  \\
+			u724		& 41908 & 41908  & 0.00  & 41908 & 0.00  \\
+			u1060	& 224094 & 224094 & 0.00 & 226185 & 0.92  \\
+			u2152  	& 64253 & 66062	& 2.74	& 66867 & 3.90  \\
+			u2319 	& 234256 & 234256	 & 0.00 & 234256 & 0.00  \\
+			vm1084 	& 239297 & 243560	 & 1.75 & 242896 & 1.48  \\
+			vm1748	& 336556 & 347571	 & 3.17 & 348641 & 3.47  \\
+
+\end{longtable}
 \end{center}
 
 
@@ -1219,46 +1312,49 @@ In this section we report the tables with the results and their details we obtai
 \end{longtable}
 \end{center}
 
+\setlength\LTleft{-0.43cm}
+
+
 \begin{center}
-\begin{longtable}{llllll}
+\begin{longtable}{lllllll}
 \caption{\textbf{\large Comparison between objective functions}} \label{tab:Loop} \\
 
-\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
-&  &  & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Optimum}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
+&  & &  & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
 \endfirsthead
 
-\multicolumn{6}{c}%
+\multicolumn{7}{c}%
 {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
-\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
-&  &  & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
+\hline \multicolumn{1}{l}{\textbf{Instance}} & \multicolumn{1}{l}{\textbf{Optimum}} & \multicolumn{1}{l}{\textbf{Multi-start}} & \multicolumn{1}{l}{\textbf{VNS}}& \multicolumn{1}{l}{\textbf{Tabu}} & \multicolumn{1}{l}{\textbf{Simulated}} & \multicolumn{1}{l}{\textbf{Genetic}}  \\ 
+&  &  & & \textbf{Search} & \textbf{Annealing} & \textbf{Algorithm}\\  \hline
 \endhead
 
-\hline \multicolumn{6}{r}{{Continued on next page}} \\ \hline
+\hline \multicolumn{7}{r}{{Continued on next page}} \\ \hline
 \endfoot
 
 \hline \hline
 \endlastfoot
 
-			d657	 &	51608    & 49921	& 50222	& 50853	& 51590 \\
-			d1291 &	56577    & 52217	& 58274	& 55631	& 56405 \\
-			fl417 &	12176    & 11970	& 12339	& 11960	& 12030 \\
-			fl1400 &	 21291   & 20657	& 21751	& 21011	& 21317 \\
-			fl1577 & 23953   & 22692	& 24728	& 23208	& 26054 \\
-			nrw1379 & 61766  & 59272	& 59349	& 60290	& 63077 \\
-			p654    & 36361  & 34832	& 37672	& 36663	& 35033 \\
-			pcb1173 & 62375  & 58668	& 59146	& 61274	& 62303 \\
-			pcb3038 & 154679 & 149738 & 146111 & 160064 & 215382 \\
-			pr1002	& 281778 & 264881 & 285259 & 270144 & 276044 \\
-			pr2392	& 422804 & 399147 & 423364 & 412826 & 546694 \\
-			rl1304	& 276760 & 255863 & 281595 & 275741 & 284911 \\
-			rl1323	& 298429 & 275537 & 293050 & 286098 & 306511 \\
-			rl1889	& 348391 & 324641 & 350028 & 353047 & 457862 \\
-			u724		& 45316  & 43054  & 45604 & 44111 & 44930 \\
-			u1060	& 240853 & 230070 & 243788 & 236150 & 240476 \\
-			u2152  	& 73356	& 69208	& 74865 & 72906 & 93952 \\
-			u2319 	& 249621	 & 242850 & 249119 & 243034 & 284055 \\
-			vm1084 	& 260289	 & 244211 & 264646 & 252216 & 255868 \\
-			vm1748	& 368113	 & 350364 & 372908 & 369762 & 432545 \\
+			d657	 &	48907 & 51608    & 49921	& 50222	& 50853	& 51590 \\
+			d1291 &	50801 & 56577    & 52217	& 58274	& 55631	& 56405 \\
+			fl417 &	11861 & 12176    & 11970	& 12339	& 11960	& 12030 \\
+			fl1400 &	20127 & 21291   & 20657	& 21751	& 21011	& 21317 \\
+			fl1577 & 22204 & 23953   & 22692	& 24728	& 23208	& 26054 \\
+			nrw1379 & 56638 & 61766  & 59272	& 59349	& 60290	& 63077 \\
+			p654    & 34643 & 36361  & 34832	& 37672	& 36663	& 35033 \\
+			pcb1173 & 56892 & 62375  & 58668	& 59146	& 61274	& 62303 \\
+			pcb3038 & 137694 & 154679 & 149738 & 146111 & 160064 & 215382 \\
+			pr1002	& 259045 & 281778 & 264881 & 285259 & 270144 & 276044 \\
+			pr2392	& 378032 & 422804 & 399147 & 423364 & 412826 & 546694 \\
+			rl1304	& 252948 & 276760 & 255863 & 281595 & 275741 & 284911 \\
+			rl1323	& 270199 & 298429 & 275537 & 293050 & 286098 & 306511 \\
+			rl1889	& 316536 & 348391 & 324641 & 350028 & 353047 & 457862 \\
+			u724		& 41908 & 45316  & 43054  & 45604 & 44111 & 44930 \\
+			u1060	& 224094 & 240853 & 230070 & 243788 & 236150 & 240476 \\
+			u2152  	& 64253 & 73356	& 69208	& 74865 & 72906 & 93952 \\
+			u2319 	& 234256 & 249621	 & 242850 & 249119 & 243034 & 284055 \\
+			vm1084 	& 239297 & 260289	 & 244211 & 264646 & 252216 & 255868 \\
+			vm1748	& 336556 & 368113	 & 350364 & 372908 & 369762 & 432545 \\
 
 \end{longtable}
 \end{center}

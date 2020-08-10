@@ -1,4 +1,4 @@
-\chapter{Matheuristic}
+\chapter{Matheuristics}
 On this chapter we will illustrate two heuristic solution for the TSP problem that are based on CPLEX.
 
 \section{Hard fixing}
@@ -99,3 +99,48 @@ At each iteration of the while loop (line 7), the variables of the solution are 
     \end{algorithm}
 
 \subsection{Final comparison between Matheuristics}
+The instances used to compare heuristic algorithms are the following: 
+
+\begin{multicols}{3}
+    \begin{itemize}
+        \item d657.tsp
+        \item d1291.tsp
+        \item fl417.tsp
+        \item fl1400.tsp
+        \item fl1577.tsp
+        \item nrw1379.tsp
+        \item p654.tsp
+        \item pcb1173.tsp
+        \item pcb3038.tsp
+        \item pr1002.tsp
+        \item pr2392.tsp
+        \item rl1304.tsp
+        \item rl1323.tsp 
+        \item rl1889.tsp
+        \item u724.tsp
+        \item u1060.tsp
+        \item u2152.tsp
+        \item u2319.tsp
+        \item vm1084.tsp
+        \item vm1748.tsp
+    \end{itemize}
+    \end{multicols}
+    
+\noindent
+For each problem $i$ and algorithm $j$, we compare the Gap computed as
+\begin{equation}
+	gap_{ij} \; (\%) = { objFunc_j(i) - objFunc_{opt}(i) \over objFunc_j(i) } * 100,
+\end{equation}
+\noindent
+where $objFunc_j(i)$ is the objective function value computed by the algorithm $j$ for the problem $i$.
+The method used to compute a solution within the time limits is the \textit{Generic Heuristic Callback}, which is the best exact algorithm we implemented (see Section \ref{callbackresults}).
+In figure \ref{fig:Math} you can see the performance profile of the Matheuristic algorithms. The Hard Fixing outperforms the Local Branching in most of instances. Even if worse, the Local Branching algorithm achieves a gap within twice the best, so it is considered by us a valid competitor. 
+From our experiments we observed that Matheuristics achieve the optimum in several instances, even in a problem with 2319 nodes. We also noticed that Matheuristic algorithms work very well even with big instances, achieving an objective function value within 5\% from optimum. All the numerical results are reported in Section \ref{resultMath}.  \\
+The reason for their good performance may be due to the powerful \textit{Generic Heuristic Callback} algorithm which, thanks to Concorde, generates numerous cuts on fractional solutions, and also provides heuristic solutions to the solver thanks to a quick and effective algorithm (see Section \ref{callHeu}). Another reason is that our Matheuristic algorithms exploit all time available by fixing a decreasing number of variables.
+
+\begin{figure}[H]
+\centering
+	\includegraphics[scale=0.9]{media/Math.pdf} \\
+	\caption{Performance profile of Matheuristics}
+	\label{fig:Math}
+\end{figure}

@@ -43,7 +43,7 @@ In the second phase, the ``relaxation" of the solver is removed, solving essenti
 At beginning the first phase is active (line 2), which means that some CPLEX parameters have to be setted (line 5) in order to obtain a non-optimal solution, speeding up the computational time. In our case, we decided to set two CLEX parameters, that is, the solution's GAP and the NODE lim. The first parameter force CPLEX to stop, when the solution found until that point has a GAP of a certain value (for example 5\%). The second parameter specifies the node of the branching tree until which CPLEX can compute the solution, for example, if the value of the parameter is setted to 0, CPLEX can compute the solution only in the root node.
 The algorithm then proceeds solving the problem within a while loop (line 6). As in the Simple Loop, at each iteration we check if the solution has more than one component, and if so, we add, for each component, the corresponding subtour elimination. Instead, If the optimal solution has one component, we set the flag \textit{second\_phase} to true (line 15) and reset the solver settings, thus ensuring that the solution found from now on it will be an optimal solution.
 During the first phase, we have collected, hopefully, a number of useful SEC constraints in a small amount of time, with respect to found the optimal solution at each iteration.
-For the second phase, please refer to the Simple Loop (Algorithm 1).
+For the second phase, please refer to the Simple Loop (Algorithm \ref{alg:simpleloop}).
 \begin{algorithm}
     \caption{Heuristic Loop}\label{Loop Method}
     \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}^+$\\
@@ -114,7 +114,7 @@ The dataset used to compare exact algorithms consists of 30 instances with four 
     \end{itemize}
     \end{multicols}
 \noindent
-For the comparison, we used the elapsed time to compute the optimal solution for each problem.\\
+For each problem, we compare the elapsed time to compute the optimal solution.\\
 In Figure \ref{fig:loops} it is possible to see the performance profile of the Loop Methods we analyzed in this section.
 The parameter we used are the following:
 \begin{itemize}
@@ -213,6 +213,7 @@ Another interesting callback is the UserCut which is used to generate SECs const
     \end{algorithm}
     
 \subsection{Heuristic Callback}
+\label{callHeu}
 The last callback that we present is the Heuristic which is used to provide to the solver heuristic feasible solutions from fractional or infeasible solutions. 
 In our case, since we are trying to solve the TSP problem, we generate first a tour from integer solutions with multiple connected components and then we add them to the solver using the CPLEX heuristic callback, which permits to add solutions and to automatically check their feasibility. This technique is very useful in the early stages of the branch-and-cut algorithm because, by providing a TSP solution to the solver, we can provide an upper-bound to the optimal solution, thus cutting many branches of the decision tree. This led us to define the Algorithm \ref{alg:heucall}. The main differences with respect to Algorithm \ref{alg:usercutcall} are the addition of a new function called HeuristicCallback and a new algorithm to compute a tour starting from an integer solution with multiple components provided in the LazyCallback function. Since we want the algorithms to be thread safe, we must keep track of the index of each thread that produce a specific solution. To to this, for every integer solution with multiple connected components provided by the Lazy callback, we compute a new solution composed by a single tour (i.e. a TSP solution), saving in addition the index of the thread that has computed that solution (lines 11 - 12).
 The algorithm to compute a tour starting from an infeasible solution is presented in Algorithm \ref{alg:completetouralg}. The idea is very simple, melt connected components in a single tour optimizing the total length by merging the most nearest components.
@@ -398,6 +399,7 @@ The solver calls the generic callback function with the context CANDIDATE when a
     \end{algorithm}
 
 \subsection{Final comparison between callbacks}
+\label{callbackresults}
 For the final comparison of the callbacks we used the same dataset described in section 3.1.3, i.e. 30 instances with four random seeds, for a total of 120 problems.
 For the comparison we used two metrics: time elapsed and nodes solved. The first metric is used to compare the time used by the algorithms to compute the optimal solution of each problem. The second metric is used to compare the number of nodes solved by the algorithms when running the branch-and-cut algorithm. The number of nodes solved can make us understand if the cuts applied by the callbacks are sufficient to prevent the expansion of numerous nodes of the branched tree during the branch-and-cut algorithm. \\
 On Figure \ref{fig:lazy} it is possible to see the performance profile of the Legacy Callbacks. In CPLEX the legacy callbacks are the previous version of the new generic callback and \textit{Lazy Callback}, \textit{UserCut Callback} and \textit{Heuristic Callback} are part of this category. The first thing we can notice is that \textit{Lazy Callback} is the one that performs worst. The \textit{Heuristic Callback} seems to be performing slightly better than the \textit{UserCut Callback}. The heuristic solutions provided to the solver using the Heuristic Callback together with the cuts computed in fractional solutions using Concorde, can significantly reduce the amount of time to compute the optimal solution for the TSP problem. The number of nodes solved by the three algorithms is also consistent with the times, as you can see in Figure \ref{fig:lazynodes}. This confirms that cuts and heuristic solutions are capable of cutting many branches of the decision tree. \\
