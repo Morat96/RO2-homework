@@ -331,8 +331,7 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 \newpage
 
 \section{Metaheuristics}
-A metaheuristic is a higher-level procedure or heuristic designed to find, generate, or select a heuristic (partial search algorithm) that may provide a sufficiently good solution to an optimization problem, especially with incomplete or imperfect information or limited computation capacity \footnote{R. Balamurugan; A.M. Natarajan; K. Premalatha (2015). "Stellar-Mass Black Hole Optimization for Biclustering Microarray Gene Expression Data". Applied Artificial Intelligence an International Journal.}
-
+A metaheuristic is a higher-level procedure or heuristic designed to find, generate, or select a heuristic (partial search algorithm) that may provide a sufficiently good solution to an optimization problem, especially with incomplete or imperfect information or limited computation capacity \cite{meta}.
 
 \subsection{Multi-start}
 After performing a refinement technique, like 2-OPT, if the time limit is not reached, the algorithm stop on a local minima of the objective function. Of course at this point we want to escape from this local minima and search for a better one that hopefully is also the optimum. A possible solution is the multi-start approach, so each time we restart from the beginning, providing another initial solution and refining it. On each iteration, if the algorithm that provide the initial solution is well randomized (like GRASP) we will stop on a different local minima. So we can keep track of the best one and return it when the time limit for this procedure is reached.
