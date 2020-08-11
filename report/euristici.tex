@@ -7,7 +7,7 @@ On this section we will illustrate some heuristics algorithm to generate in a ra
 
 \subsection{Nearest neighborhood}
 Nearest neighborhood is a greedy algorithm \footnote{algorithm that always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice
-will lead to a globally optimal solution.  %TODO AGGIUNGERE LA FONTE DELLA CITAZIONE	 
+will lead to a globally optimal solution \cite{10.5555/1614191}.	 
 } that works in the following way: start from a random point that is considered the first visited node. Then pick as next node the nearest to the last visited (greedy choice) and iterate until all the nodes are visited. This procedure can be repeated until a time limit is reached, each time starting from a different random point, keeping in memory the best solution and eventually update it if a new one is found. The algorithm is pretty simple but provide an admissible solution (that of course is not the best one and in the very most of the cases is quite far from the optimum) in a short time. \\
 
 \begin{figure}[h!]
@@ -151,9 +151,9 @@ It is also possible to add the GRASP rule, so rather then selecting the point wi
 
 
 \subsection{Insertion with convex hull}
-This is a variation of the insertion algorithm. It works in the same way but the initialization is different: rather than starting from an initial cycle made of two random points, compute the convex hull \footnote{In geometry, the convex hull or convex envelope or convex closure of a shape is the smallest convex set that contains it. %TODO AGGIUNGERE CITAZIONE WIKIPEDIA 
+This is a variation of the insertion algorithm. It works in the same way but the initialization is different: rather than starting from an initial cycle made of two random points, compute the convex hull \footnote{In geometry, the convex hull or convex envelope or convex closure of a shape is the smallest convex set that contains it, \url{https://en.wikipedia.org/wiki/Convex_hull}.
 } of the instance. Then iterate and insert all the remaining points, that are all inside the convex hull, in the same way of Insertion heuristic (Figure \ref{fig:insertionHull}).\\
-On our implementation, to find the initial convex hull, we used the Graham Scan algorithm, freely provided by the website www.geeksforgeeks.org. This algorithm is $O(n \cdot log(n))$ and it is performed only once at the beginning so it doesn't impact the overall execution time for the insertion that is $O(n^3)$ as explained on the previous subsection. For more information about the Graham Scan consult \url{https://www.geeksforgeeks.org/convex-hull-set-2-graham-scan/}
+On our implementation, to find the initial convex hull, we used the Graham Scan algorithm, freely provided by the website www.geeksforgeeks.org. This algorithm is $O(n \cdot log(n))$ and it is performed only once at the beginning so it doesn't impact the overall execution time for the insertion that is $O(n^3)$ as explained on the previous subsection. For more information about the Graham Scan consult \url{https://www.geeksforgeeks.org/convex-hull-set-2-graham-scan/}.
 
 \begin{figure}[h!]
   \centering
@@ -473,8 +473,7 @@ Considering the objective function, we have that, when T is high, the algorithm 
 \end{algorithm}
 
 \noindent Of course the choose of the cooling schedule and the function that regulate the probability to accept a move with respect to the temperature are pivotal and can have a big impact on the performance of the algorithm itself. \\
-On our implementation we followed the procedure showed in the paper %TODO add paper
-that we are going to briefly explain.
+On our implementation we followed the procedure showed in the paper \cite{simAn} that we are going to briefly explain.
 Let X be the initial solution and Y a solution produced after a random 2-OPT move on x, let $f(X)$, $f(Y)$ be the cost respectively of X and Y, let $p_0$ be the initial probability. On each iteration, until the temperature list is full, generate a new Y. If $f(Y) > f(X)$ (pejorative move) compute a temperature with the following formula:
 \begin{equation*}
 t = \frac{-\vert f(y) - f(x) \vert}{\ln{(p_0)}}
