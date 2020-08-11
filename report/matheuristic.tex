@@ -135,9 +135,9 @@ For each problem $i$ and algorithm $j$, we compare the Gap computed as
 \end{equation}
 \noindent
 where $objFunc_j(i)$ is the objective function value computed by the algorithm $j$ for the problem $i$.
-The method used to compute a solution within the time limits is the \textit{Generic Heuristic Callback}, which is the best exact algorithm we implemented (see Section \ref{callbackresults}).
+The method used to compute a solution within the time limits is the \textit{Generic Heuristic Callback}, which is the best exact algorithm we implemented (see Section \ref{callbackresults}). The time limit has been set to 30 minutes.
 In figure \ref{fig:Math} you can see the performance profile of the Matheuristic algorithms. The Hard Fixing outperforms the Local Branching in most of instances. Even if worse, the Local Branching algorithm achieves a gap within twice the best, so it is considered by us a valid competitor. 
-From our experiments we observed that Matheuristics achieve the optimum in several instances, even in a problem with 2319 nodes. We also noticed that Matheuristic algorithms work very well even with big instances, achieving an objective function value within 5\% from optimum. All the numerical results are reported in Section \ref{resultMath}.  \\
+From our experiments we observed that Matheuristics achieve the optimum in several instances, even in a problem with 2319 nodes. We also noticed that Matheuristic algorithms work very well even with big instances, achieving an objective function value within 5\% from optimum. All the numerical results are reported in Section \ref{resultMath}.  
 The reason for their good performance may be due to the powerful \textit{Generic Heuristic Callback} algorithm which, thanks to Concorde, generates numerous cuts on fractional solutions, and also provides heuristic solutions to the solver thanks to a quick and effective algorithm (see Section \ref{callHeu}). Another reason is that our Matheuristic algorithms exploit all time available by fixing a decreasing number of variables.
 
 \begin{figure}[H]

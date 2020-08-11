@@ -11,6 +11,7 @@ There are no theoretical proofs that $P \neq NP$ (This is one of the \textit{Mil
 In conclusion there are some problem that are considered even more difficult than the ones that belong to the \textit{NP} class. These are called \textit{NP-hard} and they are of particular interest because lots of problem that have practical application in reality belong to this typology \cite{automi}. 
 
 \section{Traveling salesman problem}
+\label{TSPdef}
 The traveling salesman problem (TSP) consist in finding the Hamiltonian path \footnote{In the mathematical field of graph theory, a Hamiltonian path (or traceable path) is a path in an undirected or directed graph that visits each vertex exactly once.} of lowest cost given an oriented graph $G=(V, A)$. The problem can be also defined in an analogous way on a non oriented graph if the cost of an edge doesn't depend  on the direction of the edge itself. This problem is very common in several real life situations, for example a courier that has to deliver parcels on different locations. However TSP is NP-hard and this is the reason why we can obtain exact solutions only for small instances (up to 600-800 nodes with the most advanced algorithms) while we have to look for different heuristic strategies if the instances are large \cite{ro}.
 A possible integer linear programming model can be the following:
 

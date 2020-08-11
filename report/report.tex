@@ -72,9 +72,14 @@
 
 \pagestyle{fancy}
 \renewcommand{\sectionmark}[1]{\markboth{\thesection.\ #1}{}}
-\fancyhead[L]{\nouppercase{Operations Research 2}}
-\fancyhead[R]{\nouppercase{Barison, Moratello, Obetti}}
-
+\fancyhead[L]{\itshape\nouppercase{Operations Research 2}}
+\fancyhead[R]{%
+   % We want italics
+   \itshape
+   % The chapter number only if it's greater than 0
+   \ifnum\value{chapter}>0 \fi
+   % The chapter title
+   \leftmark}
 
 \input{intro}
 

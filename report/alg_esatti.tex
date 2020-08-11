@@ -1,11 +1,11 @@
 \chapter{Exact Algorithms}
 
-On this chapter we will describe exact algorithms based on the Dantzig–Fulkerson– Johnson formulation \cite{DFJ}, described in chapter 1. The main problem of this model is that the formulation has $O(2^n)$ SECs, so it is impossibile to implement all the constraints in the model since it would result in a very high execution time and memory usage even for small graphs.
+On this chapter we will describe exact algorithms based on the Dantzig–Fulkerson– Johnson formulation \cite{DFJ}, described in Section \ref{TSPdef}. The main problem of this model is that the formulation has $O(2^n)$ SECs, so it is impossibile to implement all the constraints in the model since it would result in a very high execution time and memory usage even for small graphs.
 \\ For this reason, SECs constraints are added only when necessary in the model, in order to discard solutions with cycles. Using this technique, hopefully, only a small part of $O(2^n)$ SECs are added to the model.
 \\ The main algorithms that make use of this technique are Loop methods and CPLEX callbacks.
 
 \section{Loop Methods}
-On this section we will describe two iterative approaches in order to solve the DFJ model without adding an exponential number of Cycle constraints.
+On this section we will describe two iterative approaches, originally proposed by \cite{bender}, in order to solve the DFJ model without adding an exponential number of Cycle constraints.
 \subsection{Simple Loop}
 The first approach, that we called Simple Loop, is presented in Algorithm \ref{alg:simpleloop}.
 \\ In line 2, we initialize the model with the variables, the degree constraints and the objective function. 
@@ -78,6 +78,7 @@ For the second phase, please refer to the Simple Loop (Algorithm \ref{alg:simple
     
 \newpage
 \subsection{Final comparison between Loop Methods}
+\label{LMcomparision}
 The dataset used to compare exact algorithms consists of 30 instances with four different random seeds \{201909284, 19, 190696, 19061996\}, for a total of 120 runs per algorithm. The instances used are the following:
  \begin{multicols}{3}
     \begin{itemize}
@@ -400,7 +401,7 @@ The solver calls the generic callback function with the context CANDIDATE when a
 
 \subsection{Final comparison between callbacks}
 \label{callbackresults}
-For the final comparison of the callbacks we used the same dataset described in section 3.1.3, i.e. 30 instances with four random seeds, for a total of 120 problems.
+For the final comparison of the callbacks we used the same dataset described in Section \ref{LMcomparision}, i.e. 30 instances with four random seeds, for a total of 120 problems.
 For the comparison we used two metrics: time elapsed and nodes solved. The first metric is used to compare the time used by the algorithms to compute the optimal solution of each problem. The second metric is used to compare the number of nodes solved by the algorithms when running the branch-and-cut algorithm. The number of nodes solved can make us understand if the cuts applied by the callbacks are sufficient to prevent the expansion of numerous nodes of the branched tree during the branch-and-cut algorithm. \\
 On Figure \ref{fig:lazy} it is possible to see the performance profile of the Legacy Callbacks. In CPLEX the legacy callbacks are the previous version of the new generic callback and \textit{Lazy Callback}, \textit{UserCut Callback} and \textit{Heuristic Callback} are part of this category. The first thing we can notice is that \textit{Lazy Callback} is the one that performs worst. The \textit{Heuristic Callback} seems to be performing slightly better than the \textit{UserCut Callback}. The heuristic solutions provided to the solver using the Heuristic Callback together with the cuts computed in fractional solutions using Concorde, can significantly reduce the amount of time to compute the optimal solution for the TSP problem. The number of nodes solved by the three algorithms is also consistent with the times, as you can see in Figure \ref{fig:lazynodes}. This confirms that cuts and heuristic solutions are capable of cutting many branches of the decision tree. \\
 On Figure \ref{fig:gen} it is possible to see the performance profile of the Generic Callbacks. Also in this case the \textit{Heuristic Callback} outperforms all the other both in terms of time and number of solved nodes, as you can see in Figure \ref{fig:gennodes}. \\
