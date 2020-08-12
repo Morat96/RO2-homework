@@ -5,7 +5,7 @@ Main advantage of going with these models, is that once the model is written, it
 To improve the time performance in the computation of the optimal solution, we implemented constraints about the subtour elimination through lazy callbacks. This allowed us to improve our performances because this kind of constraints will be applied only once needed.
 
 \section{Sequential formulation}
-For this version, formulated by Miller, Tucker and Zemlin (MTZ) in 1960, we introduce the continuous variable 
+For this version, formulated by Miller, Tucker and Zemlin (MTZ) in 1960 \cite{MTZ}, we introduce the continuous variable 
 \begin{equation*}
 	u_i = \text{sequence in which point i is visited} \ (i \neq 1)
 \end{equation*}
@@ -208,8 +208,12 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 		\sum_{j} y_{ij}^t - \sum_{k} y_{ki}^{t-1} = 0 \quad \forall i,t \in N-\lbrace 1 \rbrace
 	\end{equation}
 \end{subequations}
-
+\newpage
 \section{Final comparison between Compact Models}
+As explained in the previous sections, we decided mainly to focus on MTZ and Flow Based formulations, because of the time required to compute the optimal solution for the dataset we used.\\
+We tested these algorithms on dataset made of instances with a number of nodes up to 80. For bigger instances, the computation of an optimal solution became unfeasible.\\
+The instances we used to test all our implementations, from compact models to heuristic algorithms, are taken from the TSPLIB \cite{tsplib}. \\
+From our results shown in Figure \ref{fig:compacts10} and \ref{fig:compacts200}, we observed that FLOW1 outperformed the other algorithms. Decent results were obtained also with MTZ and FLOW2. In our implementation, FLOW3 had poor performances.
 
 \begin{figure}[H]
 \centering
@@ -225,7 +229,5 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 	\label{fig:compacts200}
 \end{figure}
 
-As explained in the previous sections, we decided mainly to focus on MTZ and Flow Based formulations, because of the time required to compute the optimal solution for the dataset we used.\\
-We tested these algorithms on dataset made of instances with a number of nodes up to 80. For bigger instances, the computation of an optimal solution became unfeasible.\\
-From our results, we observed that FLOW1 outperformed the other algorithms. Decent results were obtained also with MTZ and FLOW2. In our implementation, FLOW3 had poor performances.
+
 

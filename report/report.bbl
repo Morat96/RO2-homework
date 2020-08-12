@@ -18,6 +18,15 @@ E.~D. Dolan and J.~Mor{\'e}, ``Benchmarking optimization software with
 A.~J. Orman and H.~P. Williams, ``A survey of different integer programming
   formulations of the travelling salesman problem,'' 2007.
 
+\bibitem{MTZ}
+C.~E. Miller, A.~W. Tucker, and R.~A. Zemlin, ``Integer programming formulation
+  of traveling salesman problems,'' {\em J. ACM}, vol.~7, p.~326–329, Oct.
+  1960.
+
+\bibitem{tsplib}
+G.~Reinelt, ``{TSPLIB—A Traveling Salesman Problem Library},'' {\em INFORMS
+  Journal on Computing}, vol.~3, pp.~376--384, November 1991.
+
 \bibitem{DFJ}
 G.~B. Dantzig, D.~R. Fulkerson, and S.~M. Johnson, ``On a linear-programming,
   combinatorial approach to the traveling-salesman problem,'' {\em Operations
