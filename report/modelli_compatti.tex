@@ -1,11 +1,11 @@
 \chapter{Compact Models}
-Here we introduce different formulations for the traveling salesman problem that we implemented. For all the following models we will use the decision variable $x_{ij}$ already defined in 1.2.\\
+Here we introduce different formulations for the traveling salesman problem that we implemented. For all the following models we will use the decision variable $x_{ij}$ already defined in Section \ref{TSPdef}.\\
 According to \cite{ormanWilliams}, we considered the case of the Asymmetric version of the traveling salesman problem, which can be considered more general than the Symmetric version.\\
-Main advantage of going with these models, is that once the model is written, it can be solved as a "black box" by CPLEX solver.\\
+Main advantage of going with these models, is that once the model is written, it can be solved as a ``black box" by CPLEX solver.\\
 To improve the time performance in the computation of the optimal solution, we implemented constraints about the subtour elimination through lazy callbacks. This allowed us to improve our performances because this kind of constraints will be applied only once needed.
 
 \section{Sequential formulation}
-For this version, formulated by Miller, Tucker and Zemlin in 1960, we introduce the continuous variable 
+For this version, formulated by Miller, Tucker and Zemlin (MTZ) in 1960, we introduce the continuous variable 
 \begin{equation*}
 	u_i = \text{sequence in which point i is visited} \ (i \neq 1)
 \end{equation*}
@@ -17,17 +17,19 @@ and the constraint \ref{eqn:mtz-constraint}.
 	\end{equation}
 	\begin{equation}
 		\underbrace{\sum_{(i,j) \in \delta^{-}(j)} x_{ij} = 1}_\text{one edge incoming in j}, \quad j \in V 
+		\label{eqn:2.1b}
 	\end{equation}
 	\begin{equation}
 		\underbrace{\sum_{(i,j) \in \delta^{+}(j)} x_{ij} = 1}_\text{one edge outgoing in i}, \quad i \in V
+		\label{eqn:2.1c}
 	\end{equation}
 	\begin{equation}
 		u_i-u_j+nx_{ij} \leq n-1 \quad \forall i,j \in N-\lbrace 1 \rbrace, \ i\neq j
-	\label{eqn:mtz-constraint}
+		\label{eqn:mtz-constraint}
 	\end{equation}
 \end{subequations}
 
-Constraints \ref{eqn:mtz-constraint} ensure that, if the salesman travels from i to j, then the position of node j is one more than that of node i. This allows to have only a polynomial number of variable and constraints. In total, there are $O(n^2)$ variables and $O(n^2)$ constraints. The problem is no more NP-Hard, but the relaxation of the problem is somewhat weak and as one can see in the section where compact models are compared, it yields to decent performances only for small datasets.
+\noindent Constraints \ref{eqn:mtz-constraint} ensure that, if the salesman travels from i to j, then the position of node j is one more than that of node i. This allows to have only a polynomial number of variable and constraints. In total, there are $O(n^2)$ variables and $O(n^2)$ constraints. The problem is no more NP-Hard, but the relaxation of the problem is somewhat weak and as one can see in the section where compact models are compared, it yields to decent performances only for small instances.
 
 \section{Flow-based formulations}
 
@@ -59,11 +61,11 @@ Provided by Gavish and Graves in 1978, it adds continuous variables:
 	\end{equation}
 \end{subequations}
 
-The idea is that whenever one node is chosen, the salesman delivers one unity of commodity flow. In this way, an order between the nodes is picked and subtours are impossible.\\
+\noindent The idea is that whenever one node is chosen, the salesman delivers one unit of commodity flow. In this way, an order between the nodes is picked and subtours are impossible.\\
 This formulation has $O(n^2)$ variables and $O(n)$ constraints. The relaxation of the linear problem works better than the MTZ, as one can observe in the section about the comparison between the compact models.
 
 \subsection{Two commodity flow}
-Created by Finke, Claus and Gunn in 1983. It maintains constraint 2.1b and 2.1c (from this point they and the objective function will not be shown in the formulation) and introduce the continuous variables:
+Created by Finke, Claus and Gunn in 1983. It maintains constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} (from this point they and the objective function will not be shown in the formulation) and introduce the continuous variables:
 \begin{equation*}
 	y_{ij} = \text{flow of commodity 1 in arc} \ (i,j) \ i \neq j
 \end{equation*}
@@ -100,13 +102,13 @@ and add the constraints:
 \end{subequations}
 
 %In total it has $n(n+4)$ constraints, $n(n-1)$ 0-1 variables and $2n(n-1)$.
-Constraints \ref{eqn:f2-const-1} and \ref{eqn:f2-const-2} force $(n-1)$ units of commodity 1 to flow in at city 1 and 1 unit of commodity to flow out at every other node.\\
-Constraits \ref{eqn:f2-const-3} and \ref{eqn:f2-const-4} force $(n-1)$ units of commodity 2 to flow out at city 1 and 1 unit of commodity to flow in at every other node.\\
+\noindent Constraints \ref{eqn:f2-const-1} and \ref{eqn:f2-const-2} force $(n-1)$ units of commodity 1 to flow into city 1 and 1 unit of commodity to flow out from every other node.\\
+Constraits \ref{eqn:f2-const-3} and \ref{eqn:f2-const-4} force $(n-1)$ units of commodity 2 to flow out from city 1 and 1 unit of commodity to flow into every other node.\\
 Constraints \ref{eqn:f2-const-5} force exactly $(n-1)$ units of commodity in each arc and constraints \ref{eqn:f2-const-6} only allow flow in an arc if present.\\
 The formulation has $O(n^2)$ constraints and $O(n^2)$ variables.
 
 \subsection{Multi-commodity flow}
-Proposed by Wong and Claus in 1984. Again constraint 2.1b and 2.1c are maintained. It introduce the continuous variable:
+Proposed by Wong and Claus in 1984. Again constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} are maintained. It introduce the continuous variable:
 \begin{equation*}
 	y_{ij}^k = \text{flow of commodity k in arc} \ (i,j) \in N-\lbrace 1 \rbrace
 \end{equation*}
@@ -138,8 +140,8 @@ and the following constraints:
 	\end{equation}
 \end{subequations}
 %In total there are $n^3+n^2+6n-3$ constraints, $n(n-1)$ 0-1 variables and $n(n-1)^2$
-Constraints \ref{eqn:fm-const-1} only allow flow in an arc which is present. Constraints \ref{eqn:fm-const-2} force exactly one unit of each commodity to flow in at city 1 and constraints \ref{eqn:fm-const-3} does the opposite, preventing commodity to flow out at city 1.\\
-Constraints \ref{eqn:fm-const-4} force exactly one unity of commodity k to flow out at city k and constraints \ref{eqn:fm-const-5} prevent any of commodity k flowing in at city k.\\
+Constraints \ref{eqn:fm-const-1} only allow flow in an arc which is present. Constraints \ref{eqn:fm-const-2} force exactly one unit of each commodity to flow into city 1 and constraints \ref{eqn:fm-const-3} does the opposite, preventing commodity to flow out from city 1.\\
+Constraints \ref{eqn:fm-const-4} force exactly one unity of commodity k to flow out from city k and constraints \ref{eqn:fm-const-5} prevent any of commodity k flowing into city k.\\
 Finally, constraints \ref{eqn:fm-const-6} force balance for all commodities at each node, apart from city 1 and for commodity k at city k.\\
 There is a total number of $O(n^3)$ constraints and $O(n^2)$ variables.
 
@@ -148,7 +150,7 @@ There is a total number of $O(n^3)$ constraints and $O(n^2)$ variables.
 We decided also to explore this section of compact models, exploiting CPLEX's solver that just requires the models to be written. Dealing with performance, especially the T1 and T2 were not working good in practice and required too much to compute the optimal solution.
 
 \subsection{First stage dependent}
-Introduced by Fox, Gavish and Graves in 1980. Constraint 2.1b and 2.1c are maintained, in addition we have 0-1 integer variables:
+Introduced by Fox, Gavish and Graves in 1980. Constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} are maintained, in addition we have 0-1 integer variables:
 \[ y_{ij}^t =
 	\begin{cases}
 		1 \quad \text{if the edge} \ (i,j) \ \text{is traversed at stage t} \\
@@ -174,7 +176,7 @@ and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ 0-1
 \end{subequations}
 
 \subsection{Second stage dependent}
-Provided by Fox, Gavish and Graves in 1980. It uses the same variables of first stage and constraints 2.1b and 2.1c and it adds:
+Provided by Fox, Gavish and Graves in 1980. It uses the same variables of first stage and constraints \ref{eqn:2.1b} and \ref{eqn:2.1c} and it adds:
 
 \begin{subequations} 
 	\begin{equation}
@@ -193,7 +195,7 @@ Provided by Fox, Gavish and Graves in 1980. It uses the same variables of first 
 In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ 0-1 variables.
 
 \subsection{Third stage dependent}
-Again we have the same variables of first stage and constraints 2.1b and 2.1c. In addition, 
+Again we have the same variables of first stage and constraints \ref{eqn:2.1b} and \ref{eqn:2.1c}. In addition, 
 for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 \begin{subequations}
 	\begin{equation}
@@ -223,7 +225,7 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 	\label{fig:compacts200}
 \end{figure}
 
-As explained in the previous sections, we decided mainly to focus on MTZ and Flow Based formulations, because of the time required to compute the optimal solution for the datasets we used.\\
-We tested these algorithms on datasets with a number of nodes up to 80. For bigger datasets, the computation of an optimal solution became unfeasible.\\
+As explained in the previous sections, we decided mainly to focus on MTZ and Flow Based formulations, because of the time required to compute the optimal solution for the dataset we used.\\
+We tested these algorithms on dataset made of instances with a number of nodes up to 80. For bigger instances, the computation of an optimal solution became unfeasible.\\
 From our results, we observed that FLOW1 outperformed the other algorithms. Decent results were obtained also with MTZ and FLOW2. In our implementation, FLOW3 had poor performances.
 
