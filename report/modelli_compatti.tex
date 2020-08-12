@@ -2,7 +2,7 @@
 Here we introduce different formulations for the traveling salesman problem that we implemented. For all the following models we will use the decision variable $x_{ij}$ already defined in Section \ref{TSPdef}.\\
 According to \cite{ormanWilliams}, we considered the case of the Asymmetric version of the traveling salesman problem, which can be considered more general than the Symmetric version.\\
 Main advantage of going with these models, is that once the model is written, it can be solved as a ``black box" by CPLEX solver.\\
-To improve the time performance in the computation of the optimal solution, we implemented constraints about the subtour elimination through lazy callbacks. This allowed us to improve our performances because this kind of constraints will be applied only once needed.
+To improve the time performance in the computation of the optimal solution, we implemented part of constraints about the subtour elimination through \textit{lazy constraints}. This allowed us to improve the performance of the models because this kind of constraints will be applied only once needed.
 
 \section{Sequential formulation}
 For this version, formulated by Miller, Tucker and Zemlin (MTZ) in 1960 \cite{MTZ}, we introduce the continuous variable 
@@ -24,7 +24,7 @@ and the constraint \ref{eqn:mtz-constraint}.
 		\label{eqn:2.1c}
 	\end{equation}
 	\begin{equation}
-		u_i-u_j+nx_{ij} \leq n-1 \quad \forall i,j \in N-\lbrace 1 \rbrace, \ i\neq j
+		u_i-u_j+nx_{ij} \leq n-1 \quad \forall i,j \in N-\lbrace 1 \rbrace, \ i\neq j \;\; \textbf{(Lazy constraint)}
 		\label{eqn:mtz-constraint}
 	\end{equation}
 \end{subequations}
@@ -54,7 +54,7 @@ Provided by Gavish and Graves in 1978, it adds continuous variables:
 		y_{ij} \leq (n-1)x_{ij} \quad \forall i,j \in N, \ i \neq j \\
 	\end{equation}
 	\begin{equation}
-		\sum_{j, \; j \neq 1} y_{1j} = n-1 \\
+		\sum_{j, \; j \neq 1} y_{1j} = n-1 \;\; \textbf{(Lazy constraint)}\\
 	\end{equation}
 	\begin{equation}
 		\sum_{i, \; i \neq j} y_{ij} - \sum_{k, \; i \neq k} y_{jk} = 1 \quad \forall j \in N - \lbrace 1 \rbrace
@@ -77,7 +77,7 @@ and add the constraints:
 \begin{subequations}
 	\begin{equation}
 	\label{eqn:f2-const-1}
-	 	\sum_{j, \; j \neq 1} (y_{1j}-y_{j1}) = n-1
+	 	\sum_{j, \; j \neq 1} (y_{1j}-y_{j1}) = n-1 \;\; \textbf{(Lazy constraint)}
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-2}
@@ -85,7 +85,7 @@ and add the constraints:
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-3}
-		\sum_{j, \; j \neq 1} (z_{1j}-z_{j1}) = -(n-1)
+		\sum_{j, \; j \neq 1} (z_{1j}-z_{j1}) = -(n-1) \;\; \textbf{(Lazy constraint)}
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-4}
@@ -189,7 +189,7 @@ Provided by Fox, Gavish and Graves in 1980. It uses the same variables of first 
 		\sum_{i \; j \neq i} y_{ij}^t = 1 \quad \forall t \in N
 	\end{equation}
 	\begin{equation}
-		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace
+		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace \;\; \textbf{(Lazy constraint)}
 	\end{equation}
 \end{subequations}
 In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ 0-1 variables.
