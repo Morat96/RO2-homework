@@ -12,19 +12,19 @@ will lead to a globally optimal solution \cite{10.5555/1614191}.
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/fase1.pdf}
      \caption{Initial step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/fase2.pdf}
     \caption{Second step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/fase3.pdf}
     \caption{Third step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/fase4.pdf}
     \caption{Final result}
   \end{subfigure}
@@ -72,15 +72,15 @@ The introduction of the random component means that the probability to repeat th
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/grasp_fase1.pdf}
      \caption{Initial step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/grasp_fase2.pdf}
     \caption{Second step}
   \end{subfigure}
-  \begin{subfigure}[b]{0.49\linewidth}
+  \begin{subfigure}[b]{0.45\linewidth}
     \includegraphics[width=\linewidth]{media/grasp_fase3.pdf}
     \caption{Third step}
   \end{subfigure}
@@ -88,6 +88,7 @@ The introduction of the random component means that the probability to repeat th
 \end{figure}
 
 \subsection{Insertion heuristic}
+\label{insertion}
 This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted (Figure \ref{fig:insertion}). The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
 The cost to compute the best extra mileage is $O(n^2)$, so this mean that the entire algorithm is $O(n^3)$.\\
 It is also possible to add the GRASP rule, so rather then selecting the point with the best extra mileage, find the three smallest extra mileages and choose at random between them, in this way the algorithm doesn't converge to the same solution starting from the same initial circuit. \\
@@ -184,10 +185,11 @@ On Figure \ref{fig:solbuilder} the final confrontation between the heuristic sol
 %\newpage
 
 \section{Refining algorithms}
-Refining algorithm are so called because they start from an admissible solution that could by provided by any other algorithm and they try to improve it with a series of iteration.
+Refining algorithm are so called because they start from an admissible solution that could by provided by any other algorithm and they try to improve it with a series of iterations.
 
 \subsection{TWO-OPT}
-The first algorithm we present is TWO-OPT (or 2-OPT). To explain this technique, let's consider two edges, the first delimited by vertices a and b and with cost $c_{ab}$, the second delimited by c and d and with cost $c_{cd}$ (Both edges belong to an admissible solution provided by any algorithm). Now let's remove these edges and reconnect the vertices in a different way: as result we obtain the edges a, c and b, d with cost respectively $c_{ac}$ and $c_{bd}$. Now lets compute: 
+\label{two-opt}
+The first algorithm we present is TWO-OPT (or 2-OPT). To explain this technique, let's consider two edges, the first delimited by vertices \textit{a} and \textit{b} and with cost $c_{ab}$, the second delimited by \textit{c} and \textit{d} and with cost $c_{cd}$ (Both edges belong to an admissible solution provided by any algorithm). Now let's remove these edges and reconnect the vertices in a different way: as result we obtain the edges (a, c) and (b, d) with cost respectively $c_{ac}$ and $c_{bd}$. Now lets compute: 
 \begin{equation*}
 \Delta = c_{ab} + c_{cd} - (c_{ac} + c_{bd})
 \end{equation*}
@@ -203,7 +205,7 @@ that is the cost of the initial removed edges minus the cost of the new edges. I
 	\label{fig:twoopt}
 \end{figure}
 
-\noindent 2-OPT works in this way: start from an admissible solution, consider all the possible couple of edges (that are in total $O(n^2)$) and for each of them compute the $\Delta$ (That can be calculated in $\Theta(1)$). Then pick the largest $\Delta$, remove the relative edges and reconnect the vertices as previously explained. After this operation, one of the two parts of the cycle that has been divided by the swap, need to be retraced in order to invert the visit sequence of the vertices and reconnect it to the new edge (This is $O(n)$, but since it is done after a $O(n^2)$ doesn't change the overall cost of the swap). Repeat the procedure until all the $\Delta$ are negative, or a fixed time limit is reached.\\
+\noindent 2-OPT works in this way: start from an admissible solution, consider all the possible couple of edges (that are in total $O(n^2)$) and for each of them compute the $\Delta$ (That can be calculated in $\Theta(1)$). Then pick the largest $\Delta$, remove the relative edges and reconnect the vertices as previously explained. After this operation, one of the two parts of the cycle that has been divided by the swap, need to be retraced in order to invert the visit sequence of the vertices and reconnect it to the new edge (This is $O(n)$, but since it is done after a $O(n^2)$ doesn't change the overall cost of the move). Repeat the procedure until all the $\Delta$ are negative, or a fixed time limit is reached.\\
 
 \begin{algorithm}
 	\caption{2-OPT}\label{2-OPT method}
@@ -266,7 +268,7 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 
 
 \subsection{THREE-OPT}
-3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves (Figure  \ref{fig:threeopt}). Moreover, we have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that is cubic doesn't work well with big problems, for example with instances with more than 10000 points.
+3-OPT is a variation of 2-OPT that consider 3 edges for the swap rather than only two. This time there are multiple way to reconnect the vertices of the 3 removed edges, in particular for a triad there are 7 possible moves (Figure  \ref{fig:threeopt}). Moreover, we have to consider all the possible triad to find the best one and this is $O(n^3)$. So in general 3-OPT is more complicated to implement and due to the fact that it is cubic, it doesn't work well with big problems, for example with instances with more than 10000 points.
 
 \begin{figure}[h!]
   \centering
@@ -334,12 +336,12 @@ It is possible to visualize the action of 2-OPT by plotting the solution before 
 A metaheuristic is a higher-level procedure or heuristic designed to find, generate, or select a heuristic (partial search algorithm) that may provide a sufficiently good solution to an optimization problem, especially with incomplete or imperfect information or limited computation capacity \cite{meta}.
 
 \subsection{Multi-start}
-After performing a refinement technique, like 2-OPT, if the time limit is not reached, the algorithm stop on a local minima of the objective function. Of course at this point we want to escape from this local minima and search for a better one that hopefully is also the optimum. A possible solution is the multi-start approach, so each time we restart from the beginning, providing another initial solution and refining it. On each iteration, if the algorithm that provide the initial solution is well randomized (like GRASP) we will stop on a different local minima. So we can keep track of the best one and return it when the time limit for this procedure is reached.
-The main problem of this technique is that is not very efficient because each time I restart all the information we obtained on the previous local minima is unused.
+After performing a refinement technique, like 2-OPT, if the time limit is not reached, the algorithm stop on a local minima of the objective function. Of course at this point we want to escape from this local minima and search for a better one that hopefully is also the optimum. A possible solution is the multi-start approach, so each time we restart from the beginning, providing another initial solution and refining it. On each iteration, if the algorithm that provide the initial solution is well randomized (like GRASP) we will stop on a different local minima. So we can keep track of the best solution and return it when the time limit for this procedure is reached.
+The main problem of this technique is that it is not very efficient because each time we restart all the information we obtained on the previous local minima is unused.
 More powerful technique will be shown on the following subsections.
 
 \subsection{Variable neighborhood search}
-Variable neighborhood search (VNS) provide a simple yet powerful way to escape the local minima. Let's assume that we have completed the refinement using 2-OPT. At this point we can perform a random move with a bigger research radius, like a 3-OPT or a 5-OPT for example. Since this move is completely random, it will make the solution worse but it will also provide the ``kick" that we need to escape the local minima. Now we can restart with 2-OPT until a new minima is found (that could also be the optimum).\\
+Variable neighborhood search (VNS) provide a simple yet powerful way to escape the local minima. Let's assume that we have completed the refinement using 2-OPT. At this point we can perform a random move with a bigger research radius, like a 3-OPT or a 5-OPT for example. Since this move is completely random, it will make the solution worse but it will also provide the ``kick" that we need to escape the local minima. After this we can restart with 2-OPT until a new minima is found (that could also be the optimum).\\
 In synthesis, VNS, works with two phases that alternate continuously: an intensification  phase (2-OPT) where the algorithm move toward a minima and a diversification phase where VNS perform a k-OPT random move to exit from the minima.
 
 \begin{algorithm}
@@ -369,7 +371,7 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 	\caption{Representation of an objective function during VNS and the ``kick" of a 5-OPT random move}
 \end{figure}
 
-\noindent On our implementation we use the technique showed in Figure \ref{fig:vns}. We select the edges to remove (that in our example are three) and then we reconnect the vertices in a specific way, so that the reversal of some edges to reconstruct the cycle (the one described in 5.2.1) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red) and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move, where k is establish at the beginning of the execution.
+\noindent On our implementation we use the technique showed in Figure \ref{fig:vns}. We select the edges to remove (that in our example are three) and then we reconnect the vertices in a specific way, so that the reversal of some edges to reconstruct the cycle (the one described in \ref{two-opt}) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red) and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move, where k is establish at the beginning of the execution.
 
 \begin{figure}[h!]
   \centering
@@ -429,13 +431,13 @@ Another shrewdness is that if we encounter a move that is forbidden but that imp
 	\caption{Objective function and incumbent during the execution of tabu search}
 \end{figure}
 
-\noindent On our implementation we use a fixed-size tabu list, with the tenure that is a parameter decided by the user. The list records only one vertex involved in the move: so for example if we perform a pejorative move and we substitute the edges $v_{ab}$ and $v_{cd}$ with $v_{ac}$ and $v_{bd}$, only the vertex a is stored in the tabù list. When we find a good move, we check that all the 4 vertices involved are not in the tabu list, so even if we record only one point per move, this is sufficient to avoid to return back after a pejorative move. 
+\noindent On our implementation we use a fixed-size tabu list, with the tenure that is a parameter decided by the user. The list records only one vertex involved in the move: so for example if we perform a pejorative move and we substitute the edges $v_{ab}$ and $v_{cd}$ with $v_{ac}$ and $v_{bd}$, only the vertex \textit{a} is stored in the tabù list. When we find a good move, we check that all the 4 vertices involved are not in the tabu list, so even if we record only one point per move, this is sufficient to avoid to return back after a pejorative move. 
 The check if a move is forbidden require a $O(k)$, where k is the tenure. So we perform this control only to moves that are better than the best move found until that moment (It's useless to check pejorative moves or moves that are not candidate to be selected as best move). \\
 Finally we also implemented the aspiration criterion, so if a forbidden move leads to an improve of the incumbent, we keep that solution and we update the incumbent too.
 
 
 \subsection{Simulated Annealing}
-This metaheuristic algorithm take inspiration from the annealing technique in metallurgy that consist on heating the material and then cooling it in a controlled way. When the temperature of the materials is high, the atoms inside it it vibrates and move in a chaotic way. As the temperature decreases, the atoms reduce their state of agitation until a stable point is reached. \\
+This metaheuristic algorithm takes inspiration from the annealing technique in metallurgy that consist on heating the material and then cooling it in a controlled way. When the temperature of the materials is high, the atoms inside it it vibrates and move in a chaotic way. As the temperature decreases, the atoms reduce their state of agitation until a stable point is reached. \\
 The simulated annealing works in a similar way. Let's establish a parameter, the temperature T, that initially has an high value that gradually reduce during the iterations of the algorithm. The algorithm starts from an already provided solution. On each iteration we perform a random 2-OPT (or 3-OPT) move that of course can be also pejorative. The fundamental idea is that the probability to accept the move is related to the temperature: when T is high, the system is chaotic and we accept with high probability all the random move. As the system get cooler we increase the probability to reject a bad move (so we increase the probability to perform a good move). When the temperature is close to 0, we only make meliorative moves until we reach a minima.\\
 Considering the objective function, we have that, when T is high, the algorithm is randomly exploring solutions. Only when T became low the algorithm moves toward a minima that hopefully is the optimum.
 
@@ -473,12 +475,12 @@ Considering the objective function, we have that, when T is high, the algorithm 
 
 \noindent Of course the choose of the cooling schedule and the function that regulate the probability to accept a move with respect to the temperature are pivotal and can have a big impact on the performance of the algorithm itself. \\
 On our implementation we followed the procedure showed in the paper \cite{simAn} that we are going to briefly explain.
-Let X be the initial solution and Y a solution produced after a random 2-OPT move on x, let $f(X)$, $f(Y)$ be the cost respectively of X and Y, let $p_0$ be the initial probability. On each iteration, until the temperature list is full, generate a new Y. If $f(Y) > f(X)$ (pejorative move) compute a temperature with the following formula:
+Let X be the initial solution and Y a solution produced after a random 2-OPT move on x, let $f(X)$, $f(Y)$ be the cost respectively of X and Y, let $p_0$ be the initial probability. On each iteration, until the temperature list is full, we generate a new Y. If $f(Y) > f(X)$ (pejorative move) we compute a temperature \textit{T} with the following formula:
 \begin{equation*}
-t = \frac{-\vert f(y) - f(x) \vert}{\ln{(p_0)}}
+T = \frac{-\vert f(y) - f(x) \vert}{\ln{(p_0)}}
 \end{equation*}
-otherwise, if $f(Y) < f(X)$, put X = Y and then compute t in the same way.
-Now to describe the remaining part of our implementation let's consider N, that is a parameter decided by the user that indicate the maximum number of iteration where we use the same temperature. Let also i = 0, 1... N be a counter for those iteration. We start by extracting $T_{max}$ from the temperature list, this will be the temperature of the system for the next following N iteration. On each iteration we generate a random 2-OPT move: if it is meliorative the solution is simply updated. If it is pejorative we compute a probability $p_i$ defined as:
+otherwise, if $f(Y) < f(X)$, we put X = Y and then we compute \textit{T} in the same way.
+Now to describe the remaining part of our implementation let's consider N, that is a parameter decided by the user that indicate the maximum number of iteration where we use the same temperature. Let also i = 0, 1... N be a counter for those iterations. We start by extracting $T_{max}$ from the temperature list, this will be the temperature of the system for the next following N iteration. On each iteration we generate a random 2-OPT move: if it is meliorative the solution is simply updated. If it is pejorative we compute a probability $p_i$ defined as:
 \begin{equation*}
 p_i = \exp \Bigl( \frac{-(f(Y)-f(X))}{t_{max}} \Bigr)
 \end{equation*}
@@ -487,19 +489,19 @@ At this point, if we accept a bad move, we need to calculate another temperature
 \begin{equation*}
 T_i = \frac{-d_i}{p_i}
 \end{equation*} 
-where $d_i$ is the difference between $f(Y)$ and $f(X)$ on iteration i. We need also to keep in memory a counter c for each time we have performed a pejorative move. When we reach N iteration, we have to decrease the temperature: we compute the mean
+where $d_i$ is the difference between $f(Y)$ and $f(X)$ on iteration i. We need also to keep in memory a counter \textit{c} for each time we have performed a pejorative move. When we reach N iteration, we have to decrease the temperature: we compute the mean
 \begin{equation*}
 T_{mean} = \frac{1}{c} \sum T_i
 \end{equation*}
-and we substitute $T_{max}$ with $T_{mean}$. Since $T_i < T_{max}$ we have also that $T_{mean} < T_{max}$ so with the substitution we decrease the temperature. Now we pick another $T_{max}$ and we repeat the entire procedure until the algorithm terminate.
+and we substitute $T_{max}$ with $T_{mean}$. Since $T_i < T_{max}$ we have also that $T_{mean} < T_{max}$ so with the substitution we decrease the temperature. Now we pick another $T_{max}$ and we repeat the entire procedure until the termination condition is reached.
 
 
 
 \subsection{Genetic Algorithm}
 The genetic algorithm is inspired by the evolution theory, formulated by Charles Darwin during the $18^{th}$ century. 
-The algorithm starts with a population where each individual that belong to the population itself is a solution to the problem, so in our case each individual is a solution for the TSP. Each individual has also a fitness that is defined as the cost of the solution. On each iteration (also called epoch), the individuals that have the highest fitness are removed from the population: maintaining the parallelism with the evolution theory we can say that the individuals that didn't adapt to the environment (high fitness) died.
-On each iteration we have also that couples of individuals reproduce and the new elements substitute the ones that we have removed (so the population size remain constant). The children generated inherit characteristics from both their parents: a simple mechanism is just to pick part of the edges from one parent and the remaining from the other. Of course in this way the children is not a solution of the TSP problem cause some node may be visited more than once or may miss, so a repair function is required. In addition, at this point, a mutation function can be added: this mean that a children with probability x (that in general is low) can suffer a modify that hasn't any relation with its parents, like a random exchange of two vertices in the visit sequence. We can introduce this shrewdness to emulate in the algorithm the mutation mechanism that happens also in real life\\
-After some iteration we have that the average fitness improve due to the fact that we remove bad solution and we generate new solution from the better ones. When the algorithm end, the champion of the population, that is the solution with the best fitness, is the final result. \\
+The algorithm starts with a population where each individual that belong to the population itself is a solution to the problem, so in our case each individual is a solution for the TSP. Each individual has also a fitness associated that is defined as the cost of the solution. On each iteration (also called epoch), the individuals that have the highest fitness are removed from the population: maintaining the parallelism with the evolution theory we can say that the individuals that didn't adapt to the environment (high fitness) died.
+On each iteration we have also that couples of individuals reproduce and the new elements substitute the ones that we have removed (so the population size remain constant). The children generated inherit characteristics from both their parents: a simple mechanism is just to pick part of the edges from one parent and the remaining from the other. Of course in this way the children is not a solution of the TSP problem cause some node may be visited more than once or may miss, so a repair function is required. In addition, at this point, a mutation function can be added: this mean that a children with probability x (that in general is low) can suffer a modify that hasn't any relation with its parents, like a random exchange of two vertices in the visit sequence. We can introduce this shrewdness to emulate in the algorithm the mutation mechanism that happens also in real life.\\
+After some iterations we have that the average fitness improve due to the fact that we remove bad solutions and we generate new solutions from the better ones. When the algorithm end, the champion of the population, that is the solution with the best fitness, is the final result. \\
 
 
 \begin{algorithm}
@@ -532,7 +534,7 @@ After some iteration we have that the average fitness improve due to the fact th
 
 
 \noindent Our first implementation of this algorithm was pretty simple. We generated a population of a size decided by the user using the GRASP algorithm. We created a probability mass function (PMF) normalizing the sum of the fitness, so on each iteration we randomly chose the elements to remove based on that mass function. This means that during the firsts iterations, when all the individual have almost the same fitness, the element are almost randomly remove, while when the algorithm progress and there is a more evident difference between good and bad individuals, with high probability only the worst solutions are removed. The number of element to remove on each iteration (that is equal to the number of children to generate) is a parameter decided by the user. \\
-To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function (Figure \ref{fig:genetic}) that remove all the points visited twice and insert the missing ones using the insertion algorithm described in 5.1.3. 
+To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function (Figure \ref{fig:genetic}) that remove all the points visited twice and insert the missing ones using the insertion algorithm described in \ref{insertion} 
 
 \begin{figure}[h!]
   \centering
@@ -556,9 +558,9 @@ To reproduce two elements we used the following technique: we chose a random num
   \label{fig:genetic}
 \end{figure}
 
-\noindent The couples to reproduce are simply chosen at random from the population and we didn't implement any mechanism to control that same individual aren't choose more than once. We made this choice because on this algorithm the population have often big size, in general more than 10000 individuals, so the probability to pick the exactly same individuals more than once is very low.
+\noindent The couples to reproduce are simply chosen at random from the population, we didn't implement any mechanism to control that same individual aren't choose more than once. We made this choice because on this algorithm populations ofetn have big size, in general more than 10000 individuals, so the probability to pick the exactly same individuals more than once is very low.
 After some run, plotting the average fitness and the best fitness, we could observe the 
-expected behaviour (Figure \ref{fig:fitness}): the average fitness continuously decrease until it get closer to the best fitness (that improve only sometimes).  \\
+expected behaviour (Figure \ref{fig:fitness}): the average fitness continuously decrease until it get closer to the best fitness (that improves only sometimes).  \\
 
 \begin{figure}[h!]
 \centering
@@ -570,7 +572,7 @@ expected behaviour (Figure \ref{fig:fitness}): the average fitness continuously 
 \noindent The problem of our implementation became evident after testing it on different instances: the solutions had lot of intersection (like the ones generated by the GRASP algorithm) that of course don't belong to the optimum. An example of this can be seen on Figure \ref{fig:geneticplot}. So we tried to introduce the 2-OPT someway inside the genetic. From this point, to distinguish the different versions of the genetic that we realized, we will call the implementation just described \textit{genetic 1}. \\
 A possibility that we first considered but we immediately discarded was to just apply the 2-OPT algorithm on the final solution provided by the genetic. This didn't make lot of sense because we did a lot of effort to produce a result with the genetic and then we discard a consistent part of it using the 2-OPT: a simple GRASP plus 2-OPT would be more efficient.
 Then we decided to add the 2-OPT to the repair function. So each children, after being repaired was also refined using the 2-OPT rule. Let's call this version \textit{genetic 2}. We immediately noticed a large reduction of the number of epochs executed in the same amount of time with respect to genetic 1. This is because the populations used in the genetic algorithm are large and even if 2-OPT is quite fast it has to be executed a lot of time. \\
-Finally we tried an hybrid approach between genetic 1 and genetic 2: after the repair function the refinement is executed with a probability x decided by the user. With this version each epoch is faster than genetic 2 because the 2-OPT is executed less time, however the price of this is the introduction of another parameter that is the probability x.\\
+Finally we tried an hybrid approach between genetic 1 and genetic 2: after the repair function the refinement is executed with a probability \textit{x} decided by the user. With this version each epoch is faster than genetic 2 because the 2-OPT is executed less time, however the price of this is the introduction of another parameter that is the probability \textit{x}.\\
 
 \begin{figure}[h!]
 \centering
@@ -635,14 +637,14 @@ So with this strategy we can run the genetic on a cluster, solving the problem o
 	\label{fig:metaheuristics}
 \end{figure}
 
-On Figure \ref{fig:metaheuristics} it is possible to see the performance profile of all the metaheuristics we analyzed in this section. We tested each algorithm on the usual dataset with a time limit of 30 minute per instance (all the other details about the experiments are report on section \ref{euristic_num_res}). The parameter we used are the following:
+On Figure \ref{fig:metaheuristics} it is possible to see the performance profile of all the metaheuristics we analyzed in this section. We tested each algorithm on the usual dataset with a time limit of 30 minute per instance (all the other details about the experiments are report on Section \ref{euristic_num_res}). The parameter we used are the following:
 
 \begin{itemize}
 	\item \textbf{Multi start}: no parameter except for time limit.
 	\item \textbf{VNS}: 5-OPT random move for the kick.
 	\item \textbf{Tabu search}: tenure equals to 40\% of the instance size.
 	\item \textbf{Simulated annealing}: temperature list of 5000 elements, 1000 iteration with the same temperature.
-	\item \textbf{Genetic}: population size of 2000, 200 new elements per epoch. 
+	\item \textbf{Genetic}: population size of 2000, 200 new elements per epoch, probability 0.5 to execute 2-OPT after a repair. 
 \end{itemize}
 
 \noindent The first thing we can notice is that the VNS has the best performance. Of course our dataset is quite small, so we cannot say with absolute certainty that VNS is in absolute the best algorithm. However our results are aligned with the ones we saw during the course and the ones obtained by other students, so we can conclude that VNS is a very good heuristic solution for the TSP. \\
