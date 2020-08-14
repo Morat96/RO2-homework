@@ -23,6 +23,32 @@ C.~E. Miller, A.~W. Tucker, and R.~A. Zemlin, ``Integer programming formulation
   of traveling salesman problems,'' {\em J. ACM}, vol.~7, p.~326–329, Oct.
   1960.
 
+\bibitem{gavish_travelling_1978}
+B.~Gavish and S.~C. Graves, ``The {Travelling} {Salesman} {Problem} and
+  {Related} {Problems},'' July 1978.
+
+\bibitem{flow2}
+G.~Finke, A.~Claus, and E.~Gunn, ``A two-commodity network flow approach to the
+  traveling salesman problem,'' {\em Congress Num}, vol.~41, 01 1984.
+
+\bibitem{flow3-2}
+R.~T. Wong, ``Integer programming formulations of the traveling salesman
+  problem,'' 1980.
+
+\bibitem{flow3-1}
+A.~Claus, ``A new formulation for the travelling salesman problem,'' {\em SIAM
+  Journal on Algebraic Discrete Methods}, vol.~5, no.~1, pp.~21--25, 1984.
+
+\bibitem{timestage1}
+K.~Fox, B.~Gavish, and S.~Graves, ``An n-constraint formulation of the
+  (time-dependent) traveling salesman problem,'' {\em Operations Research},
+  vol.~28, pp.~1018--1021, 08 1980.
+
+\bibitem{timestage3}
+G.~Enderlein, ``Vajda, s.: Mathematical programming. addison-wesley,
+  massachusetts-london 1961; 310 s., geb. 64s,'' {\em Biometrische
+  Zeitschrift}, vol.~5, no.~4, pp.~280--281, 1963.
+
 \bibitem{tsplib}
 G.~Reinelt, ``{TSPLIB—A Traveling Salesman Problem Library},'' {\em INFORMS
   Journal on Computing}, vol.~3, pp.~376--384, November 1991.
