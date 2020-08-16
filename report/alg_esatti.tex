@@ -1,21 +1,21 @@
 \chapter{Exact Algorithms}
 
-On this chapter we will describe exact algorithms based on the Dantzig-Fulkerson-Johnson formulation \cite{DFJ}, described in Section \ref{TSPdef}. The main problem of this model is that the formulation has $O(2^n)$ SECs, so it is impossibile to implement all the constraints in the model since it would result in a very high execution time and memory usage even for small graphs.
-\\ For this reason, SECs constraints are added only when necessary in the model, in order to discard solutions with cycles. Using this technique, hopefully, only a small part of $O(2^n)$ SECs are added to the model.
-\\ The main algorithms that make use of this technique are Loop methods and CPLEX callbacks.
+On this chapter we will describe exact algorithms based on the Symmetric version of the Dantzig-Fulkerson-Johnson formulation \cite{DFJ}. The main problem of this model is that the formulation has $O(2^n)$ SECs, so it is impossibile to implement all the constraints in the model since it would result in a very high execution time and memory usage even for small graphs.
+\\ For this reason, SECs are added only when necessary to the model, in order to discard solutions with cycles. Using this technique, hopefully, only a small fraction of the $O(2^n)$ SECs will be added to the model.
+\\ The main algorithms that make use of this technique to solve TSP instances to optimum (of even considerable size) are Loop Methods and CPLEX Callbacks.
 
 \section{Loop Methods}
 On this section we will describe two iterative approaches, originally proposed by \cite{bender}, in order to solve the DFJ model without adding an exponential number of Cycle constraints.
 \subsection{Simple Loop}
 The first approach, that we called Simple Loop, is presented in Algorithm \ref{alg:simpleloop}.
 \\ In line 2, we initialize the model with the variables, the degree constraints and the objective function. 
-The algorithm then proceeds solving the problem within a while loop (lines 3-4), and at each iteration we check if the the optimal solution has more than one component (line 5). If so, we add, for each component, the corresponding subtour eliminator. Instead, if the optimal solution has one component (lines 7-8), i.e. a Hamiltonian cycle, then we return the optimal solution found (line 9).
-\\ This algorithm turns out very efficient, especially with recent solvers. Its efficiency is due to the fact that the solution is solved very fast, especially in first iterations, and only small number of SECs are added (line 6) at each iteration. These constraints allow to exclude a lot of solutions with subtours of the original problem. 
+The algorithm then proceeds solving the problem within a while loop (lines 3-4), and at each iteration we check if the optimal solution has more than one component (line 5). If so, we add, for each component, the corresponding subtour eliminator (line 6). \\Instead, if the optimal solution has one component (lines 7-8), that is, it is a Hamiltonian cycle, then we return the optimal solution found (line 9).
+\\ This algorithm turns out very efficient, especially with recent solvers. Its efficiency is due to the fact that the solution is solved very fast, especially in first iterations, and only small number of SECs are added at each iteration. These constraints allow to exclude a lot of solutions with subtours of the original problem. 
 \\ At worst, since the problem is NP-hard, all constraints will be added to the model, requiring exponential computational time, but in most cases this doesn't happen.
-It may seem that this method is not very efficient, but with recent and increasingly sophisticated solvers, this method can lead to the optimal solution, even with many nodes, in few seconds.
+It may seem that this method is not very efficient, but with recent and increasingly sophisticated solvers, it can lead to the optimal solution, even with many nodes, in few seconds.
 \begin{algorithm}
     \caption{Simple Loop}\label{Loop Method}
-    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}^+$\\
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , \; c : E \rightarrow \mathbb{R}^+$\\
     \hspace*{\algorithmicindent} \textbf{Output:} $\textbf{\textit{z}\text{*}} $ optimal solution to TSP on the input graph $G$
     \begin{algorithmic}[1]
     \State $\textit{done} \gets \textit{false}$
@@ -34,16 +34,16 @@ It may seem that this method is not very efficient, but with recent and increasi
     \end{algorithm}
 \noindent
 \subsection{Heuristic Loop}
-The Algorithm \ref{alg:simpleloop} has a drawback, since at each iteration we solve to the optimum the TSP problem, even if the constraints collected until that point, are not sufficient to achieve the true optimum. In other words, we must wait that the solver finds out the optimal solution, even if the constraints avaiable may allow solutions with subtours.
-\\ For this reason, we implemented an ``heuristic" version of the method seen before. This method is composed of two phases. The first phase is used to collect some SEC constraints and to relax the optimality concept, setting for example an higher value for the solution GAP or limiting the solution in the root node of the branching tree.
+The Algorithm \ref{alg:simpleloop} has a drawback since at each iteration we solve to optimum the TSP problem, even if the constraints collected until that point are not sufficient to achieve the true optimum. In other words, we must wait that the solver finds out the optimal solution, even if the constraints avaiable may allow solutions with subtours.
+\\ For this reason, we implemented an ``heuristic" version of the method seen before. This method is composed of two phases. The first phase is used to collect some SECs by relaxing the optimality concept, for example by setting an higher value for the solution GAP or limiting the solution in the root node of the branching tree.
 This phase permits to add useful constraints to the model, without computing the optimal solution in each iteration. In fact, with this phase we can obtain a lot of useful SECs in a short time, especially in the first iterations.
-This phase is active until the solution found has more than one component, from then on, it will be activated the second phase. 
-In the second phase, the ``relaxation" of the solver is removed, solving essentially the problem with the Simple Loop method and this ensure that the solution computed is the true optimal solution.
-\\ The Heuristic Loop is presented in Algorithm \ref{alg:heuloop}. In line 4, as with the first method, we initialize the model with the variables, the degree constraints and the objective function.
-At the beginning, the first phase is active (line 2), which means that some CPLEX parameters have to be setted (line 5) in order to obtain a non-optimal solution, speeding up the computational time. In our case, we decided to set two CLEX parameters, that is, the solution's GAP and the NODE lim. The first parameter force CPLEX to stop, when the solution found until that point has a GAP of a certain value (for example 5\%). The second parameter specifies the node of the branching tree until which CPLEX can compute the solution, for example, if the value of the parameter is setted to 0, CPLEX can compute the solution only in the root node.
-The algorithm then proceeds solving the problem within a while loop (line 6). As in the Simple Loop, at each iteration we check if the solution has more than one component, and if so, we add, for each component, the corresponding subtour elimination. Instead, If the optimal solution has one component, we set the flag \textit{second\_phase} to true (line 15) and reset the solver settings, thus ensuring that the solution found from now on it will be an optimal solution.
-During the first phase, we have collected, hopefully, a number of useful SEC constraints in a small amount of time, with respect to found the optimal solution at each iteration.
-For the second phase, please refer to the Simple Loop (Algorithm \ref{alg:simpleloop}).
+This phase remains active until the solution found has more than one component, from then on, it will be activated the second phase. 
+In the second phase, the solver's concept of ``relaxation" is removed and it essentially solve the problem with the Simple Loop method, ensuring that the solution returned is the true optimal solution.
+\\ The Heuristic Loop is presented in Algorithm \ref{alg:heuloop}. In line 4, as in the first method, we initialize the model with the variables, the degree constraints and the objective function.
+At the beginning, the first phase is active (line 2), which means that some CPLEX parameters have to be set (line 5) in order to obtain a non-optimal solution, thus speeding up the computational time. In our case, we decided to set three CPLEX parameters, that is, the MIP gap tolerance, the MIP node limit and the MIP solution limit. The first parameter force CPLEX to stop, when the solution found until that point has a GAP of a certain value (for example 5\%). The second parameter specifies the node of the branching tree until which CPLEX can compute the solution, for example, if the value of the parameter is set to 0, CPLEX can compute the solution only in the root node. The third parameter specifies the maximum number of integer solutions that the solver can compute. \\
+The algorithm then proceeds solving the problem within a while loop (line 6). As in the Simple Loop, at each iteration we check if the solution has more than one component, and if so, we add, for each component, the corresponding SEC. \\ Instead, if the optimal solution has one component, we set the flag \textit{second\_phase} to true (line 15) and reset the solver settings, thus ensuring that the solution found from now on it will be an optimal solution.
+During the first phase, we have hopefully collected a number of useful SECs in a small amount of time, compared to finding the optimal solution at each iteration.
+For the second phase description, please refer to the Simple Loop (Algorithm \ref{alg:simpleloop}).
 \begin{algorithm}
     \caption{Heuristic Loop}\label{Loop Method}
     \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}^+$\\
@@ -53,10 +53,10 @@ For the second phase, please refer to the Simple Loop (Algorithm \ref{alg:simple
     \State $\textit{first\_phase} \gets \textit{true}$
     \State $\textit{second\_phase} \gets \textit{false}$
     \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
-    \State CPXsetintparam $ \leftarrow $ \textbf{$\ast$ Set MIP Gap and/or Node lim in order to obtain a non-optimal solution $\ast$ }
+    \State CPXsetintparam $ \leftarrow $ \textbf{$\ast$ Set MIP gap tolerance, MIP node limit and MIP solution limit in order to obtain a non-optimal solution $\ast$ }
     \While {!done} 
     	\If{$second\_phase$} 
-	\State CPXsetintparam $ \leftarrow $\textbf{ $\ast$ Return to original solver setting in order to obtain an optimal solution $\ast$ }
+	\State CPXsetintparam $ \leftarrow $\textbf{ $\ast$ Return to original solver settings in order to obtain an optimal solution $\ast$ }
 	\State $\textit{second\_phase} \gets \textit{false}$
 	\EndIf
     	\State $\textbf{\textit{z}\text{*}}  \gets \text{optimal\_solution}(\text{model})$\;
@@ -127,8 +127,8 @@ The parameter we used are the following:
 		\item \textbf{MIP solution limit:} Number of MIP solutions to be found before stopping. Value used: 1.
 		\end{itemize}
 \end{itemize}
-The parameters for the Heuristic Loop are used in the first part of the algorithm, then they are reset to their original values to find the optimal solution.
-From the graphs we can see that the performance of the two algorithms are very similar. In the first part of the Heuristic Loop, the SECs found are probably not sufficient to save time during the second part of the algorithm. In our opinion, there is no reason to use the Heuristic Loop since, even with three parameters, there is always the risk to overtune the parameters using only few instances.
+The parameters for the Heuristic Loop are used in the first phase of the algorithm, then they are reset to their original values to find the optimal solution.
+From the graphs we can see that the performance of the two algorithms are very similar. In the first phase of the Heuristic Loop, the SECs found are probably not sufficient to save time during the second phase of the algorithm. In our opinion, there is no reason to use the Heuristic Loop since, even with three parameters, there is always the risk to overtune the parameters using only few instances.
 
 \begin{figure}[h!]
   \centering
