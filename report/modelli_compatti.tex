@@ -29,10 +29,11 @@ and the constraint \ref{eqn:mtz-constraint}.
 	\end{equation}
 	\begin{equation}
 		x_{ij} + x_{ji} \leq 1 \quad \forall i,j \in N, \ i < j   \;\; \textbf{(Lazy constraints)}
+		\label{eqn:2.1e}
 	\end{equation}
 \end{subequations}
 
-\noindent Constraints \ref{eqn:mtz-constraint} ensure that, if the salesman travels from i to j, then the position of node j is one more than that of node i. This allows to have only a polynomial number of variable and constraints. In total, there are $O(n^2)$ variables and $O(n^2)$ constraints. The problem is no more NP-Hard, but the relaxation of the problem is somewhat weak and as one can see in the section where compact models are compared, it yields to decent performances only for small instances.
+\noindent Constraints \ref{eqn:mtz-constraint} ensure that, if the salesman travels from i to j, then the position of node j is one more than that of node i. Constraints \ref{eqn:2.1e} forces the selection of at most one direction for each edge. In our implementation, constraints \ref{eqn:mtz-constraint} and \ref{eqn:2.1e} are enforced as \textit{Lazy}. This allows to have only a polynomial number of variables and constraints. In total, there are $O(n^2)$ variables and $O(n^2)$ constraints. The problem is no more NP-Hard, but the relaxation of the problem is somewhat weak and as one can see in the section where compact models are compared, it yields to decent performances only for small instances.
 
 \section{Flow-based formulations}
 
@@ -58,14 +59,15 @@ Provided by Gavish and Graves in 1978 \cite{gavish_travelling_1978}, it adds con
 	\end{equation}
 	\begin{equation}
 		\sum_{j, \; j \neq 1} y_{1j} = n-1 \;\; \textbf{(Lazy constraint)}\\
+		\label{eqn:2.2e}
 	\end{equation}
 	\begin{equation}
 		\sum_{i, \; i \neq j} y_{ij} - \sum_{k, \; i \neq k} y_{jk} = 1 \quad \forall j \in N - \lbrace 1 \rbrace
 	\end{equation}
 \end{subequations}
 
-\noindent The idea is that whenever one node is chosen, the salesman delivers one unit of commodity flow. In this way, an order between the nodes is picked and subtours are impossible.\\
-This formulation has $O(n^2)$ variables and $O(n)$ constraints. The relaxation of the linear problem works better than the MTZ, as one can observe in the section about the comparison between the compact models.
+\noindent The idea is that whenever one node is chosen, the salesman delivers one unit of commodity flow. In this way, an order between the nodes is picked and subtours are impossible. In this model, we have chosen constraint \ref{eqn:2.2e} as \textit{Lazy}.\\
+This formulation has $O(n^2)$ binary variables, $O(n^2)$ continuous variables and $O(n^2)$ constraints. The relaxation of the linear problem works better than the MTZ, as one can observe in the section about the comparison between the compact models.
 
 \subsection{Two commodity flow}
 Created by Finke, Claus and Gunn in 1983 \cite{flow2}. It maintains constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} (from this point they and the objective function will not be shown in the formulation) and introduce the continuous variables:
@@ -108,7 +110,8 @@ and add the constraints:
 \noindent Constraints \ref{eqn:f2-const-1} and \ref{eqn:f2-const-2} force $(n-1)$ units of commodity 1 to flow into city 1 and 1 unit of commodity to flow out from every other node.\\
 Constraits \ref{eqn:f2-const-3} and \ref{eqn:f2-const-4} force $(n-1)$ units of commodity 2 to flow out from city 1 and 1 unit of commodity to flow into every other node.\\
 Constraints \ref{eqn:f2-const-5} force exactly $(n-1)$ units of commodity in each arc and constraints \ref{eqn:f2-const-6} only allow flow in an arc if present.\\
-The formulation has $O(n^2)$ constraints and $O(n^2)$ variables.
+In our implementation, constraints \ref{eqn:f2-const-1} and \ref{eqn:f2-const-3} are enforced as \textit{Lazy}.
+The formulation has $O(n^2)$ constraints, $O(n^2)$ binary variables and $O(n^2)$ continuous variables.
 
 \subsection{Multi-commodity flow}
 Proposed by Wong \cite{flow3-2} in 1980 and Claus \cite{flow3-1} in 1984. Again constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} are maintained. It introduce the continuous variable:
@@ -146,7 +149,7 @@ and the following constraints:
 Constraints \ref{eqn:fm-const-1} only allow flow in an arc which is present. Constraints \ref{eqn:fm-const-2} force exactly one unit of each commodity to flow into city 1 and constraints \ref{eqn:fm-const-3} does the opposite, preventing commodity to flow out from city 1.\\
 Constraints \ref{eqn:fm-const-4} force exactly one unity of commodity k to flow out from city k and constraints \ref{eqn:fm-const-5} prevent any of commodity k flowing into city k.\\
 Finally, constraints \ref{eqn:fm-const-6} force balance for all commodities at each node, apart from city 1 and for commodity k at city k.\\
-There is a total number of $O(n^3)$ constraints and $O(n^2)$ variables.
+There is a total number of $O(n^3)$ constraints, $O(n^2)$ binary variables and $O(n^3)$ continuous variables.
 
 \section{Time staged formulations}
 
@@ -160,7 +163,7 @@ Introduced by Fox, Gavish and Graves in 1980 \cite{timestage1}. Constraint \ref{
 		0 \quad \text{otherwise}
 	\end{cases}
 \]
-and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ 0-1 variables.
+and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ binary variables.
 
 \begin{subequations}
 	\begin{equation}
@@ -171,6 +174,7 @@ and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ 0-1
 	\end{equation}
 	\begin{equation}
 		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall i,j \in N, \ i \neq j
+		\label{eqn:T1}
 	\end{equation}
 	with the condition
 	\begin{equation}
@@ -178,6 +182,7 @@ and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ 0-1
 	\end{equation}
 	\begin{equation}
 		y_{ij}^1 - y_{ji}^n = 0 \quad \forall i \neq 1, j \;\; \textbf{(Lazy constraints)}
+		\label{eqn:T2}
 	\end{equation}
 \end{subequations}
 
@@ -197,18 +202,12 @@ Provided by Fox, Gavish and Graves in 1980 \cite{timestage1}. It uses the same v
 	\begin{equation}
 		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace
 	\end{equation}
-	\begin{equation}
-		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall i,j \in N, \ i \neq j
-	\end{equation}
-	\begin{equation}
-		y_{ij}^1 - y_{ji}^n = 0 \quad \forall i \neq 1, j \;\; \textbf{(Lazy constraints)}
-	\end{equation}
 \end{subequations}
-In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ 0-1 variables.
+In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ binary variables. Constraints \ref{eqn:T1} and \ref{eqn:T2} are also added to the model as we have noticed that they improve the performance of the model.
 
 \subsection{Third stage dependent}
 Introduced by Vajda in 1961 \cite{timestage3}. Again we have the same variables of first stage and constraints \ref{eqn:2.1b} and \ref{eqn:2.1c}. In addition, 
-for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
+for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ binary variables we have:
 \begin{subequations}
 	\begin{equation}
 		\sum_{j} y_{1j}^1 = 1
@@ -219,13 +218,8 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ 0-1 variables we have:
 	\begin{equation}
 		\sum_{j} y_{ij}^t - \sum_{k} y_{ki}^{t-1} = 0 \quad \forall i,t \in N-\lbrace 1 \rbrace
 	\end{equation}
-	\begin{equation}
-		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall i,j \in N, \ i \neq j
-	\end{equation}
-	\begin{equation}
-		y_{ij}^1 - y_{ji}^n = 0 \quad \forall i \neq 1, j \;\; \textbf{(Lazy constraints)}
-	\end{equation}
 \end{subequations}
+Also to this model we have added constraints \ref{eqn:T1} and \ref{eqn:T2} for performance reasons.
 \newpage
 \section{Final comparison between Compact Models}
 As explained in the previous sections, we decided mainly to focus on MTZ and Flow Based formulations, because of the time required to compute the optimal solution for the dataset we used.\\
