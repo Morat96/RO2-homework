@@ -24,11 +24,11 @@ and the constraint \ref{eqn:mtz-constraint}.
 		\label{eqn:2.1c}
 	\end{equation}
 	\begin{equation}
-		u_i-u_j+nx_{ij} \leq n-1 \quad \forall i,j \in N-\lbrace 1 \rbrace, \ i\neq j \;\; \textbf{(Lazy constraints)}
+		u_i-u_j+nx_{ij} \leq n-1 \quad \forall \; i,j \in N-\lbrace 1 \rbrace, \ i\neq j \;\; \textbf{(Lazy constraints)}
 		\label{eqn:mtz-constraint}
 	\end{equation}
 	\begin{equation}
-		x_{ij} + x_{ji} \leq 1 \quad \forall i,j \in N, \ i < j   \;\; \textbf{(Lazy constraints)}
+		x_{ij} + x_{ji} \leq 1 \quad \forall \; i,j \in N, \ i < j   \;\; \textbf{(Lazy constraints)}
 		\label{eqn:2.1e}
 	\end{equation}
 \end{subequations}
@@ -55,14 +55,14 @@ Provided by Gavish and Graves in 1978 \cite{gavish_travelling_1978}, it adds con
 		\sum_{(i,j) \in \delta^{+}(j)} x_{ij} = 1, \quad i \in V \\
 	\end{equation}
 	\begin{equation}
-		y_{ij} \leq (n-1)x_{ij} \quad \forall i,j \in N, \ i \neq j \\
+		y_{ij} \leq (n-1)x_{ij} \quad \forall \; i,j \in N, \ i \neq j \\
 	\end{equation}
 	\begin{equation}
 		\sum_{j, \; j \neq 1} y_{1j} = n-1 \;\; \textbf{(Lazy constraint)}\\
 		\label{eqn:2.2e}
 	\end{equation}
 	\begin{equation}
-		\sum_{i, \; i \neq j} y_{ij} - \sum_{k, \; i \neq k} y_{jk} = 1 \quad \forall j \in N - \lbrace 1 \rbrace
+		\sum_{i, \; i \neq j} y_{ij} - \sum_{k, \; i \neq k} y_{jk} = 1 \quad \forall \; j \in N - \lbrace 1 \rbrace
 	\end{equation}
 \end{subequations}
 
@@ -86,7 +86,7 @@ and add the constraints:
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-2}
-		\sum_{j} (y_{ij}-y_{ji}) = 1 \quad \forall i \in N-\lbrace 1 \rbrace, \ i \neq j
+		\sum_{j} (y_{ij}-y_{ji}) = 1 \quad \forall \; i \in N-\lbrace 1 \rbrace, \ i \neq j
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-3}
@@ -94,15 +94,15 @@ and add the constraints:
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-4}
-		\sum_{j} (z_{ij}-z_{ji}) = -1 \quad \forall i \in N-\lbrace 1 \rbrace, \ i \neq j
+		\sum_{j} (z_{ij}-z_{ji}) = -1 \quad \forall \; i \in N-\lbrace 1 \rbrace, \ i \neq j
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-5}
-		\sum_{j} (y_{ij}+z_{ij}) = n-1 \quad \forall i \in N
+		\sum_{j} (y_{ij}+z_{ij}) = n-1 \quad \forall \; i \in N
 	\end{equation}
 	\begin{equation}
 	\label{eqn:f2-const-6}
-		y_{ij}+z_{ij} = (n-1)x_{ij} \quad \forall i, j \in N
+		y_{ij}+z_{ij} = (n-1)x_{ij} \quad \forall \; i, j \in N
 	\end{equation}
 \end{subequations}
 
@@ -116,33 +116,33 @@ The formulation has $O(n^2)$ constraints, $O(n^2)$ binary variables and $O(n^2)$
 \subsection{Multi-commodity flow}
 Proposed by Wong \cite{flow3-2} in 1980 and Claus \cite{flow3-1} in 1984. Again constraint \ref{eqn:2.1b} and \ref{eqn:2.1c} are maintained. It introduce the continuous variable:
 \begin{equation*}
-	y_{ij}^k = \text{flow of commodity k in arc} \ (i,j) \in N-\lbrace 1 \rbrace
+	y_{ij}^k = \text{flow of commodity $k$ in arc} \ (i,j) \in N-\lbrace 1 \rbrace
 \end{equation*}
 and the following constraints:
 \begin{subequations}
 	\begin{equation}
 	\label{eqn:fm-const-1}
-		y_{ij} \leq x_{ij} \quad \forall i,j,k \in N, \ k \neq 1
+		y_{ij}^k \leq x_{ij} \quad \forall \; i,j,k \in N, \ k \neq 1
 	\end{equation}
 	\begin{equation}
 	\label{eqn:fm-const-2}
-		\sum_{i} y_{1i}^k = 1 \quad \forall k \in N-\lbrace 1 \rbrace
+		\sum_{i} y_{1i}^k = 1 \quad \forall \; k \in N-\lbrace 1 \rbrace
 	\end{equation}
 	\begin{equation}
 	\label{eqn:fm-const-3}
-		\sum_{i} y_{i1}^k = 0 \quad \forall k \in N-\lbrace 1 \rbrace
+		\sum_{i} y_{i1}^k = 0 \quad \forall \; k \in N-\lbrace 1 \rbrace
 	\end{equation}
 	\begin{equation}
 	\label{eqn:fm-const-4}
-		\sum_{i} y_{ik}^k = 1 \quad \forall k \in N-\lbrace 1 \rbrace
+		\sum_{i} y_{ik}^k = 1 \quad \forall \; k \in N-\lbrace 1 \rbrace
 	\end{equation}
 	\begin{equation}
 	\label{eqn:fm-const-5}
-		\sum_{j} y_{kj}^k = 0 \quad \forall k \in N-\lbrace 1 \rbrace
+		\sum_{j} y_{kj}^k = 0 \quad \forall \; k \in N-\lbrace 1 \rbrace
 	\end{equation}
 	\begin{equation}
 	\label{eqn:fm-const-6}
-		\sum_{i} y_{ij}^k - \sum_{i} y_{ji}^k = 0 \quad \forall j,k \in N-\lbrace 1 \rbrace, \ j \neq k
+		\sum_{i} y_{ij}^k - \sum_{i} y_{ji}^k = 0 \quad \forall \; j,k \in N-\lbrace 1 \rbrace, \ j \neq k
 	\end{equation}
 \end{subequations}
 %In total there are $n^3+n^2+6n-3$ constraints, $n(n-1)$ 0-1 variables and $n(n-1)^2$
@@ -170,18 +170,18 @@ and constraints below, for a total of $n(n+2)$ constraints and $n(n-1)(n+1)$ bin
 		\sum_{i,j,t} y_{ij}^t = n
 	\end{equation}
 	\begin{equation}
-		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace 
+		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall \; i \in N-\lbrace 1 \rbrace 
 	\end{equation}
 	\begin{equation}
-		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall i,j \in N, \ i \neq j
+		x_{ij}-\sum_{t} x_{ij}^t = 0 \quad \forall \; i,j \in N, \ i \neq j
 		\label{eqn:T1}
 	\end{equation}
 	with the condition
 	\begin{equation}
-		y_{il}^t = 0 \; \forall t \neq n, \quad y_{ij}^t = 0 \; \forall t \neq 1, \quad y_{ij}^l = 0 \; \forall i \neq 1, \quad i \neq j
+		y_{il}^t = 0 \;\; \forall \; t \neq n, \quad y_{ij}^t = 0 \;\; \forall \; t \neq 1, \quad y_{ij}^l = 0 \;\; \forall \; i \neq 1, \quad i \neq j
 	\end{equation}
 	\begin{equation}
-		y_{ij}^1 - y_{ji}^n = 0 \quad \forall i \neq 1, j \;\; \textbf{(Lazy constraints)}
+		y_{ij}^1 - y_{ji}^n = 0 \quad \forall \; i \neq 1, j \;\; \textbf{(Lazy constraints)}
 		\label{eqn:T2}
 	\end{equation}
 \end{subequations}
@@ -191,16 +191,16 @@ Provided by Fox, Gavish and Graves in 1980 \cite{timestage1}. It uses the same v
 
 \begin{subequations} 
 	\begin{equation}
-		\sum_{i,t \; i \neq j} y_{ij}^t = 1 \quad \forall j \in N
+		\sum_{i,t \; i \neq j} y_{ij}^t = 1 \quad \forall \; j \in N
 	\end{equation}
 	\begin{equation}
-		\sum_{j,t \; j \neq i} y_{ij}^t = 1 \quad \forall i \in N
+		\sum_{j,t \; j \neq i} y_{ij}^t = 1 \quad \forall \; i \in N
 	\end{equation}
 	\begin{equation}
-		\sum_{i \; j \neq i} y_{ij}^t = 1 \quad \forall t \in N
+		\sum_{i \; j \neq i} y_{ij}^t = 1 \quad \forall \; t \in N
 	\end{equation}
 	\begin{equation}
-		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall i \in N-\lbrace 1 \rbrace
+		\sum_{j,t \; t \geq 2} ty_{ij}^t - \sum_{k,t} ty_{ki}^t = 1 \quad \forall \;i \in N-\lbrace 1 \rbrace
 	\end{equation}
 \end{subequations}
 In totals there are $4n-1$ constraints and $n(n-1)(n+1)$ binary variables. Constraints \ref{eqn:T1} and \ref{eqn:T2} are also added to the model as we have noticed that they improve the performance of the model.
@@ -216,7 +216,7 @@ for a total of $2n^2-n+3$ constraints and $n(n-1)(n+1)$ binary variables we have
 		\sum_{i} y_{i1}^n = 1
 	\end{equation}
 	\begin{equation}
-		\sum_{j} y_{ij}^t - \sum_{k} y_{ki}^{t-1} = 0 \quad \forall i,t \in N-\lbrace 1 \rbrace
+		\sum_{j} y_{ij}^t - \sum_{k} y_{ki}^{t-1} = 0 \quad \forall \; i,t \in N-\lbrace 1 \rbrace
 	\end{equation}
 \end{subequations}
 Also to this model we have added constraints \ref{eqn:T1} and \ref{eqn:T2} for performance reasons.
