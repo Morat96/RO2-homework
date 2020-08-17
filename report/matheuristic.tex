@@ -6,17 +6,17 @@ When we have to resolve a large instance of TSP, CPLEX can require a large amoun
 Note that when the variables are fixed, due to the fact that the instance is smaller, CPLEX may resolve that model to its optimum before the time limit exceed.
 Of course the choice of which edge to fix and their number is quite relevant. In general a good idea is to set a fixing percentage and randomly choose the variables to fix. We can also decide to variate the percentage over the iterations, for example starting with an high value (like 90\%) and then decrease it until zero. This mean that on the initial iterations the problem to resolve is very small so we may get a significant improve, while on the last iterations we have a big problem but lot of freedom to refine the solution. Of course this is only an example and other strategies can be implemented.  
 \\\\ Our implementation of the Hard Fixing is presented in Algorithm \ref{alg:hf}. 
-We used two variables to manage the time limit of the algorithm. The variable \textit{remaining\_time} keeps track of the time left to the algorithm to compute the solution. At the beginning the variable assumes the value of the original time limit given by the user (line 2). The variable \textit{time\_x\_cycle} is the inner time limit and it is initially fixed to \textit{time\_limit/5} (line 3). Since with the inner time limit it is very hard that an initial good solution will be computed, we provide to CPLEX a heuristic solution builded with the algorithm GRASP and refined with the 2-OPT algorithm (lines 4-6).
-The algorithm then proceeds solving the problem within a while loop (line 7). At each iteration, we initially set the inner time limit as CPLEX environment parameter (lines 8 - 11). 
-Then the solution, within the time limit, is computed (line 13) with the time needed to compute it (lines 12 and 14).
+We used two variables to manage the time limit of the algorithm. The variable \textit{remaining\_time} keeps track of the time left to the algorithm to compute the solution. At the beginning the variable assumes the value of the original time limit given by the user (line 2). The variable \textit{time\_x\_cycle} is the inner time limit and it is initially fixed to \textit{time\_limit/5} (line 3). Since with the inner time limit it is very hard that an initial good solution will be computed, we provide to CPLEX a heuristic solution builded with the algorithm GRASP (see Section \ref{sec:grasp}) and refined with the 2-OPT algorithm (see Section \ref{two-opt}) (lines 4 - 6).
+The algorithm then proceeds by solving the problem within a while loop (line 7). At each iteration, we initially set the inner time limit as CPLEX environment parameter (lines 8 - 11). 
+Then the solution, within the time limit, is computed (line 13) together with the time needed to compute it (lines 12 and 14).
 At this point, the variable \textit{remaining\_time} is updated subtracting from it the time taken by the solver (line 15).
-\\ The variable \textit{percentage}, initially set to 90\% (line 1), is updated only if after two consecutive iterations the solution found doesn't improve of at least the 10\%. The update consists in subtracting 15\% from the previous percentage of fixed variables (line 18). Then the algorithm proceeds by resetting the lower bound of all variables to 0.0 (line 19), randomly selecting the indices of variables to be fixed and setting the lower bound of them to 1.0 (line 20). This sequence is repeated as long as the user-set time limit is reached.
+ The variable \textit{percentage}, initially set to 90\% (line 1), is updated only if after two consecutive iterations the solution found doesn't improve of at least the 10\%. The update consists in subtracting 15\% from the previous percentage of fixed variables (line 18). Then the algorithm proceeds by resetting the lower bound of all variables to 0.0 (line 19), randomly selecting the indices of variables to be fixed and setting the lower bound of them to 1.0 (line 20). This sequence is repeated as long as the user-set time limit is reached.
 
 \begin{algorithm}
     \caption{Hard Fixing}\label{Hard Fixing}
     
-    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:} A solution for the TSP problem
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , \; c : E \rightarrow \mathbb{R}$\\
+    \hspace*{\algorithmicindent} \textbf{Output:} A solution for the TSP
     \begin{algorithmic}[1]
     \State $\textit{percentage} \gets \textit{0.9}$
     \State $\textit{remaining\_time} \gets \textit{timelimit}$
@@ -32,10 +32,10 @@ At this point, the variable \textit{remaining\_time} is updated subtracting from
 	\EndIf
 	
 	\State $\textit{t1} \gets \textit{second()}$
-    	\State $\textbf{\textit{x}} \gets \text{solution}(\text{model}) $\;
+    	\State $\textbf{\textit{x}} \gets \text{TSPopt}(\text{model}) $\;
 	\State $\textit{t2} \gets \textit{second()}$
 	\State $\textit{remaining\_time} \gets \textit{remaining\_time $-$ (t2 $-$ t1)}$
-	\If{$ (\textit{remaining\_time} <= 0)$} 
+	\If{$ (\textit{remaining\_time} \leq 0)$} 
 	\State \textbf{break}
 	\EndIf
 	\State \textbf{$\ast$ If the solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ 0.15. $ $\ast$}
@@ -64,14 +64,14 @@ Of course this is not a valid constraint for the problem, cause we are not sure 
 Again we can iterate the procedure, each time removing the old constrain and generating a new one, based on the new solution, until a final time limit is reached. The fact that the selection of the variables to fix is not random, means that the CPLEX solution is deterministic, so it is not wise to execute two iterations with the same fixing percentage, cause we may resolve two times the same problem obtaining the same solution within the time limit.
 Finally, another shrewdness that is required, is that this algorithm works only if the fixing percentage is very high, so iterations with percentage of 50-60 or less should be avoided. 
 \\\\ Our implementation of the Local branching is presented in Algorithm \ref{alg:lb}. The implementation is pretty similar to Algorithm \ref{alg:hf}, for this reason we only emphasise the differences between the two algorithms. 
-At each iteration of the while loop (line 7), the variables of the solution are saved and a new local branching constraint is added to the model, removing the previous one. The known term of the constraint, that is the variable \textit{percentage} in the algorithm, is initially set to ``number of nodes $\ast$ 0.95" (line 1) and is updated at each iteration, but in this case subtracting from the variable \textit{percentage} the value ``number of nodes $\ast$ 0.05" (lines 18 - 21). As in algorithm \ref{alg:hf}, the sequence is repeated as long as the user-set time limit is reached.
+At each iteration of the while loop (line 7), the variables of the solution are saved and a new local branching constraint is added to the model, removing the previous one. The known term of the constraint, that is the variable \textit{percentage} in the algorithm, is initially set to $|V|$ $\ast$ 0.95 (line 1). The latter is updated at each iteration by subtracting from the variable \textit{percentage} the value \textit{percentage} $\ast$ 0.05 (lines 18 - 21). As in algorithm \ref{alg:hf}, the sequence is repeated as long as the user-set time limit is reached.
 
 \begin{algorithm} [H]
     \caption{Local branching}\label{Local branching}
-    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , c : E \rightarrow \mathbb{R}$\\
-    \hspace*{\algorithmicindent} \textbf{Output:}  A solution for the TSP problem
+    \hspace*{\algorithmicindent} \textbf{Input:} $G = (V,E) , \; c : E \rightarrow \mathbb{R}$\\
+    \hspace*{\algorithmicindent} \textbf{Output:}  A solution for the TSP
     \begin{algorithmic}[1]
-    \State $\textit{percentage} \gets \textit{$|$V $|$ $\ast$ $0.95$}$
+    \State $\textit{percentage} \gets \textit{$|V|$ $\ast$ $0.95$}$
     \State $\textit{remaining\_time} \gets \textit{timelimit}$
     \State $\textit{time\_x\_cycle} \gets \textit{timelimit / 5}$
     \State model $ \leftarrow $ \textbf{$\ast$ Initialize variables and objective function $\ast$ }
@@ -84,13 +84,13 @@ At each iteration of the while loop (line 7), the variables of the solution are 
 	\Else \State $ model \gets $ CPX\_PARAM\_TILIM$(\textit{remaining\_time}) $
 	\EndIf
 	\State $\textit{t1} \gets \textit{second()}$
-    	\State $\textbf{\textit{x}} \gets \text{optimal\_solution}(\text{model}) $\;
+    	\State $\textbf{\textit{x}} \gets \text{TSPopt}(\text{model}) $\;
 	\State $\textit{t2} \gets \textit{second()}$
 	\State $\textit{remaining\_time} \gets \textit{remaining\_time $-$ (t2 $-$ t1)}$
-	\If{$ (\textit{remaining\_time} <= 0)$} 
+	\If{$ (\textit{remaining\_time} \leq 0)$} 
 	\State \textbf{break}
 	\EndIf
-	\State \textbf{$\ast$ If the solution doesn't improve (+10\%) twice in succession then $ percentage $ $ -$= $ (0.05 \ast percentage).$ $\ast$}
+	\State $\textit{percentage} \mathrel{-}= \textit{percentage} * 0.05$
 	\State \textbf{$\ast$ Save the indices of the solution variables. $\ast$}
 	\State \textbf{$\ast$ If is not the first cycle remove the last row of the model. $\ast$}
 	\State \textbf{$\ast$ Add the new local branching constraint with $\alpha n = percentage. $ $\ast$}
@@ -101,7 +101,7 @@ At each iteration of the while loop (line 7), the variables of the solution are 
     \end{algorithm}
 
 \section{Final comparison between Matheuristics}
-The instances used to compare heuristic algorithms are the following: 
+The instances used to compare the Heuristic algorithms are the following: 
 
 \begin{multicols}{3}
     \begin{itemize}
