@@ -33,7 +33,7 @@ will lead to a globally optimal solution \cite{10.5555/1614191}.
 
 \noindent On our implementation we decided to trade space for time. Since the operation to compute the nearest point is repeated several time, we decide to store for each point the list of all others points sorted by their distances from that one. This require $O(n^2)$ additional space. Considering the time, instead, to sort the points we implemented a simple \textit{insertion sort}, that is $O(n^2)$, so in total we need an initial $O(n^3)$ (This part could be further improved with a better sort algorithm like \textit{merge sort} that is $O(n \cdot log(n))$, but since the initial time to order the nodes on our experiments was negligible, we decided to use insertion sort that was easier to implement). So, by paying this initial cost we were able to speed up each iteration of nearest neighborhood, in fact each time we needed to find the nearest point we just had to pick the first available one from the ordered list. Of course in the worst case this is $O(n)$, because it can happen that the first elements of the ordered list have already been visited, so I have to run across most of the list until I find an available point. However, what we saw in practice is that, except when there are left few nodes to visit, the first available element is always on the initial positions of the ordered list so the operation to find the nearest neighbor became $\Theta(1)$ in most of the cases (for example, we tried on multiple instances between 100 and 500 points and the average number of access to the ordered list to find the nearest point was between 3 and 6). Of course this technique is efficient only when we have to generate lots of solutions (like in the genetic algorithm) so we implemented a variant without the initial list, to use when we need only few solutions.\\
 
-\noindent The major problem of this technique is that visiting always the next closest point leads to the creation of lots of intersection between edges, that of course are inefficient. A possible solution to improve this initial result will be shown on the next section dedicated to the refining algorithms. \\
+\noindent The major problem of this technique is that visiting always the next closest point leads to the creation of lots of intersections between edges, that of course are inefficient. A possible solution to improve this initial result will be shown on the next section dedicated to the refining algorithms. \\
 Another problem is that this algorithm is deterministic, so this mean that if it is run twice starting from the same initial point, it produce the same solution. The consequence of this is that the number of different circuit that it can explore is limited to the total number of nodes.
 
 \subsection{GRASP}
@@ -90,7 +90,7 @@ The introduction of the random component means that the probability to repeat th
 
 \subsection{Insertion heuristic}
 \label{insertion}
-This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge (i, j). The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted (Figure \ref{fig:insertion}). The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
+This algorithm starts from a simple circuit made with only two points. At each iteration, for each of the remaining vertices to insert, compute the minimal extra mileage. The extra mileage is the cost to insert a point on the circuit. So, for example, if we want to insert the vertex z between vertex x and vertex y, the extra mileage is: $c_{xz} + c_{zy} - c_{xy}$, where $c_{ij}$ is the cost of the edge $(i, j)$. The fact that for each point we search the minimal extra mileage means that we are looking to the best position where insert that point. Insert vertex that has the best extra mileage into the partial circuit and repeat the procedure until all the points are inserted (Figure \ref{fig:insertion}). The algorithm than can be executed several time to explore new solutions, starting every time from different initial points and updating the incumbent if necessary. \\
 The cost to compute the best extra mileage is $O(n^2)$, so this mean that the entire algorithm is $O(n^3)$.\\
 It is also possible to add the GRASP rule, so rather then selecting the point with the best extra mileage, find the three smallest extra mileages and choose at random between them, in this way the algorithm doesn't converge to the same solution starting from the same initial circuit. \\
 
@@ -149,7 +149,7 @@ It is also possible to add the GRASP rule, so rather then selecting the point wi
   \label{fig:insertion}
 \end{figure}
 
-\noindent On our implementation to select the initial circuit we decided to pick at random one point and then to select the furthest point from that one. (Of course this is not the only solution: other possibility are, for example, to pick a vertex and its closest one, or to choose two points completely at random.) In addition, at the beginning of the algorithm, we built a matrix where the element i j contains the distance between vertices i and j (So in total we payed an additional $O(n^2)$ in space). We made this choice because on this algorithm distances between points are computed several times and in addition the same distance can be calculated more than once.\\
+\noindent On our implementation to select the initial circuit we decided to pick at random one point and then to select the furthest point from that one. (Of course this is not the only solution: other possibility are, for example, to pick a vertex and its closest one, or to choose two points completely at random.) In addition, at the beginning of the algorithm, we built a matrix where the element $i,j$ contains the distance between vertices $i$ and $j$ (So in total we payed an additional $O(n^2)$ in space). We made this choice because on this algorithm distances between points are computed several times and in addition the same distance can be calculated more than once.\\
 
 
 \subsection{Insertion with convex hull}
@@ -167,7 +167,7 @@ On our implementation, to find the initial convex hull, we used the Graham Scan 
     \includegraphics[width=\linewidth]{media/convex2.jpg}
     \caption{problem a280}
   \end{subfigure}
-  \caption{Execution of the insertion with convex hull on 2 different problems. It is possible to see the initial convex hull and the final result when all the points inside it are inserted}
+  \caption{Execution of the insertion with convex hull on 2 different problems. It is possible to see the initial convex hull (the black line) and the final result when all the points inside it are inserted.}
   \label{fig:insertionHull}
 \end{figure}
 
@@ -371,7 +371,7 @@ In synthesis, VNS, works with two phases that alternate continuously: an intensi
 \begin{figure}[h!]
 \centering
 	\includegraphics[scale=0.77]{media/vns_graph.pdf} \\
-	\caption{Representation of an objective function during VNS and the ``kick" of a 5-OPT random move}
+	\caption{Representation of an objective function during VNS and the ``kick" of a 5-OPT random move.}
 \end{figure}
 
 \noindent On our implementation we use the technique showed in Figure \ref{fig:vns}. We select the edges to remove (that in our example are three) and then we reconnect the vertices in a specific way, so that the reversal of some edges to reconstruct the cycle (the one described in \ref{two-opt}) is never required. In particular, because we can assign to the cycle a direction of travel, for each edge that we want to remove we can distinguish an initial vertex (the ones in red) and a final vertex (the ones in green). The idea is to always reconnect an initial vertex to a final vertex so the direction of travel is preserved. So for example we can start from the initial vertex of the first edge to remove and connect it to the final vertex of the second edge to remove. Then we pick the initial vertex of the second edge and we connect it to the final vertex of the third and so on, until the cycle is reconstructed. Of course this is valid for k edges, so on our implementation we can perform a k-opt random move, where k is establish at the beginning of the execution.
@@ -537,7 +537,7 @@ After some iterations we have that the average fitness improve due to the fact t
 
 
 \noindent Our first implementation of this algorithm was pretty simple. We generated a population of a size decided by the user using the GRASP algorithm. We created a probability mass function (PMF) normalizing the sum of the fitness, so on each iteration we randomly chose the elements to remove based on that mass function. This means that during the firsts iterations, when all the individual have almost the same fitness, the element are almost randomly remove, while when the algorithm progress and there is a more evident difference between good and bad individuals, with high probability only the worst solutions are removed. The number of element to remove on each iteration (that is equal to the number of children to generate) is a parameter decided by the user. \\
-To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function (Figure \ref{fig:genetic}) that remove all the points visited twice and insert the missing ones using the insertion algorithm described in \ref{insertion} 
+To reproduce two elements we used the following technique: we chose a random number x between 0.3 and 0.7. Then we picked the first x visited node from one of the parent and the remaining from the other. At this point we used a repair function (Figure \ref{fig:genetic}) that remove all the points visited twice and insert the missing ones using the insertion algorithm described in \ref{insertion}.
 
 \begin{figure}[h!]
   \centering
@@ -551,7 +551,7 @@ To reproduce two elements we used the following technique: we chose a random num
   \end{subfigure}
   \begin{subfigure}[b]{0.49\linewidth}
     \includegraphics[width=\linewidth]{media/gene3.pdf}
-    \caption{Insertion of remaining element}
+    \caption{Insertion of remaining elements}
   \end{subfigure}
   \begin{subfigure}[b]{0.49\linewidth}
     \includegraphics[width=\linewidth]{media/gene4.pdf}
