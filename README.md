@@ -27,7 +27,7 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
   - 7 -> T3
 
 ## Algorithms
-- Compacts
+- Compact Models
   - MTZ
   - Flow 1
   - Flow 2
@@ -36,23 +36,27 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
   - T2
   - T3
 
-- Loop
-  - I version
-  - II version (two steps)
+- Loop Methods
+  - Simple Loop
+  - Heuristic Loop
 
-- Lazy callback
-  - alone or with userCutCallback (Concorde) + heuristic callback + start MIP
+- Legacy Callbacks
+  - Lazy Callback
+  - UserCut Callback
+  - Heuristic Callback
 
-- Generic callback
-  - alone or with relaxation (Concorde) + heuristic callback + start MIP
+- Generic Callbacks
+  - Lazy Callback
+  - UserCut Callback
+  - Heuristic Callback
 
-- Hard Fixing (setting parameters)
+- Matheuristics
+  - Hard Fixing
+  - Local Branching
 
-- Local Branching (setting parameters)
-
-- Heuristics
-  - Nearest Neighbourhood (greedy)
-  - Grasp (randomization)
+- Heuristic solution builders
+  - Nearest Neighbourhood
+  - GRASP
   - Insertion
   - Insertion with Convex Hull
 
@@ -61,13 +65,8 @@ $ ./tsp -file FILE -time_limit TIME -model_type [0,7] -randomseed SEED -loop {0,
   - 3-OPT move
   
 - Metaheuristics
+  - Multi-start
   - VNS
-  - Tabù Search
+  - Tabu Search
   - Simulated Annealing
   - Genetic Algorithm
-  - Multi-start
-  
-
-
-
-
