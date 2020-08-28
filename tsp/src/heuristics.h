@@ -70,6 +70,7 @@ void insertion_ch(instance *inst, double *xstar);
  @param objval TSP objective function value.
  */
 void twOpt(instance* inst, int *succ, double* objval);
+void twOptv2(instance* inst, double* xstar);
 
 /**
  Refining algorithm: 3-OPT move.

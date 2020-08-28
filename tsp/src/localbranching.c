@@ -38,6 +38,27 @@ void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Local Branching\n\n", inst -> input_file);
     
+    inst -> ncols = CPXgetnumcols(env,lp);
+    
+    // add a starting TSP solution to MIP
+    int mcnt = 1;
+    int nzcnt = inst -> ncols;
+    int beg[1];
+    int effort[1];
+    beg[0] = 0;
+    effort[0] = 4;
+    int *varindices = malloc(sizeof(int) * nzcnt);
+    double *xstar1 = (double *) calloc(nzcnt, sizeof(double));
+    
+    // heuristics
+    NearNeigh(inst, xstar1);
+    twOptv2(inst, xstar1);
+    //insertion_ch(inst, xstar);
+    
+    for (int i = 0; i < nzcnt; i++) varindices[i] = i;
+    
+    if (CPXaddmipstarts(env, lp, mcnt, nzcnt, beg, varindices, xstar1, effort, NULL)) print_error("Error in set a mip start");
+    
     double percentage = inst -> nnodes * 0.95;
     double remaining_time = inst -> timelimit;
     double time_x_cycle = (inst -> timelimit) / 5;
@@ -150,6 +171,9 @@ void localbranching(instance *inst, CPXENVptr env, CPXLPptr lp) {
         
         free(xstar);
     } // repeat
+    
+    free(varindices);
+    free(xstar1);
 }
 
 

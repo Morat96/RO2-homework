@@ -23,6 +23,8 @@ void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int 
  */
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
 
+void loop_method_vers1(instance *inst, CPXENVptr env, CPXLPptr lp);
+
 //////////////////////////// utils ////////////////////////////
 
 /**

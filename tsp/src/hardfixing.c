@@ -38,6 +38,27 @@ void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
     
     printf("Resolve instance \"%s\" with Hard Fixing\n\n", inst -> input_file);
     
+    inst -> ncols = CPXgetnumcols(env,lp);
+    
+    // add a starting TSP solution to MIP
+    int mcnt = 1;
+    int nzcnt = inst -> ncols;
+    int beg[1];
+    int effort[1];
+    beg[0] = 0;
+    effort[0] = 4;
+    int *varindices = malloc(sizeof(int) * nzcnt);
+    double *xstar1 = (double *) calloc(nzcnt, sizeof(double));
+    
+    // heuristics
+    NearNeigh(inst, xstar1);
+    twOptv2(inst, xstar1);
+    //insertion_ch(inst, xstar);
+    
+    for (int i = 0; i < nzcnt; i++) varindices[i] = i;
+    
+    if (CPXaddmipstarts(env, lp, mcnt, nzcnt, beg, varindices, xstar1, effort, NULL)) print_error("Error in set a mip start");
+    
     float percentage = 0.9;
     double remaining_time = inst -> timelimit;
     double time_x_cycle = (inst -> timelimit) / 5;
@@ -79,13 +100,13 @@ void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
         remaining_time -= (t2-t1);
         printf("Remaining time : %lf\n", remaining_time);
         
-        if( remaining_time <= 0) break;
-        
         // Obtain the solution
         double objval;
         // value of objective function
         if (CPXgetobjval (env, lp, &objval)) print_error("Error in CPXgetobjval");
         printf("Objective function value: %lf\n" , objval);
+        
+        if( remaining_time <= 0) break;
         
         // if the current solution doesn't improve too much (+10%) for two consecutive times
         // change the percentage of fixed variables
@@ -149,9 +170,11 @@ void hardfixing(instance *inst, CPXENVptr env, CPXLPptr lp) {
         free(lu);
         free(db);
         free(index_sol);
-        
         free(xstar);
     } // repeat
+    
+    free(xstar1);
+    free(varindices);
 }
 
 // ************************** MODEL DEFINITION ************************** //

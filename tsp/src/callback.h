@@ -177,4 +177,7 @@ double dist(int i, int j, instance *inst);
  */
 void build_sol(const double *xstar, instance *inst, int *succ, int *comp, int *ncomp);
 
+void addSecInRelaxation(CPXCALLBACKCONTEXTptr context, instance* inst, int ncomp, int* compscount, int* comps);
+int separationMultiple(instance *inst, int ncomp, int *compscount, int *comps, CPXCENVptr env, void *cbdata, int wherefrom);
+int separationMultiple_gen(instance *inst, int ncomp, int *compscount, int *comps, CPXCALLBACKCONTEXTptr context);
 #endif /* callback_h */

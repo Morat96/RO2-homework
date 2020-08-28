@@ -19,6 +19,8 @@
  */
 void read_input(instance *inst);
 
+void read_input1(char **filename ,instance *inst);
+
 /**
  Parse the command line.
  

@@ -23,6 +23,133 @@
 //
 // ********************************************************************** //
 
+
+
+/**
+ Refining algorithm: 2-OPT move.
+ 
+ @param inst instance of the struct "instance" for TSP problem.
+ @param xstar TSP objective function value.
+ */
+void twOptv2(instance* inst, double* xstar) {
+    
+    double objval = 0.0;
+    printf("Refining Algorithm: 2-OPT move\n");
+    double t1 = second();
+    
+    double **dis = (double **) calloc(inst -> nnodes, sizeof(double*));
+    for(int i = 0; i < inst -> nnodes; i++) {
+        dis[i] = calloc(inst -> nnodes, sizeof(double));
+    }
+    
+    // fill distance matrix
+    double curr_dist = 0.0;
+    for (int i = 0; i < inst -> nnodes; i++) dis[i][i] = 0.0;
+    for (int i = 0; i < inst -> nnodes - 1; i++) {
+        for (int j = i + 1; j < inst -> nnodes; j++) {
+            curr_dist = dist(i, j, inst);
+            dis[i][j] = curr_dist;
+            dis[j][i] = curr_dist;
+        }
+    }
+    
+     int *succ = (int *) calloc(inst -> nnodes, sizeof(int));
+     int *comp = (int *) calloc(inst -> nnodes, sizeof(int));
+     int ncomp = 0;
+     
+     build_sol(xstar, inst, succ, comp, &ncomp);
+    printf("qui \n");
+    
+    int *index = (int *) calloc(inst -> nnodes, sizeof(int));
+    /*
+     int cnt = 1;
+     int** distances = (int**) calloc(inst -> nnodes - 1, sizeof(int*));
+     for (int i = 0; i < inst -> nnodes - 1; i++ ) {
+     distances[i] = calloc(inst -> nnodes - cnt, sizeof(int));
+     cnt ++;
+     }
+     
+     smallerKnodes(inst, distances);
+     */
+    while(1) {
+        
+        // first edge
+        int nFirst = 0;
+        int succ_f = 0;
+        // second edge
+        int nSecond = 0;
+        int succ_s = 0;
+        // objective function
+        int delta = INT_MAX;
+        int min_delta = INT_MAX;
+        //int a,b;
+        
+        // for each couple of edges, compute obj function value and pick the minimim one
+        // store indices of edges with the lowest obj func value
+        for (int i = 0, a = 0; a < inst -> nnodes - 1; a++, i = succ[i]) {
+            for (int j = succ[i], b = a + 1; b < inst -> nnodes; b++, j = succ[j]) {
+                //delta = dist(i, j, inst) + dist(succ[i], succ[j], inst) - dist(i, succ[i], inst) - dist(j, succ[j], inst);
+                delta = dis[i][j] + dis[succ[i]][succ[j]] - dis[i][succ[i]] - dis[j][succ[j]];
+                if (delta < min_delta) {
+                    nFirst = i;
+                    succ_f = succ[i];
+                    nSecond = j;
+                    succ_s = succ[j];
+                    min_delta = delta;
+                }
+            }
+        }
+        
+        // if no improvement, exit
+        if (min_delta >= 0) break;
+        
+        // change link of edges and their orientations w.r.t. optimal obj. func. value
+        int ind = succ[succ_f];
+        int cnt = 0;
+        while (ind != nSecond) {
+            index[cnt++] = ind;
+            ind = succ[ind];
+        }
+        if (cnt == 0) {
+            succ[ind] = succ_s;
+            succ[nSecond] = succ_f;
+        }
+        else {
+            succ[index[0]] = succ_f;
+            for (int i = 1; i < cnt ; i++) {
+                succ[index[i]] = index[i - 1];
+            }
+            succ[nSecond] = index[cnt - 1];
+        }
+        // crossing of straight lines
+        // (a,a'), (b,b') -> (a,b), (a',b')
+        // where (a,a') is the first edge and (b,b') is the second one.
+        succ[nFirst] = nSecond;
+        succ[succ_f] = succ_s;
+    }
+    
+    double t2 = second();
+    
+    
+    for (int cc = 0; cc < ((inst -> nnodes * (inst -> nnodes - 1))/2); cc ++) xstar[cc] = 0.0;
+    for (int dd = 0; dd < inst -> nnodes; dd ++) xstar[xpos(dd, succ[dd], inst)] = 1.0;
+    //double objval = 0.0;
+    for (int ee = 0; ee < inst -> nnodes; ee ++) objval += dis[ee][succ[ee]];
+    printf("Objective function value: %lf\n", objval);
+    printf("2-OPT move time: %lf\n\n", t2 - t1);
+    //print_solution_light(inst, succ);
+    
+    //for (int i = 0; i < inst -> nnodes - 1; i++ ) free(distances[i]);
+    //free(distances);
+    for(int i = 0; i < inst -> nnodes; i++) free(dis[i]);
+    free(dis);
+    free(index);
+    free(succ);
+    free(comp);
+}
+
+
+
 /**
  Remove element from an array by sliding it.
 
@@ -563,6 +690,9 @@ void insertion_ch(instance *inst, double *xstar) {
         }
     }
     
+    int *back = (int *) calloc(nnodes, sizeof(int));
+    for (int i = 0; i < nnodes; i++) back[i] = sol[i];
+    
     // indices of all other nodes
     int counter = 0;
     int n_ind = 0;
@@ -650,6 +780,36 @@ void insertion_ch(instance *inst, double *xstar) {
     
     printf("Objective function value: %lf\n", objval);
     //for ( int j = 0; j < ncols; j++ ) printf(" ... qstar[%3d] = %10.2lf \n", j+1, xstar[j]);
+    
+    FILE *file;
+    FILE *file1;
+    file = fopen("xsol.txt", "wt");
+    
+    if(VERBOSE >= 50) printf("The solution includes the following edges:\n");
+    // save and print edges that correnspond to variable x(*,*) = 1
+    for(int i=0; i < n - 1; i++) {
+        //if(VERBOSE >= 50) printf("Edge x[%i,%i]\n", i+1, succ[i]+1);
+        // save edge (i,j)
+        fprintf(file, "%f %f\n", inst->xcoord[sol[i]], inst->ycoord[sol[i]]);
+        fprintf(file, "%f %f\n\n", inst->xcoord[sol[i+1]], inst->ycoord[sol[i+1]]);
+    }
+    fprintf(file, "%f %f\n", inst->xcoord[sol[n - 1]], inst->ycoord[sol[n - 1]]);
+    fprintf(file, "%f %f\n\n", inst->xcoord[sol[0]], inst->ycoord[sol[0]]);
+    
+    fclose(file);
+    
+    file1 = fopen("xxsol.txt", "wt");
+    
+    for(int i=0; i < nnodes - 1; i++) {
+        fprintf(file, "%f %f\n", inst->xcoord[back[i]], inst->ycoord[back[i]]);
+        fprintf(file, "%f %f\n\n", inst->xcoord[back[i+1]], inst->ycoord[back[i+1]]);
+    }
+    fprintf(file, "%f %f\n", inst->xcoord[back[nnodes - 1]], inst->ycoord[back[nnodes - 1]]);
+    fprintf(file, "%f %f\n\n", inst->xcoord[back[0]], inst->ycoord[back[0]]);
+    
+    fclose(file1);
+    
+    system("/usr/local/Cellar/gnuplot/5.2.8/bin/gnuplot script_light.txt");
     
     // build and print the solution
     int *succ = (int *) calloc(inst->nnodes, sizeof(int));

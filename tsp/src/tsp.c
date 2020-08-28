@@ -104,8 +104,8 @@ int TSPopt(instance *inst, double t1) {
     CPXLPptr lp = CPXcreateprob(env, &error, "TSP");
     
     //*** CPLEX'S PARAMETERS ***
-    CPXsetintparam(env, CPX_PARAM_MIPDISPLAY, 4);
-    CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
+    //CPXsetintparam(env, CPX_PARAM_MIPDISPLAY, 4);
+    //CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON); // Cplex output on screen
     // set random seed
     CPXsetintparam(env, CPXPARAM_RandomSeed, inst -> randomseed);
     
@@ -162,7 +162,7 @@ int TSPopt(instance *inst, double t1) {
         }
     
         // show the solution found
-        print_solution(inst, succ);
+        //print_solution(inst, succ);
         
         free(xstar);
         free(succ);
@@ -181,16 +181,20 @@ int TSPopt(instance *inst, double t1) {
     // CALLBACK METHOD: callback.c
     else if(inst -> model_type == 0 && inst -> callback == 1) {
         
+        int randseeed = 0;
+        CPXgetintparam(env, CPXPARAM_RandomSeed, &randseeed);
+        printf("random seed %d\n", randseeed);
+        
         // lazyconstraint callback
         CPXsetintparam(env, CPX_PARAM_MIPCBREDLP, CPX_OFF);
         
-        // First version: pre-generic callbacks
+        // First version: Legacy callbacks
         //if (CPXsetlazyconstraintcallbackfunc(env, mylazycallback, inst)) print_error("Error in lazy constraints callback");
         //if (CPXsetusercutcallbackfunc(env, UserCutCallback, inst)) print_error("Error in user callback");
         // heuristic callback
         //if (CPXsetheuristiccallbackfunc (env, myheuristic, inst)) print_error("Error in heuristic callback");
         
-        // Second Version: generic callback
+        // Second Version: Generic callback
         if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION, my_generic_callback, inst)) print_error("Error in generic callback");
         
         int ncores = 1; CPXgetnumcores(env, &ncores);
@@ -198,6 +202,7 @@ int TSPopt(instance *inst, double t1) {
         
         inst -> ncols = CPXgetnumcols(env,lp);
         
+        /*
         // add a starting TSP solution to MIP
         int mcnt = 1;
         int nzcnt = inst -> ncols;
@@ -209,17 +214,28 @@ int TSPopt(instance *inst, double t1) {
         double *xstar = (double *) calloc(nzcnt, sizeof(double));
         
         // heuristics
-        //NearNeigh(inst, xstar);
-        insertion_ch(inst, xstar);
+        NearNeigh(inst, xstar);
+        //insertion_ch(inst, xstar);
         
         for (int i = 0; i < nzcnt; i++) varindices[i] = i;
         
         if (CPXaddmipstarts(env, lp, mcnt, nzcnt, beg, varindices, xstar, effort, NULL)) print_error("Error in set a mip start");
+        */
         
         if (CPXmipopt(env,lp)) print_error("Error in find a solution");
         
-        free(xstar);
-        free(varindices);
+        // total number of nodes solved
+        
+        int node_count = 0;
+        node_count = CPXgetnodecnt(env, lp);
+        printf("Nodes: %d\n", node_count);
+        
+        double objval;
+        if (CPXgetobjval (env, lp, &objval)) print_error("Error in CPXgetobjval");
+        printf("Objective function value: %lf\n" , objval);
+        
+        //free(xstar);
+        //free(varindices);
     }
     
     // HARD FIXING
@@ -239,7 +255,7 @@ int TSPopt(instance *inst, double t1) {
     // value of objective function
     if (CPXgetobjval (env, lp, &objval)) print_error("Error in CPXgetobjval");
     printf("Objective function value: %lf\n" , objval);
-    
+    /*
     // number of variables of the problem
     int ncols = CPXgetnumcols(env, lp);
     
@@ -256,12 +272,12 @@ int TSPopt(instance *inst, double t1) {
     // show the complete solution found (lines + nodes + index node)
     //print_solution(inst, succ);
     // show the solution found (only lines)
-    print_solution_light(inst, succ);
+    //print_solution(inst, succ);
     
     free(xstar);
     free(succ);
     free(comp);
-    
+    */
     // free and close cplex model
     CPXfreeprob(env, &lp);
     CPXcloseCPLEX(&env);

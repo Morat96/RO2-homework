@@ -9,29 +9,29 @@
 #include "loop_method.h"
 
 // ********************************************************************** //
-// ***************************** LOOP METHOD **************************** //
+// **************************** LOOP METHODS **************************** //
 // ********************************************************************** //
 
 
 // ************************** MODEL DEFINITION ************************** //
 //
-// obj: compute an optimal solution adding SEC constraints at the end of each run of CPXmipopt
+// obj: compute an optimal solution adding SECs at the end of each run of CPXmipopt
 // First version
-// Add SEC constraints until ncomp (number of components) is equal to 1
+// Add SECs until ncomp (number of components) is equal to 1
 //
 // Second version
 // In a first phase set CPLEX parameters on order to return a non-optimal solution but
 // use it in order to produce valid constraints for the problem. Once we obtain 1 component
 // come back to the original CPLEX setting in order to obtain the optimal solution for the problem.
 // Parameters to tune:
-// CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 3); --> incumbent
-// CPXsetintparam(env, CPX_PARAM_EPGAP, 0.03);  --> solution gap
+// CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 3); --> max integer solutions
+// CPXsetintparam(env, CPX_PARAM_EPGAP, 0.03);  --> limit solution GAP
 // CPXsetintparam(env, CPX_PARAM_NODELIM, 0);   --> limit on the branching node
 //
 // ********************************************************************** //
 
 /**
- Loop method.
+ Loop method. Benders 1960. Heuristic version.
 
  @param inst instance of the struct "instance" for TSP problem.
  @param env CLEX environment.
@@ -53,8 +53,8 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1) {
     int first_phase = 1;
     int second_phase = 0;
     // set parameters
-    //CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 3);
-    //CPXsetintparam(env, CPX_PARAM_EPGAP, 0.03);
+    //CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 1);
+    CPXsetintparam(env, CPX_PARAM_EPGAP, 0.05);
     CPXsetintparam(env, CPX_PARAM_NODELIM, 0);
     
     printf("Resolve instance \"%s\" with Loop Method\n", inst -> input_file);
@@ -70,9 +70,9 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1) {
             printf("--------------------------------------\n");
             printf("             Second Phase\n");
             printf("--------------------------------------\n");
-            //CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 2100000000);
-            //CPXsetintparam(env, CPX_PARAM_EPGAP, 1);
-            CPXsetintparam(env, CPX_PARAM_NODELIM, 2100000000);
+            CPXsetintparam(env, CPX_PARAM_INTSOLLIM, 2147483647);
+            CPXsetintparam(env, CPX_PARAM_EPGAP, 0);
+            CPXsetintparam(env, CPX_PARAM_NODELIM, 2147483647);
             second_phase = 0;
         }
         
@@ -137,7 +137,7 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1) {
 // ********************************************************************** //
 
 /**
- Loop method second version.
+ Loop method. Benders 1960.
  
  @param inst instance of the struct "instance" for TSP problem.
  @param env CLEX environment.
@@ -199,14 +199,14 @@ void loop_method_vers1(instance *inst, CPXENVptr env, CPXLPptr lp) {
     printf("*** SOLUTION INFO *** \nz_opt: %f \nIterations: %i \n", objval, n - 1);
     
     //print solution
-    print_solution(inst, succ);
+    //print_solution(inst, succ);
     
     free(succ);
     free(comp);
 }
 
 
-// add SEC constraints
+// add SECs
 void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int *comp, int ncomp, int n) {
     
     char **cname = (char **) calloc(1, sizeof(char*));

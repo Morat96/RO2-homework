@@ -7,6 +7,7 @@
 //
 
 #include "tsp.h"
+#include <time.h>
 
 double second(void);
 void read_input(instance *inst);
@@ -16,7 +17,7 @@ void print_solution_light(instance *inst, int *succ);
 void print_error(const char *err) { printf("\n\n ERROR: %s \n\n", err); fflush(NULL); exit(1); }
 int xpos(int i, int j, instance *inst);
 double dist(int i, int j, instance *inst);
-
+void read_input1(char **filename ,instance *inst);
 // others
 void smallerKnodes(instance* inst, int** distances);
 void sort(double* array, int* ind, int begin, int end);
@@ -30,13 +31,13 @@ void simulated_annealing(instance* inst, int iter, int size);
 void genetic_algorithm(instance* inst, int generations, int population_size, int crossover_size);
 void multi_start(instance* inst, int iter);
 
-/*void NearNeigh(instance *inst, double *xstar);
+void NearNeigh(instance *inst, double *xstar);
 void grasp(instance *inst, double *xstar);
 void insertion(instance *inst, double *xstar);
 void insertion_ch(instance *inst, double *xstar);
 void random_solution(instance* inst, double* xstar);
 void twOpt(instance* inst, double* xstar);
-void threeOpt(instance* inst, double* xstar);*/
+void threeOpt(instance* inst, double* xstar);
 
 /**
  Free the struct instance for TSP.
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
     int ncols = ((inst.nnodes) * (inst.nnodes - 1)) / 2;
     double *xstar = (double *) calloc(ncols, sizeof(double));
     
+    // Solution Builders
     //NearNeigh(&inst, xstar);
     //grasp(&inst, xstar);
     //insertion(&inst, xstar);
@@ -81,13 +83,13 @@ int main(int argc, char **argv) {
     //threeOpt(&inst, xstar);
     //smallerKnodes(&inst);
     
-    multi_start(&inst, 10);
+    //multi_start(&inst, 1000);
     if (inst.vns) vns(&inst, 100, 5);
     else if (inst.tabu_search) tabu_search(&inst, 5000, 100);
     else if (inst.sim_annealing) simulated_annealing(&inst, 500, 50);
     else if (inst.genetic) genetic_algorithm(&inst, 2, 100, 20);
     else {
-        //if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
+        if ( TSPopt(&inst, t1) ) print_error(" error within TSPopt()");
     }
     
     double t2 = second();

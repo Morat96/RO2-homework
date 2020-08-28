@@ -74,6 +74,13 @@ typedef struct {
     
 } input;
 
+typedef struct {
+    
+    instance *inst;                          // TSP instance
+    CPXCALLBACKCONTEXTptr context;           // callback user data
+    
+} inputGen;
+
 // **************** COMPACT MODELS ************** //
 // STSP
 void build_model_0(instance *inst, CPXENVptr env, CPXLPptr lp);
@@ -96,6 +103,7 @@ void build_model_7(instance *inst, CPXENVptr env, CPXLPptr lp);
 // **************** LOOP METHOD **************** //
 void add_constraints(instance *inst, CPXENVptr env, CPXLPptr lp, int *succ, int *comp, int ncomp, int n);
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp, double t1);
+void loop_method_vers1(instance *inst, CPXENVptr env, CPXLPptr lp);
 // ********************************************** //
 
 // **************** LAZY CALLBACK *************** //
@@ -171,5 +179,7 @@ void build_compact_sol(const double *xstar, instance *inst, int *succ, int *comp
  @param ncomp number of components in the solution.
  */
 void complete_cycle(instance *inst, int *succ, int *comp, int *ncomp);
+
+void twOptv2(instance* inst, double* xstar);
 
 #endif /* tsp_h */

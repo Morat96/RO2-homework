@@ -304,7 +304,7 @@ void crossover(instance* inst, int* parents, int size, int** population, int** c
         for (int j = threshold; j < inst -> nnodes; j++) new_child[j] = population[parent2][j];
         //printf("|%d|\n", threshold);
         shortcut(inst, new_child);
-        float rv = (float) rand()/RAND_MAX;
+        float rv = (float) rand() / RAND_MAX;
         if (rv < 0.1) mutation(inst, new_child);
         for (int add = 0; add < inst -> nnodes; add++) childs[i][add] = new_child[add];
     }
